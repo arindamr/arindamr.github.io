@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM-Powered Diagnostic Engine Presentation</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/impress.js/0.5.3/impress.min.css">
+    <link rel="stylesheet" href="css/impress-common.css">
     <style>
         .step {
             font-family: Arial, sans-serif;
@@ -24,8 +24,50 @@
         h2 {
             font-size: 2.5em;
         }
-        p, li {
+        p {
             font-size: 1.5em;
+        }
+        ul {
+            text-align: left;
+            margin: 0 auto;
+            padding: 0;
+            max-width: 80%;
+        }
+        li {
+            margin-bottom: 10px;
+            font-size: 1.5em; /* Apply consistent font size to all list items */
+        }
+        ul ul li {
+            font-size: inherit; /* Ensure nested list items inherit the font size of their parent */
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 100%;
+        }
+        .grid-item {
+            text-align: left;
+        }
+        /* Popup styles */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .popup img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .popup.active {
+            display: flex;
         }
     </style>
 </head>
@@ -38,79 +80,81 @@
             <p>
                 Based on "<a href="https://medium.com/@roy.arindamroy/automating-software-issue-triage-with-large-language-models-25c94c1acfbf">Automating Software Issue Triage with Large Language Models</a> | by Arindam Roy | Mar, 2025 | Medium"
             </p>
-            <p></p>
-                <audio controls>
+            <p>
+                Podcast: <audio controls>
                     <source src="assets/llmtriage.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
             </p>
+            <p>
+                <img src="assets/llmtriage.webp" alt="LLM Triage Thumbnail" style="max-width: 200px; cursor: pointer;" id="thumbnail">
+            </p>
+            <p style="margin-top: 20px; font-size: 1.2em; color: gray;">
+                Use the arrow keys on your keyboard to navigate through the slides.
+            </p>
         </div>
 
-        <!-- Slide 2 -->
+        <!-- Combined Slide with 4 Columns -->
         <div class="step" data-x="1920" data-y="0" data-scale="1">
-            <h2>Introduction: The Need for a Human-Centric Approach</h2>
-            <ul>
-                <li>Fully automated software issue triage using Large Language Models (LLMs) presents significant challenges, including the potential for hallucinations, biases, and difficulties in interpreting complex diagnostic outputs.</li>
-                <li>A human-in-the-loop approach is proposed to leverage the analytical power of LLMs while retaining the crucial oversight and domain expertise of human engineers.</li>
-                <li>This integrated solution aims to enhance the efficiency and accuracy of software issue triage by combining the strengths of AI and human intelligence.</li>
-                <li>The core principle is to have human review and approval at critical junctures in the automated diagnostic process.</li>
-            </ul>
+            <h2>LLM-Powered Diagnostic Engine: Key Concepts</h2>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <h3>Introduction</h3>
+                    <ul>
+                        <li>Fully automated software issue triage using Large Language Models (LLMs) presents significant challenges, including the potential for hallucinations, biases, and difficulties in interpreting complex diagnostic outputs.</li>
+                        <li>A human-in-the-loop approach is proposed to leverage the analytical power of LLMs while retaining the crucial oversight and domain expertise of human engineers.</li>
+                        <li>This integrated solution aims to enhance the efficiency and accuracy of software issue triage by combining the strengths of AI and human intelligence.</li>
+                        <li>The core principle is to have human review and approval at critical junctures in the automated diagnostic process.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Architecture Overview</h3>
+                    <ul>
+                        <li>Problem Statement Input: Software engineers provide an English language description of the issue.</li>
+                        <li>LLM Core: This acts as the central orchestrator of the diagnostic process, analysing the problem statement and suggesting actions.</li>
+                        <li>Tool Registry: A repository containing comprehensive information about available diagnostic tools, including their purpose, capabilities, and usage instructions.</li>
+                        <li>Execution Engine: Responsible for executing the selected diagnostic tools with the provided parameters and returning their output.</li>
+                        <li>Output Interpreter: A module that helps the LLM Core understand the results of the tool execution.</li>
+                        <li>Iterative Cycle: The process involves continuous loops of LLM suggestion and human review/modification until the issue is understood and a resolution is identified.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Refining the Problem Statement</h3>
+                    <ul>
+                        <li>The process begins with the engineer providing a problem statement.</li>
+                        <li>The LLM Core can analyse this statement and suggest enhancements for clarity and completeness, or extract key information.</li>
+                        <li>Crucially, the enhanced problem statement is presented to a human engineer for review.</li>
+                        <li>The engineer can then:
+                            <ul>
+                                <li>Assess the LLM's suggestions.</li>
+                                <li>Make necessary modifications to correct misinterpretations.</li>
+                                <li>Add crucial details missed by the LLM.</li>
+                                <li>Rephrase the problem statement based on their initial understanding.</li>
+                            </ul>
+                        </li>
+                        <li>This human review ensures an accurate foundation for subsequent triage steps.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Selecting Diagnostic Tools</h3>
+                    <ul>
+                        <li>Based on the refined problem statement, the LLM Core interacts with the Tool Registry.</li>
+                        <li>The LLM suggests the diagnostic tool it deems most appropriate for the situation.</li>
+                        <li>However, the LLM does not automatically execute the tool; its suggestion is presented to a human engineer for approval.</li>
+                        <li>The engineer can then:
+                            <ul>
+                                <li>Approve the LLM's suggestion.</li>
+                                <li>Select an alternative tool from the Tool Registry based on their experience and knowledge.</li>
+                            </ul>
+                        </li>
+                        <li>This human intervention ensures that the chosen tool is the most suitable for diagnosing the issue.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <!-- Slide 3 -->
+        <!-- Slide 6 (formerly Slide 13) -->
         <div class="step" data-x="3840" data-y="0" data-scale="1">
-            <h2>Architecture Overview: A Modular System</h2>
-            <ul>
-                <li>Problem Statement Input: Software engineers provide an English language description of the issue.</li>
-                <li>LLM Core: This acts as the central orchestrator of the diagnostic process, analysing the problem statement and suggesting actions.</li>
-                <li>Tool Registry: A repository containing comprehensive information about available diagnostic tools, including their purpose, capabilities, and usage instructions.</li>
-                <li>Execution Engine: Responsible for executing the selected diagnostic tools with the provided parameters and returning their output.</li>
-                <li>Output Interpreter: A module that helps the LLM Core understand the results of the tool execution.</li>
-                <li>Iterative Cycle: The process involves continuous loops of LLM suggestion and human review/modification until the issue is understood and a resolution is identified.</li>
-            </ul>
-        </div>
-
-        <!-- Slide 4 -->
-        <div class="step" data-x="5760" data-y="0" data-scale="1">
-            <h2>Human-in-the-Loop: Refining the Initial Problem Statement</h2>
-            <ul>
-                <li>The process begins with the engineer providing a problem statement.</li>
-                <li>The LLM Core can analyse this statement and suggest enhancements for clarity and completeness, or extract key information.</li>
-                <li>Crucially, the enhanced problem statement is presented to a human engineer for review.</li>
-                <li>The engineer can then:
-                    <ul>
-                        <li>Assess the LLM's suggestions.</li>
-                        <li>Make necessary modifications to correct misinterpretations.</li>
-                        <li>Add crucial details missed by the LLM.</li>
-                        <li>Rephrase the problem statement based on their initial understanding.</li>
-                    </ul>
-                </li>
-                <li>This human review ensures an accurate foundation for subsequent triage steps.</li>
-            </ul>
-        </div>
-
-        <!-- Slide 5 -->
-        <div class="step" data-x="7680" data-y="0" data-scale="1">
-            <h2>Human-in-the-Loop: Selecting or Substituting Diagnostic Tools</h2>
-            <ul>
-                <li>Based on the refined problem statement, the LLM Core interacts with the Tool Registry.</li>
-                <li>The LLM suggests the diagnostic tool it deems most appropriate for the situation.</li>
-                <li>However, the LLM does not automatically execute the tool; its suggestion is presented to a human engineer for approval.</li>
-                <li>The engineer can then:
-                    <ul>
-                        <li>Approve the LLM's suggestion.</li>
-                        <li>Select an alternative tool from the Tool Registry based on their experience and knowledge.</li>
-                    </ul>
-                </li>
-                <li>This human intervention ensures that the chosen tool is the most suitable for diagnosing the issue.</li>
-            </ul>
-        </div>
-
-        <!-- Additional slides follow the same pattern -->
-        <!-- ...existing slides... -->
-
-        <!-- Slide 13 -->
-        <div class="step" data-x="23040" data-y="0" data-scale="1">
             <h2>Conclusion: A Balanced and Pragmatic Approach</h2>
             <ul>
                 <li>The human-in-the-loop LLM triage solution offers a balanced and pragmatic approach.</li>
@@ -118,12 +162,43 @@
                 <li>This collaborative approach combines the efficiency and analytical capabilities of LLMs with the critical thinking, domain expertise, and nuanced understanding of human engineers.</li>
                 <li>The result is a promising path towards a more efficient, accurate, and reliable software issue triage process, ultimately improving software quality and development productivity.</li>
             </ul>
+            <p>
+                <video controls style="max-width: 80%; margin-top: 20px;">
+                    <source src="assets/sample_interactions.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </p>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/impress.js/0.5.3/impress.min.js"></script>
+    <!-- Popup for full image -->
+    <div class="popup" id="popup">
+        <img src="assets/llmtriage.webp" alt="LLM Triage Full Image">
+    </div>
+
+    <script src="js/impress.js"></script>
     <script>
         impress().init();
+
+        const thumbnail = document.getElementById('thumbnail');
+        const popup = document.getElementById('popup');
+
+        // Show popup when thumbnail is clicked
+        thumbnail.addEventListener('click', () => {
+            popup.classList.add('active');
+        });
+
+        // Close popup when Escape key is pressed
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                popup.classList.remove('active');
+            }
+        });
+
+        // Close popup when clicking anywhere outside the image
+        popup.addEventListener('click', () => {
+            popup.classList.remove('active');
+        });
     </script>
 </body>
 </html>
