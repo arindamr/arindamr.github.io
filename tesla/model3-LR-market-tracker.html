@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Model 3 Premium LR RWD Cost-of-Ownership Tracker</title>
+<style>
+  :root{ color-scheme: light;
+    --bg:#fff; --pnl:#f7f8fa; --line:#e3e7ed; --tx:#1a1f27; --tx2:#68727f; --tx3:#8c959f;
+    --acc:#1a63c7; --win:#0f7a52; --bad:#b3372b;
+    --cash:#c47f16; --hp:#6b4fb8; --pcp:#c2456f; --pcp0:#0f7a52; --lease:#1f7f97; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font:13.5px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
+  .w{max-width:1080px;margin:0 auto;padding:22px 18px 48px}
+  h1{font-size:20px;margin:0 0 3px;letter-spacing:-.02em}
+  .stamp{font-size:11.5px;color:var(--tx2);margin-bottom:18px}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--win);margin-right:5px}
+  h2{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--tx2);margin:0 0 11px;font-weight:700}
+  .card{background:var(--pnl);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:15px}
+  .verdict{background:#f0f8f4;border-color:#b9dfcc}
+  .vhead{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+  .vwin{font-size:18px;font-weight:700;color:var(--win);letter-spacing:-.02em}
+  .vsub{font-size:12.3px;color:var(--tx2)}
+  .lever{margin-top:11px;padding:10px 12px;background:#fdf6ec;border:1px solid #eed9b4;border-radius:8px;font-size:12.3px;color:#7a5312}
+
+  table{width:100%;border-collapse:collapse;font-size:12.3px}
+  th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+  th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+  th{font-size:10.2px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx2);font-weight:700}
+  tr:last-child td{border-bottom:none}
+  td.w{color:var(--win);font-weight:700} td.l{text-align:left;color:#57616d}
+  .val{font-weight:650}
+  .up{color:var(--bad)} .dn{color:var(--win)} .flat{color:var(--tx3)}
+  .note{font-size:11.4px;color:var(--tx2)}
+  .src{font-size:10.5px;color:var(--acc);text-decoration:none;white-space:nowrap}
+  ul.log{margin:0;padding-left:17px;font-size:12.3px} ul.log li{margin-bottom:5px}
+  .watch{background:#fdf6ec;border-color:#eed9b4}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.2px;color:var(--tx2);margin-bottom:9px}
+  .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+  .foot{font-size:11px;color:var(--tx3);line-height:1.65;margin-top:16px}
+  .foot a{color:#5a7fa8}
+
+html[data-theme="dark"]{
+  --bg:#0e1116; --pnl:#161b23; --line:#2b3441;
+  --tx:#e6ebf2; --tx2:#96a2b4; --tx3:#6b7787;
+  --acc:#7ab4ff; --win:#3ecf8e; --bad:#f2707f;
+  --cash:#f2a541; --hp:#a98ee8; --pcp:#e5679a; --pcp0:#3ecf8e; --lease:#4fc3dd;
+  color-scheme:dark;
+}
+html[data-theme="dark"] .verdict{background:linear-gradient(135deg,#12251d,#161b23);border-color:#2c5c45}
+html[data-theme="dark"] .lever{background:#241c12;border-color:#4a3620;color:#e8c78f}
+html[data-theme="dark"] .watch{background:#241c12;border-color:#4a3620}
+html[data-theme="dark"] .watch h2{color:#c9a86a}
+html[data-theme="dark"] td.l, html[data-theme="dark"] .note{color:#a9b4c4}
+html[data-theme="dark"] .foot a, html[data-theme="dark"] .src{color:#7aa5cf}
+html[data-theme="dark"] ul.log li b{color:#f0f4f9}
+
+/* ── universal theme toggle ── */
+#themeBtn{position:fixed;top:14px;right:16px;z-index:9999;display:flex;align-items:center;gap:7px;
+  padding:8px 13px;border-radius:20px;cursor:pointer;font:600 12.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+  border:1px solid var(--tt-bd);background:var(--tt-bg);color:var(--tt-fg);
+  box-shadow:0 2px 10px rgba(0,0,0,.18);transition:transform .12s,border-color .12s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#themeBtn:hover{transform:translateY(-1px);border-color:var(--tt-hv)}
+#themeBtn svg{width:15px;height:15px;flex:none}
+@media print{#themeBtn{display:none}}
+@media(max-width:600px){#themeBtn span{display:none}#themeBtn{padding:9px;border-radius:50%}}
+:root{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6ebf2;--tt-hv:#4da3ff}
+html[data-theme="light"]{--tt-bg:rgba(255,255,255,.94);--tt-bd:#dfe4ea;--tt-fg:#1a1f27;--tt-hv:#1a63c7}
+html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6ebf2;--tt-hv:#7ab4ff}
+</style>
+<script>
+/* Universal theme, shared across every page in this folder.
+   Order of precedence: ?theme= in the URL, then saved choice, then the OS setting.
+   Runs in <head> so the correct theme is applied before first paint. */
+(function(){
+  var DEF="light";
+  function saved(){try{return localStorage.getItem("tesla-tco-theme");}catch(e){return null;}}
+  var p=new URLSearchParams(location.search).get("theme");
+  var t=p||saved();
+  if(!t){try{t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}catch(e){t=DEF;}}
+  document.documentElement.setAttribute("data-theme",t);
+  if(p){try{localStorage.setItem("tesla-tco-theme",p);}catch(e){}}
+})();
+</script>
+</head>
+<body>
+<div class="w">
+  <h1>Tesla Model 3 Premium Long Range RWD — Cost-of-Ownership Tracker (UK)</h1>
+  <div class="stamp"><span class="dot"></span><b id="asof"></b> · Model 3 Premium Long Range RWD, £44,990 · personal post-tax money ·
+     10,000 mi/yr · home off-peak charging · five acquisition routes across 2 / 3 / 4 / 5 years</div>
+
+  <div class="card verdict">
+    <div class="vhead">
+      <span style="font-size:10.2px;text-transform:uppercase;letter-spacing:.09em;color:var(--tx2)">Current call</span>
+      <span class="vwin" id="vwin"></span><span class="vsub" id="vsub"></span>
+    </div>
+    <div class="vsub" id="vwhy"></div>
+    <div class="lever" id="lever"></div>
+  </div>
+
+  <div class="card">
+    <h2>Cost by horizon at today's market inputs</h2>
+    <table id="matrix"></table>
+    <div class="legend" style="margin-top:10px" id="legend"></div>
+  </div>
+
+  <div class="card">
+    <h2>Which holding period is cheapest?</h2>
+    <table id="optimal"></table>
+    <div id="optimalNote"></div>
+  </div>
+
+  <div class="card">
+    <h2>Cost per year of ownership</h2>
+    <table id="annual"></table>
+    <p class="note" style="margin:9px 0 0">Economic cost per year: depreciation suffered, interest paid, running
+       costs and return forgone on capital tied up. Year 1 is dearest on every ownership route because that is when
+       the car loses most value. The lease is flat by design — that is what you pay the premium for.</p>
+  </div>
+
+  <div class="card">
+    <h2>Tracked inputs</h2>
+    <table id="inputs"></table>
+  </div>
+
+  <div class="card">
+    <h2>What moved since last check</h2>
+    <ul class="log" id="log"></ul>
+  </div>
+
+  <div class="card watch">
+    <h2>Triggers that would flip the call</h2>
+    <ul class="log" id="watch"></ul>
+  </div>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+/* ============================================================
+   TRACKED MARKET DATA — the weekly refresh task rewrites this block only.
+   ============================================================ */
+const DATA = {
+  asOf: "30 July 2026",
+  prevAsOf: "first run",
+  inputs: [
+    {k:"otr",     label:"Premium LR RWD OTR price",    v:44990, prev:44990, f:"gbp",  src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"£7,000 above the base Model 3 RWD, and £4,000 BELOW the Model Y Premium Long Range. £5,010 clear of the £50,000 Expensive Car Supplement threshold. 466 mi WLTP — the longest range in the whole Tesla UK line-up — and 0-60 in 4.9s."},
+    {k:"pcpApr",  label:"Tesla PCP APR — 48 months",   v:0,     prev:0,     f:"pct",  src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"CONFIRMED 0%. This trim KEEPS the promotion — unlike the Model Y Premium Long Range, which is quoted at 2.90% and carries £3,468 of interest. Total payable equals the £44,990 cash price, £0 interest."},
+    {k:"contrib", label:"Tesla deposit contribution",  v:2500,  prev:2500,  f:"gbp",  src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"£2,500, and only if you finance. Total down payment £8,750 of which £6,250 is your cash."},
+    {k:"gmfvPct", label:"Optional Final Payment",      v:42.4,  prev:45.1,  f:"pctOtr", src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"£19,081 at the 10,000-mile cap. A weaker relative residual than the Model Y trims (42.4% vs 45.1%), which is the one respect in which the Model 3 is priced less favourably."},
+    {k:"pcpCap",  label:"PCP mileage cap",             v:10000, prev:10000, f:"mi",   src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"VERIFIED 8k/10k/12k/15k/20k. Monthlies £349/£365/£382/£407/£445, OFPs £19,831/£19,081/£18,282/£17,134/£15,335. All total £44,990 payable, so at 0% the cap only shifts money between monthly and OFP."},
+    {k:"pcp60Apr",label:"Tesla PCP APR — 60 months",   v:8.10,  prev:8.10,  f:"pct",  src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"CONFIRMED 8.10%, same across every trim swept. At 60 months / 10,000 mi: £529/mo, OFP £15,699, interest £10,681, total payable £55,671. The whole £10,681 is the cost of choosing 60 months over 48."},
+    {k:"hpApr",   label:"Tesla Finance HP APR",        v:5.9,   prev:5.9,   f:"pct",  src:"https://myteslajourney.co.uk/tesla-financing-options-in-the-uk-pcp-hire-purchase-and-salary-sacrifice-schemes/", srcName:"My Tesla Journey",
+     note:"The one figure still taken from reported ranges (3.9-8.9%) rather than measured. Re-quote it."},
+    {k:"leaseM",  label:"Tesla PCH, 24mo / 10k",       v:311,   prev:449,   f:"gbpm", src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"VERIFIED. Headline £311/mo plus a £3,927 advance rental charged ON TOP of all 24 payments — total payable £11,381, an effective £474/mo. Notably cheaper than the base Model Y RWD's PCH (£11,712) despite this being the dearer car."},
+    {k:"fyd",     label:"Year-1 value drop",           v:22,    prev:22,    f:"pct",  src:"https://motorway.co.uk/sell-my-car/guides/electric-car-depreciation", srcName:"Motorway",
+     note:"Assumed same curve as the other Teslas."},
+    {k:"ad",      label:"Annual drop thereafter",      v:11,    prev:11,    f:"pcty", src:"", srcName:"",
+     note:"Used EV prices fell ~10% YoY in early 2026. The OFP caps your downside."},
+    {k:"pHome",   label:"Home off-peak electricity",   v:7,     prev:7,     f:"pkwh", src:"https://energy-stats.uk/intelligent-octopus-go/", srcName:"Energy Stats",
+     note:"Intelligent Octopus Go, 4-7p by region."},
+    {k:"eff",     label:"Real-world efficiency",       v:4.4,   prev:4.0,   f:"mikwh", src:"", srcName:"",
+     note:"ESTIMATED at the Model 3 saloon's usual 4.4 mi/kWh — materially better than either Model Y. 466 mi WLTP is the longest range Tesla sells in the UK."},
+    {k:"ins",     label:"Insurance",                   v:950,   prev:1000,  f:"gbpy", src:"https://www.nimblefins.co.uk/cheap-car-insurance/tesla-3-cost", srcName:"NimbleFins",
+     note:"ESTIMATED. Identical across all five routes, so it never changes the ranking."},
+    {k:"ved",     label:"VED, year two onward",        v:200,   prev:200,   f:"gbpy", src:"https://www.honestjohn.co.uk/news/tax-insurance-and-warranties/2026-04/april-ved-tax-increases-2026-rates-explained/", srcName:"Honest John",
+     note:"£200 standard rate. The £440 Expensive Car Supplement only bites if options push list price past £50,000 — £5,010 of headroom here."},
+    {k:"opp",     label:"Opportunity cost of capital", v:5,     prev:5,     f:"pct",  src:"", srcName:"",
+     note:"Your assumption, not a market quote."}
+  ],
+  log: [
+    "<b>30 Jul 2026 — this trim KEEPS the 0% promotion.</b> Swept on the configurator: 0% APR, £0 interest, total payable exactly £44,990. That is the headline, because the equivalent Model Y Premium Long Range is quoted at 2.90% and carries £3,468 of interest. Tesla's promo coverage is inconsistent across the range: Model 3 RWD 0%, Model 3 Premium LR 0%, Model Y RWD 0%, Model Y Premium LR 2.90%.",
+    "<b>Best value in the Long Range class by a wide margin.</b> £29,028 over four years against £35,407 for the Model Y Premium LR — <b>£6,379 cheaper</b>, for a car with 88 more miles of range (466 vs 378) and half a second quicker to 60. You give up the SUV body and boot.",
+    "<b>Costs £4,084 more than the base Model 3 RWD over four years</b> (£29,028 vs £24,944), or about £85/month, for 134 extra miles of range and 1.3 seconds to 60.",
+    "<b>Tesla's PCH is unusually competitive here — but only at exactly two years.</b> £15,573 over 24 months makes it the cheapest route at that horizon, the only one of the four cars where PCH beats the 0% PCP. Beyond two years the recurring £3,927 advance rental makes it far worse.",
+    "<b>Weaker residual than the Model Y trims.</b> The OFP is 42.4% of list against 45.1% on the Model Y LR, so Tesla prices the Model 3 as holding value slightly less well. That is already reflected in these figures.",
+    "<b>60-month PCP confirmed at 8.10%</b>: £10,681 of interest against £0 at 48 months."
+  ],
+  watch: [
+    "<b>The 30 September order deadline.</b> Same across every trim. Miss it and you lose the 0% and the £2,500. The only urgent item.",
+    "<b>This is the value pick of the Long Range cars.</b> £6,379 cheaper than the Model Y Premium LR over four years, with more range. If you do not specifically need the SUV body, the Model Y Long Range is hard to justify while it sits at 2.90%.",
+    "<b>Watch for PCH at exactly 24 months.</b> Uniquely among the four cars, Tesla's own lease beats the 0% PCP over two years (£15,573 vs £15,998). If your horizon really is two years, re-quote both.",
+    "<b>Never take the 60-month PCP.</b> 8.10% costs £10,681. Take the 48-month 0% deal and settle the OFP at month 48.",
+    "<b>£5,010 of options headroom before the Expensive Car Supplement.</b> Comfortable, unlike the Model Y Long Range's £1,010, but still check the order total.",
+    "<b>Salary sacrifice.</b> At a 4% BIK rate it still beats all five routes."
+  ]
+};
+
+/* ============================================================
+   ENGINE — identical method to model3-tco-calculator.html.
+   All outflows compounded to the horizon end at the opportunity
+   rate, minus the asset (or equity) still held.
+   ============================================================ */
+const g = k => DATA.inputs.find(x=>x.k===k).v;
+const FIXED = {miles:10000, pPub:65, homeShare:90, maint:375, maintEsc:8, postWar:450, options:0,
+  pcpCash:6250, pcpTerm:48, ofp:19081, pcpExcess:16.8, fallbackApr:8.10,
+  pcp60Term:60, pcp60Ofp:15699,
+  hpDep:6250, hpTerm:60, leaseTerm:24, leaseAdv:3927, cap:10000, excess:16.5, uplift:6};
+const P = () => ({...FIXED, otr:g("otr"), eff:g("eff"), fyd:g("fyd"), ad:g("ad"), pHome:g("pHome"),
+  ins:g("ins"), ved:g("ved"), opp:g("opp"), pcpApr:g("pcpApr"), contrib:g("contrib"),
+  fallbackApr:g("pcp60Apr"),
+  pcpCap:g("pcpCap"), hpApr:g("hpApr"), leaseM:g("leaseM")});
+
+function engine(H,s){
+  const otr=s.otr, r=Math.pow(1+s.opp/100,1/12)-1, fv=(a,m)=>a*Math.pow(1+r,m);
+  const val=m=>otr*Math.max(0.08,Math.pow(1-s.fyd/100,Math.min(m,12)/12)*Math.pow(1-s.ad/100,Math.max(0,m-12)/12));
+  const pMix=(s.homeShare/100)*(s.pHome/100)+(1-s.homeShare/100)*(s.pPub/100);
+  const em=(s.miles/12)/s.eff*1.08*pMix;
+  const ecsDue=(otr+(s.options||0))>=50000;   // £440/yr in years 2-6 over £50,000
+  const own=m=>{const y=Math.floor(m/12)+1;
+    let c=em+s.ins/12+s.maint*Math.pow(1+s.maintEsc/100,y-1)/12;
+    if(y>4)c+=s.postWar/12;
+    if(m>0&&m%12===0)c+=s.ved;
+    if(ecsDue&&m>0&&m%12===0&&m<=60)c+=440;
+    if(m>=36&&m%12===0)c+=55;
+    return c;};
+  const lea=m=>em+s.ins/12+s.maint/12;
+  const acc=f=>{let t=0;for(let m=0;m<H;m++)t+=fv(f(m),H-m-1);return t;};
+  const raw=f=>{let t=0;for(let m=0;m<H;m++)t+=f(m);return t;};
+  const oF=acc(own),oR=raw(own),lF=acc(lea),lR=raw(lea),mv=val(H);
+  const amort=(P0,apr,n,bal0)=>{const i=Math.pow(1+apr/100,1/12)-1;
+    const pay=i>0?(P0-bal0/Math.pow(1+i,n))*i/(1-Math.pow(1+i,-n)):(P0-bal0)/n;
+    let b=P0,int=0;const bal=[];
+    for(let k=0;k<n;k++){const t=b*i;int+=t;b=b+t-pay;bal.push(b);}
+    return {pay,bal,int,i};};
+  const R={};
+  R.cash={total:fv(otr,H)+oF-mv, monthly:0};
+  {const {pay,bal}=amort(otr-s.hpDep,s.hpApr,s.hpTerm,0), n=Math.min(H,s.hpTerm);
+   let pf=0;for(let m=0;m<n;m++)pf+=fv(pay,H-m-1);
+   const a=H>=s.hpTerm?mv:mv-Math.max(bal[n-1],0);
+   R.hp={total:fv(s.hpDep,H)+pf+oF-a, monthly:pay};}
+  /* PCP: (pcpTerm-1) payments then the Optional Final Payment. A deposit
+     contribution cuts the financed amount at no cost, but only if you finance.
+     At term the OFP is a put option: settle and keep, or hand back and pay
+     excess mileage — whichever is cheaper. */
+  const mk=(apr,contribution,term,gm)=>{const nPay=term-1;
+    const {pay,bal}=amort(otr-s.pcpCash-contribution,apr,nPay,gm), n=Math.min(H,nPay);
+    let pf=0;for(let m=1;m<=n;m++)pf+=fv(pay,H-m);
+    let t=fv(s.pcpCash,H)+pf+oF, eq=null;
+    const exc=Math.max(0,s.miles-s.pcpCap)*(term/12)*(s.pcpExcess/100);
+    if(H>term){ t+=fv(gm,H-term)-mv; }
+    else if(H===term){ eq=Math.max(mv-gm,-exc); t-=eq; }
+    else { eq=mv-bal[n-1]; t-=eq; }
+    return {total:t, monthly:pay, balloon:gm, equity:eq, contribution:contribution, excessIfHandBack:exc};};
+  R.pcp0=mk(s.pcpApr, s.contrib, s.pcpTerm, s.ofp);       // 48mo @ 2.90%
+  R.pcp =mk(s.fallbackApr, s.contrib, s.pcp60Term, s.pcp60Ofp); // 60mo, contribution as quoted
+  {let rF=0,rR=0;
+   // Tesla PCH: advance rental up front PLUS a payment every month of the term.
+   for(let m=0;m<H;m++){const c=Math.floor(m/s.leaseTerm),p=m%s.leaseTerm,
+     esc=Math.pow(1+s.uplift/100,c);
+     const due=s.leaseM*esc+(p===0?s.leaseAdv*esc:0);
+     rF+=fv(due,H-m-1);rR+=due;}
+   const ov=Math.max(0,s.miles-s.cap)*(H/12)*(s.excess/100);
+   R.lease={total:rF+lF+ov, monthly:s.leaseM, cycles:Math.ceil(H/s.leaseTerm)};}
+  R._mv=mv; R._res=mv/otr;
+  return R;
+}
+
+/* ---------- render ---------- */
+const $=id=>document.getElementById(id);
+const money=v=>(v<0?"-£":"£")+Math.abs(Math.round(v)).toLocaleString();
+const FMT={gbp:v=>"£"+v.toLocaleString(), gbpm:v=>"£"+v+"/mo", gbpy:v=>"£"+v.toLocaleString()+"/yr",
+  pct:v=>v+"%", pcty:v=>v+"%/yr", pctOtr:v=>v+"% ("+money(g("otr")*v/100)+")",
+  pkwh:v=>v+"p/kWh", mikwh:v=>v+" mi/kWh", mi:v=>v.toLocaleString()+" mi/yr"};
+const OPTS=[{k:"cash",n:"Cash",c:"var(--cash)"},{k:"hp",n:"Tesla HP",c:"var(--hp)"},
+  {k:"pcp",n:"PCP 60mo @8.10%",c:"var(--pcp)"},{k:"pcp0",n:"PCP 48mo @0%",c:"var(--pcp0)"},
+  {k:"lease",n:"Tesla PCH",c:"var(--lease)"}];
+const HS=[24,36,48,60];
+
+$("asof").textContent="Data as of "+DATA.asOf;
+
+/* matrix */
+let rows="";
+HS.forEach(h=>{const R=engine(h,P()), vals=OPTS.map(o=>({o,t:R[o.k].total}));
+  const mn=Math.min(...vals.map(v=>v.t)), win=vals.find(v=>v.t===mn);
+  const run=vals.filter(v=>v.t!==mn).sort((a,b)=>a.t-b.t)[0];
+  rows+=`<tr><td>${h/12} years</td>${vals.map(v=>
+    `<td class="${v.t===mn?"w":""}">${money(v.t)}</td>`).join("")}
+    <td style="color:var(--win);font-weight:700">${win.o.n}</td>
+    <td style="color:var(--tx2)">${money(run.t-mn)}</td>
+    <td style="color:var(--tx2)">${(R._res*100).toFixed(0)}%</td></tr>`;});
+$("matrix").innerHTML=`<tr><th>Horizon</th>${OPTS.map(o=>`<th>${o.n}</th>`).join("")}
+  <th>Winner</th><th>Margin</th><th>Resid</th></tr>${rows}`;
+$("legend").innerHTML=OPTS.map(o=>{const m=engine(24,P())[o.k].monthly;
+  return `<span><i class="sw" style="background:${o.c}"></i>${o.n}${m?" · "+money(m)+"/mo":""}</span>`;}).join("");
+
+/* optimal holding period — equivalent annual cost.
+   engine() returns a value compounded to the horizon end, so discount back to
+   today then annuitise. Only sound way to rank periods of unequal length. */
+(function(){
+  const s=P(), R=s.opp/100;
+  const eac=(tot,m)=>{const Y=m/12; return R<=0? tot/Y : (tot/Math.pow(1+R,Y))*R/(1-Math.pow(1+R,-Y));};
+  const grid=OPTS.map(o=>({o, v:HS.map(h=>eac(engine(h,s)[o.k].total,h))}));
+  const gm=Math.min(...grid.flatMap(g=>g.v));
+  const win=grid.find(g=>g.v.includes(gm)), wi=win.v.indexOf(gm), wy=HS[wi]/12;
+  document.getElementById("optimal").innerHTML=
+    `<tr><th>Option</th>${HS.map(h=>`<th>${h/12} years</th>`).join("")}<th>Its best</th></tr>`+
+    grid.map(g=>{const mn=Math.min(...g.v);
+      return `<tr><td><span class="sw" style="background:${g.o.c}"></span>${g.o.n}</td>`+
+        g.v.map(x=>`<td class="${x===gm?"w":""}">${money(x)}</td>`).join("")+
+        `<td style="color:var(--tx2)">${HS[g.v.indexOf(mn)]/12} yrs</td></tr>`;}).join("");
+  const sorted=[...win.v].sort((a,b)=>a-b), margin=sorted[1]-sorted[0];
+  const runner=HS[win.v.indexOf(sorted[1])]/12, worst=Math.max(...win.v);
+  document.getElementById("optimalNote").innerHTML=
+    `<p class="note" style="margin:9px 0 0"><b>Cheapest: ${win.o.n}, held ${wy} years — ${money(gm)}/yr
+     equivalent annual cost.</b> The same deal held only ${HS[win.v.indexOf(worst)]/12} years costs
+     ${money(worst-gm)}/yr more. ${margin<50
+       ? `${wy} and ${runner} years are within ${money(margin)}/yr — treat as equivalent.`
+       : `${wy} years beats the next period by ${money(margin)}/yr.`}
+     Month 48 is the natural stopping point regardless: the 0% term ends, the Optional Final Payment falls due and
+     the 4-year warranty expires together, so it is the last moment you can hand the car back with no residual
+     exposure. Note the rolling lease is cheapest at its <i>shortest</i> period and the ownership routes at their
+     longest — the promo PCP wins because it sits between the two.</p>`;
+})();
+
+/* per-year economic cost: cost(y) = FV(cash in year y) + E(y-1)(1+opp) - E(y) */
+(function(){
+  const s=P(), R=s.opp/100, r=Math.pow(1+R,1/12)-1;
+  const val=m=>s.otr*Math.max(0.08,Math.pow(1-s.fyd/100,Math.min(m,12)/12)*Math.pow(1-s.ad/100,Math.max(0,m-12)/12));
+  const pMix=(s.homeShare/100)*(s.pHome/100)+(1-s.homeShare/100)*(s.pPub/100);
+  const em=(s.miles/12)/s.eff*1.08*pMix;
+  const ecsDue=(s.otr+(s.options||0))>=50000;
+  const ownRun=m=>{const y=Math.floor(m/12)+1;
+    let c=em+s.ins/12+s.maint*Math.pow(1+s.maintEsc/100,y-1)/12;
+    if(y>4)c+=s.postWar/12; if(m>0&&m%12===0)c+=s.ved;
+    if(ecsDue&&m>0&&m%12===0&&m<=60)c+=440;
+    if(m>=36&&m%12===0)c+=55; return c;};
+  const leaRun=()=>em+s.ins/12+s.maint/12;
+  const fvS=(f,y)=>{let t=0;for(let m=y*12;m<(y+1)*12;m++)t+=f(m)*Math.pow(1+r,(y+1)*12-m);return t;};
+  const fvE=(f,y)=>{let t=0;for(let m=y*12;m<(y+1)*12;m++)t+=f(m)*Math.pow(1+r,(y+1)*12-m-1);return t;};
+  const amort=(P0,apr,n,b0)=>{const i=Math.pow(1+apr/100,1/12)-1;
+    const pay=i>0?(P0-b0/Math.pow(1+i,n))*i/(1-Math.pow(1+i,-n)):(P0-b0)/n;
+    const bal=[P0];let b=P0;for(let k=0;k<n;k++){b=b*(1+i)-pay;bal.push(b);}return {pay,bal};};
+  const build=(sc,ec,debt,run,asset)=>{const out=[];
+    for(let y=0;y<5;y++){const Ep=y===0?0:(asset?val(y*12)-debt(y*12):0), En=asset?val((y+1)*12)-debt((y+1)*12):0;
+      out.push(fvS(sc,y)+fvE(ec,y)+fvE(run,y)+Ep*(1+R)-En);} return out;};
+  const A={};
+  A.cash=build(m=>m===0?s.otr:0,()=>0,()=>0,ownRun,true);
+  {const {pay,bal}=amort(s.otr-s.hpDep,s.hpApr,s.hpTerm,0);
+   A.hp=build(m=>m===0?s.hpDep:0,m=>m<s.hpTerm?pay:0,m=>m>=s.hpTerm?0:Math.max(bal[m]||0,0),ownRun,true);}
+  const mkP=(apr,co,term,gm)=>{const n=term-1,{pay,bal}=amort(s.otr-s.pcpCash-co,apr,n,gm);
+    return build(m=>(m===0?s.pcpCash:0)+(m>=1&&m<=n?pay:0)+(m===term?gm:0),()=>0,
+                 m=>m>term?0:(m-1>=n?gm:Math.max(bal[Math.max(m-1,0)]||0,0)),ownRun,true);};
+  A.pcp0=mkP(s.pcpApr,s.contrib,s.pcpTerm,s.ofp);
+  A.pcp =mkP(s.fallbackApr,s.contrib,s.pcp60Term,s.pcp60Ofp);
+  {const rent=m=>{const c=Math.floor(m/s.leaseTerm),p=m%s.leaseTerm,esc=Math.pow(1+s.uplift/100,c);
+     return s.leaseM*esc+(p===0?s.leaseAdv*esc:0);};
+   A.lease=build(()=>0,rent,()=>0,leaRun,false);}
+  const best=[0,1,2,3,4].map(i=>Math.min(...OPTS.map(o=>A[o.k][i])));
+  document.getElementById("annual").innerHTML=
+    `<tr><th>Option</th>${[1,2,3,4,5].map(y=>`<th>Year ${y}</th>`).join("")}<th>5-yr total</th></tr>`+
+    OPTS.map(o=>`<tr><td><span class="sw" style="background:${o.c}"></span>${o.n}</td>`+
+      A[o.k].map((v,i)=>`<td class="${v===best[i]?"w":""}">${money(v)}</td>`).join("")+
+      `<td style="font-weight:700">${money(engine(60,s)[o.k].total)}</td></tr>`).join("");
+})();
+
+/* crossover + verdict, anchored on a 2-year horizon */
+const p=P(), R2=engine(24,p);
+const crossover=(()=>{for(let h=12;h<=144;h+=3){const r=engine(h,p);
+  if(Math.min(r.cash.total,r.hp.total,r.pcp.total,r.pcp0.total)<r.lease.total) return h/12;} return null;})();
+const rank2=OPTS.map(o=>({o,t:R2[o.k].total})).sort((a,b)=>a.t-b.t);
+const allWin=HS.every(h=>{const r=engine(h,p);
+  return Math.min(...OPTS.map(o=>r[o.k].total))===r.pcp0.total;});
+$("vwin").textContent="Tesla's 0% PCP"+(allWin?" — at every horizon":" — at 2 years");
+$("vsub").textContent=`${money(R2.pcp0.total)} over 2 years · ${money(R2.pcp0.total/24)}/mo all-in · `+
+  `${money(rank2[1].t-rank2[0].t)} clear of ${rank2[1].o.n}`;
+$("vwhy").innerHTML=`The confirmed offer is not really a finance product — it is a `+
+  `<b>${money(g("contrib"))} discount plus an interest-free loan</b>. Total payable equals the £37,990 cash price, `+
+  `so the borrowing costs nothing, while ${money(g("otr")-p.pcpCash)} of your capital stays invested at ${g("opp")}%. `+
+  `Paying cash forfeits both and comes out <b>${money(R2.cash.total-R2.pcp0.total)} worse over two years</b>, `+
+  `rising to <b>${money(engine(120,p).cash.total-engine(120,p).pcp0.total)} over ten</b>. `+
+  `It also inverts the usual horizon logic: leasing normally wins short-term, but here `+
+  `${crossover?`owning wins from <b>${crossover.toFixed(1)} years</b>`:"owning wins throughout"} — `+
+  `a rolling lease reaches <b>${money(engine(120,p).lease.total)}</b> over ten years against `+
+  `<b>${money(engine(120,p).pcp0.total)}</b>.`;
+$("lever").innerHTML=`<b>This has a hard deadline: order and apply for finance by 30 September 2026, delivery by `+
+  `31 December 2026.</b> Miss it and the same PCP at ${p.fallbackApr}% with no deposit contribution costs `+
+  `<b>${money(engine(24,p).pcp.total-engine(24,p).pcp0.total)} more over 2 years</b> and `+
+  `<b>${money(engine(120,p).pcp.total-engine(120,p).pcp0.total)} more over 10</b> — at which point leasing becomes `+
+  `the better short-horizon route again. The deadline is worth more than every other variable here combined. `+
+  `Get the 0% and the ${money(g("contrib"))} contribution written into the order agreement, and note the cap is `+
+  `${g("pcpCap").toLocaleString()} mi/yr against your 10,000.`;
+
+/* inputs */
+$("inputs").innerHTML=`<tr><th>Input</th><th>Current</th><th>Was</th><th>Read</th></tr>`+
+ DATA.inputs.map(x=>{const f=FMT[x.f], moved=x.v!==x.prev;
+   const better = (x.k==="fyd"||x.k==="ad"||x.k==="leaseM"||x.k==="pcpApr"||x.k==="hpApr"||
+                   x.k==="pHome"||x.k==="ins"||x.k==="ved") ? x.v<x.prev : x.v>x.prev;
+   const cls=!moved?"flat":(better?"dn":"up");
+   return `<tr><td>${x.label}${x.src?` <a class="src" href="${x.src}" target="_blank" rel="noopener">${x.srcName} ↗</a>`:""}</td>
+     <td class="val">${f(x.v)}</td><td class="${cls}">${moved?f(x.prev):"—"}</td>
+     <td class="note">${x.note}</td></tr>`;}).join("");
+
+$("log").innerHTML=DATA.log.map(l=>`<li>${l}</li>`).join("");
+$("watch").innerHTML=DATA.watch.map(l=>`<li>${l}</li>`).join("");
+$("foot").innerHTML=`<b>Method.</b> All cash outflows compounded to the end of each horizon at ${g("opp")}% p.a.;
+  the asset still held (resale value, or equity = market value − settlement figure) subtracted. Financed routes
+  amortised from principal, APR and balloon, with the balance rolled forward monthly to a true settlement figure;
+  past the finance term the balloon is settled and the car retained. The lease is modelled as <i>rolling</i> — a new
+  agreement every 24 months at a 6% higher rental — which is why it wins at two years and loses badly at ten.
+  Depreciation uses a two-stage curve floored at 8% of list. Energy includes 8% charging losses. Post-warranty repair
+  budget applies from year five on ownership routes only (Tesla warranty 4 yrs / 50,000 mi). Salary sacrifice
+  excluded — at 4% BIK it beats all five and is a different question. Verified against an independent Python model.<br>
+  <b>Tesla Finance figures are indicative.</b> Tesla UK does not publish live rates in fetchable form; defaults come
+  from reported ranges (PCP from 4.9%, HP 3.9–8.9%, 24–60 month terms, 8–12k mile caps) plus documented 0% APR
+  promotions. Get a real quote and re-enter the actual APR, GMFV and monthly.<br>
+  <b>Freshness.</b> Rebuilt weekly by the <i>model3-market-watch</i> scheduled task, which re-checks price, PCP and HP
+  rates, any 0% promotion, lease quotes, residuals, energy tariffs, insurance and VED, then rewrites the tracked-inputs
+  block and change log. Indicative only, not financial advice.`;
+</script>
+<script>
+/* Toggle button. Because these pages are opened as local files — where browsers
+   often refuse localStorage — the choice is also carried between pages on the
+   query string, so navigation keeps the theme either way. */
+(function(){
+  var SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>';
+  var MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8Z"/></svg>';
+  var b=document.createElement("button");
+  b.id="themeBtn"; b.type="button";
+  function cur(){return document.documentElement.getAttribute("data-theme")||"dark";}
+  function paint(){
+    var d=cur()==="dark";
+    b.innerHTML=(d?SUN:MOON)+"<span>"+(d?"Light":"Dark")+"</span>";
+    b.setAttribute("aria-label","Switch to "+(d?"light":"dark")+" theme");
+    b.title="Switch to "+(d?"light":"dark")+" theme";
+  }
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      var h=a.getAttribute("href");
+      if(!h||/^(https?:|mailto:|#)/.test(h)||!/\.html/.test(h))return;
+      try{var u=new URL(h,location.href);u.searchParams.set("theme",t);
+          a.setAttribute("href",u.pathname.split("/").pop()+u.search+u.hash);}catch(e){}
+    });
+  }
+  b.onclick=function(){
+    var t=cur()==="dark"?"light":"dark";
+    document.documentElement.setAttribute("data-theme",t);
+    try{localStorage.setItem("tesla-tco-theme",t);}catch(e){}
+    paint(); propagate(t);
+  };
+  paint(); propagate(cur());
+  document.body.appendChild(b);
+})();
+</script>
+</body>
+</html>

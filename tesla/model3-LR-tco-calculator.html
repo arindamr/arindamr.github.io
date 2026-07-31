@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tesla Model 3 Premium Long Range RWD — Cost of Ownership (UK)</title>
+<style>
+  :root{
+    --bg:#0e1116; --panel:#161b23; --panel2:#1d2430; --line:#2b3441;
+    --tx:#e6ebf2; --tx2:#96a2b4; --tx3:#6b7787; --acc:#4da3ff;
+    --cash:#f2a541; --hp:#8a6dd4; --pcp:#e5679a; --pcp0:#3ecf8e; --lease:#37b6d3;
+    --win:#3ecf8e;
+    /* semantic tokens (dark defaults) */
+    --tx-soft:#cdd6e2; --tx-mute:#a9b4c4; --strong:#ffffff; --link:#7aa5cf;
+    --on-acc:#08131f; --on-win:#062a1b; --hi:#1b2430; --grid:#2b3441; --grid2:#232c38;
+    --ok-bg:#12251d; --ok-bd:#2c5c45; --ok-fg:#9fdcbd;
+    --warn-bg:#241c12; --warn-bd:#4a3620; --warn-fg:#e8c78f;
+    --bad:#f2707f;
+    --c-cash:#f2a541; --c-hp:#8a6dd4; --c-pcp:#e5679a; --c-pcp0:#3ecf8e; --c-lease:#37b6d3;
+    --c-energy:#4da3ff; --c-maint:#5fbfb0; --c-opp:#6b7787;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+       font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:1300px;margin:0 auto;padding:26px 20px 64px}
+  h1{font-size:23px;margin:0 0 4px;letter-spacing:-.02em}
+  h2{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--tx2);margin:0 0 13px;font-weight:700}
+  .sub{color:var(--tx2);margin:0 0 22px;font-size:12.8px;max-width:96ch}
+  .grid{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+  @media(max-width:1000px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:17px}
+  .card+.card{margin-top:16px}
+
+  /* horizon tabs */
+  .htabs{display:flex;gap:0;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+         padding:4px;margin-bottom:18px}
+  .htab{flex:1;text-align:center;padding:9px 4px;border-radius:7px;cursor:pointer;font-size:13px;
+        color:var(--tx2);border:none;background:none;transition:.12s;font-weight:600}
+  .htab:hover{color:var(--tx)}
+  .htab.on{background:var(--acc);color:var(--on-acc)}
+  .htab small{display:block;font-size:10.5px;font-weight:500;opacity:.75;margin-top:1px}
+
+  /* verdict */
+  .verdict{background:linear-gradient(135deg,var(--ok-bg),var(--panel));border:1px solid var(--ok-bd)}
+  .vtitle{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .vwin{font-size:21px;font-weight:700;color:var(--win);letter-spacing:-.02em}
+  .vmargin{font-size:12.5px;color:var(--tx2)}
+  .vbody{font-size:13.2px;color:var(--tx-soft)}
+  .vbody b{color:var(--strong)}
+  .flag{margin-top:11px;padding:10px 12px;background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:8px;
+        font-size:12.3px;color:var(--warn-fg)}
+  .flag.good{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok-fg)}
+
+  /* scenario chips */
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+  .chip{background:var(--panel2);border:1px solid var(--line);color:var(--tx2);border-radius:20px;
+        padding:6px 12px;font-size:12.2px;cursor:pointer;transition:.12s}
+  .chip:hover{border-color:var(--acc);color:var(--tx)}
+  .chip.on{background:var(--acc);border-color:var(--acc);color:var(--on-acc);font-weight:600}
+
+  /* sliders */
+  .grp{margin-bottom:19px}.grp:last-child{margin-bottom:0}
+  .glabel{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--tx2);
+          border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:11px;font-weight:700}
+  .row{margin-bottom:12px}
+  .rtop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;gap:8px}
+  .rtop label{font-size:12.3px;color:var(--tx-mute)}
+  .rval{font-size:12.3px;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums;white-space:nowrap}
+  input[type=range]{width:100%;height:4px;-webkit-appearance:none;appearance:none;
+    background:var(--line);border-radius:3px;outline:none;margin:3px 0 0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;
+    background:var(--acc);cursor:pointer;border:2px solid var(--bg)}
+  input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--acc);
+    cursor:pointer;border:2px solid var(--bg)}
+  .hint{font-size:10.8px;color:var(--tx3);margin-top:2px;line-height:1.4}
+
+  /* option cards */
+  .opts{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+  @media(max-width:1180px){.opts{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:700px){.opts{grid-template-columns:1fr}}
+  .opt{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:13px;position:relative}
+  .opt.best{border-color:var(--win);box-shadow:0 0 0 1px var(--win) inset}
+  .badge{position:absolute;top:-8px;left:11px;background:var(--win);color:var(--on-win);font-size:9.5px;
+         font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:9px}
+  .oname{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx2);margin-bottom:2px;
+         min-height:26px;line-height:1.25}
+  .obig{font-size:22px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .oper{font-size:11px;color:var(--tx2);margin:1px 0 10px;font-variant-numeric:tabular-nums}
+  .lines{font-size:11.4px;border-top:1px solid var(--line);padding-top:8px}
+  .ln{display:flex;justify-content:space-between;gap:6px;padding:2px 0;color:var(--tx-mute)}
+  .ln span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .ln.tot{border-top:1px solid var(--line);margin-top:5px;padding-top:6px;font-weight:700;color:var(--tx)}
+  .ln.eq{color:var(--pcp0)} .ln.eqneg{color:var(--bad)}
+
+  table{width:100%;border-collapse:collapse;font-size:12.3px}
+  th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+  th{color:var(--tx2);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:none}
+  td.w{color:var(--win);font-weight:700}
+  td.l{text-align:left;color:var(--tx-mute)}
+  .foot{margin-top:20px;font-size:11.2px;color:var(--tx3);line-height:1.7}
+  .foot a{color:var(--link)}
+  .legend{display:flex;gap:13px;flex-wrap:wrap;font-size:11.2px;color:var(--tx2);margin-bottom:10px}
+  .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+
+html[data-theme="light"]{
+  --bg:#ffffff; --panel:#f7f8fa; --panel2:#eef1f6; --line:#dfe4ea;
+  --tx:#1a1f27; --tx2:#5c6673; --tx3:#8b949e; --acc:#1a63c7;
+  --win:#0f7a52;
+  --tx-soft:#39424f; --tx-mute:#4a5462; --strong:#0d1117; --link:#1a63c7;
+  --on-acc:#ffffff; --on-win:#ffffff; --hi:#eaf1fb; --grid:#e3e7ed; --grid2:#eef1f5;
+  --ok-bg:#eef8f2; --ok-bd:#b9dfcc; --ok-fg:#0f7a52;
+  --warn-bg:#fdf6ec; --warn-bd:#eed9b4; --warn-fg:#7a5312;
+  --bad:#b3372b;
+  --c-cash:#c47f16; --c-hp:#6b4fb8; --c-pcp:#c2456f; --c-pcp0:#0f7a52; --c-lease:#1f7f97;
+  --c-energy:#1a63c7; --c-maint:#2f8579; --c-opp:#7a8494;
+}
+html[data-theme="light"] .verdict{background:linear-gradient(135deg,#eef8f2,#f7f8fa)!important;border-color:#b9dfcc!important}
+html[data-theme="light"] .flag{background:var(--warn-bg);border-color:var(--warn-bd);color:var(--warn-fg)}
+html[data-theme="light"] .flag.good{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok-fg)}
+html[data-theme="light"] .vbody b, html[data-theme="light"] .flag b{color:var(--strong)}
+html[data-theme="light"] input[type=range]{background:#d8dee6}
+
+/* ── universal theme toggle ── */
+#themeBtn{position:fixed;top:14px;right:16px;z-index:9999;display:flex;align-items:center;gap:7px;
+  padding:8px 13px;border-radius:20px;cursor:pointer;font:600 12.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+  border:1px solid var(--tt-bd);background:var(--tt-bg);color:var(--tt-fg);
+  box-shadow:0 2px 10px rgba(0,0,0,.18);transition:transform .12s,border-color .12s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#themeBtn:hover{transform:translateY(-1px);border-color:var(--tt-hv)}
+#themeBtn svg{width:15px;height:15px;flex:none}
+@media print{#themeBtn{display:none}}
+@media(max-width:600px){#themeBtn span{display:none}#themeBtn{padding:9px;border-radius:50%}}
+:root{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6ebf2;--tt-hv:#4da3ff}
+html[data-theme="light"]{--tt-bg:rgba(255,255,255,.94);--tt-bd:#dfe4ea;--tt-fg:#1a1f27;--tt-hv:#1a63c7}
+html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6ebf2;--tt-hv:#7ab4ff}
+</style>
+<script>
+/* Universal theme, shared across every page in this folder.
+   Order of precedence: ?theme= in the URL, then saved choice, then the OS setting.
+   Runs in <head> so the correct theme is applied before first paint. */
+(function(){
+  var DEF="dark";
+  function saved(){try{return localStorage.getItem("tesla-tco-theme");}catch(e){return null;}}
+  var p=new URLSearchParams(location.search).get("theme");
+  var t=p||saved();
+  if(!t){try{t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}catch(e){t=DEF;}}
+  document.documentElement.setAttribute("data-theme",t);
+  if(p){try{localStorage.setItem("tesla-tco-theme",p);}catch(e){}}
+})();
+</script>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tesla Model 3 Premium Long Range RWD — Cost of Ownership, UK</h1>
+  <p class="sub">Model 3 Premium Long Range RWD, £44,990 OTR · 466 mi WLTP · 0–60 in 4.9s · personal post-tax money, no salary sacrifice ·
+     five acquisition routes across a <b>2, 3, 4 or 5-year</b> horizon.
+     Every figure is <b>economic cost</b>: all cash outflows compounded forward to the end of the horizon at your
+     opportunity rate, minus whatever the car (or your equity in it) is worth at that point.</p>
+
+  <div class="htabs" id="htabs"></div>
+  <div class="card verdict" id="verdict"></div>
+
+  <div class="grid" style="margin-top:16px">
+    <!-- ================= INPUTS ================= -->
+    <div>
+      <div class="card">
+        <h2>Scenarios</h2>
+        <div class="chips" id="chips"></div>
+        <div class="hint" id="scdesc"></div>
+      </div>
+
+      <div class="card">
+        <h2>Assumptions</h2>
+
+        <div class="grp"><div class="glabel">Vehicle &amp; usage</div>
+          <div class="row" data-k="otr"></div>
+          <div class="row" data-k="options"></div>
+          <div class="row" data-k="miles"></div>
+          <div class="row" data-k="eff"></div>
+        </div>
+
+        <div class="grp"><div class="glabel">Depreciation curve</div>
+          <div class="row" data-k="fyd"></div>
+          <div class="row" data-k="ad"></div>
+          <div class="hint" id="curve"></div>
+        </div>
+
+        <div class="grp"><div class="glabel">Energy</div>
+          <div class="row" data-k="pHome"></div>
+          <div class="row" data-k="pPub"></div>
+          <div class="row" data-k="homeShare"></div>
+        </div>
+
+        <div class="grp"><div class="glabel">Running costs</div>
+          <div class="row" data-k="ins"></div>
+          <div class="row" data-k="maint"></div>
+          <div class="row" data-k="maintEsc"></div>
+          <div class="row" data-k="postWar"></div>
+        </div>
+
+        <div class="grp"><div class="glabel">Tesla Finance — Hire Purchase</div>
+          <div class="row" data-k="hpDep"></div>
+          <div class="row" data-k="hpApr"></div>
+          <div class="row" data-k="hpTerm"></div>
+        </div>
+
+        <div class="grp"><div class="glabel">Tesla Finance — PCP</div>
+          <div class="row" data-k="pcpDep"></div>
+          <div class="row" data-k="pcpApr48"></div>
+          <div class="row" data-k="pcpApr"></div>
+          <div class="row" data-k="pcp60Ofp"></div>
+          <div class="row" data-k="pcpTerm"></div>
+          <div class="row" data-k="gmfvPct"></div>
+        </div>
+
+        <div class="grp"><div class="glabel">Personal lease (PCH)</div>
+          <div class="row" data-k="leaseM"></div>
+          <div class="row" data-k="leaseAdv"></div>
+          <div class="row" data-k="leaseTerm"></div>
+          <div class="row" data-k="cap"></div>
+          <div class="row" data-k="excess"></div>
+          <div class="row" data-k="uplift"></div>
+        </div>
+
+        <div class="grp"><div class="glabel">Money</div>
+          <div class="row" data-k="opp"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= OUTPUTS ================= -->
+    <div>
+      <div class="card">
+        <h2>Economic cost over <span id="hlabel"></span></h2>
+        <div class="opts" id="opts"></div>
+      </div>
+
+      <div class="card">
+        <h2>The whole picture — winner at every horizon</h2>
+        <table id="matrix"></table>
+        <p class="hint" style="margin-top:9px">Read the rows, not a single cell. The right question is not
+           "which is cheapest" but "how long am I actually keeping this car", because the answer changes.</p>
+      </div>
+
+      <div class="card" id="optCard">
+        <h2>Which holding period is cheapest?</h2>
+        <p class="hint" style="margin:-6px 0 12px">
+          Total cost obviously rises the longer you keep the car, so comparing totals across periods is meaningless.
+          The right measure is <b>equivalent annual cost</b>: discount each period's total back to today, then
+          annuitise it. That is the standard way to compare projects of unequal life, and it answers the actual
+          question — how much does a year of this car cost me, and does that get better or worse the longer I hold it?</p>
+        <table id="optTable"></table>
+        <div id="optVerdict"></div>
+      </div>
+
+      <div class="card">
+        <h2>Cost per year of ownership</h2>
+        <div class="chips" style="margin-bottom:11px">
+          <button class="chip on" id="annEcon">Economic cost</button>
+          <button class="chip" id="annCash">Cash out of pocket</button>
+        </div>
+        <table id="annTable"></table>
+        <div id="annNote"></div>
+      </div>
+
+      <div class="card">
+        <h2>Cumulative economic cost by month</h2>
+        <div class="legend" id="clegend"></div>
+        <div id="chart"></div>
+        <p class="hint">Crossover points are where the ranking flips. Lease lines step at each renewal;
+           PCP lines jump at the balloon payment.</p>
+      </div>
+
+      <div class="card">
+        <h2>Where the money goes over <span id="hlabel2"></span></h2>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--c-cash)"></i>Depreciation / rentals</span>
+          <span><i class="sw" style="background:var(--c-hp)"></i>Finance interest</span>
+          <span><i class="sw" style="background:var(--c-energy)"></i>Energy</span>
+          <span><i class="sw" style="background:var(--c-pcp)"></i>Insurance</span>
+          <span><i class="sw" style="background:var(--c-maint)"></i>Maintenance, VED, MOT</span>
+          <span><i class="sw" style="background:var(--c-opp)"></i>Opportunity cost</span>
+        </div>
+        <div id="bars"></div>
+      </div>
+
+      <div class="card">
+        <h2>Mileage cap — is it cheaper to take 8,000 and pay the excess?</h2>
+        <p class="hint" style="margin:-6px 0 12px">
+          Tesla's five real options, read off the configurator on 30 July 2026. At 0% APR every one totals
+          <b>£37,990 payable</b> — raising the cap simply moves money out of the Optional Final Payment and into the
+          monthly. So the cap is not really a price decision. It is a bet on whether you will
+          <b>settle the OFP and keep the car</b>, or <b>hand it back</b>.</p>
+        <table id="capTable"></table>
+        <div id="capVerdict"></div>
+      </div>
+
+      <div class="card" id="qcard">
+        <h2>Tesla quote comparator</h2>
+        <p class="hint" style="margin:-6px 0 12px">
+          The configurator only shows you a <b>monthly payment</b>, which is the worst possible basis for comparing
+          terms — a longer term always looks cheaper monthly while costing more overall, and a bigger deposit always
+          looks cheaper monthly while just moving your own money forward. Read the four numbers off each quote
+          (down payment, term, monthly, Optional Final Payment) and paste them in here to get true economic cost.
+          Editable — click any cell.</p>
+        <table id="qtable"></table>
+        <div style="margin-top:11px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="chip" id="qadd">+ Add a quote</button>
+          <button class="chip" id="qreset">Reset to Tesla's example</button>
+        </div>
+        <div id="qwarn"></div>
+      </div>
+
+      <div class="card">
+        <h2>Break-even — what would have to be true</h2>
+        <table id="be"></table>
+      </div>
+
+      <div class="card">
+        <h2>What the numbers don't capture</h2>
+        <table id="qual"></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+/* ================= Tesla's actual OFP table =================
+   Read directly off the UK configurator on 30 July 2026 (Personal: PCP,
+   48 months, total down payment £8,750, total credit £36,240, 0% APR).
+   Unlike the Model Y Long Range, this trim DOES keep the 0% promotion, so
+   every row totals exactly £44,990 payable with £0 of interest.          */
+const TESLA_MILEAGE=[
+  {mi:8000,  monthly:349, ofp:19831},
+  {mi:10000, monthly:365, ofp:19081},
+  {mi:12000, monthly:382, ofp:18282},
+  {mi:15000, monthly:407, ofp:17134},
+  {mi:20000, monthly:445, ofp:15335}
+];
+const capRow=mi=>TESLA_MILEAGE.reduce((a,b)=>Math.abs(b.mi-mi)<Math.abs(a.mi-mi)?b:a);
+// S.pcpCap is an index into TESLA_MILEAGE; these resolve it to real figures.
+const curCap=()=>TESLA_MILEAGE[Math.round(S.pcpCap)]||TESLA_MILEAGE[0];
+
+/* ================= spec ================= */
+const SPEC = {
+  otr      :{l:"On-the-road price",          min:30000,max:70000,step:10,  v:44990, f:v=>"£"+v.toLocaleString(), h:"£44,990 — a comfortable £5,010 below the £50,000 zero-emission Expensive Car Supplement threshold, unlike the Model Y Long Range."},
+  miles    :{l:"Annual mileage",             min:2000, max:30000,step:500, v:10000, f:v=>v.toLocaleString()+" mi"},
+  eff      :{l:"Real-world efficiency",      min:2.5,  max:5.5, step:0.1,  v:4.4,   f:v=>v.toFixed(1)+" mi/kWh", h:"Model Y RWD is a taller, heavier SUV — real-world ~3.8–4.0 mi/kWh against the Model 3\u2019s 4.4. Estimated; adjust if you have your own figure."},
+
+  fyd      :{l:"Year-1 value drop",          min:8,    max:35,  step:1,    v:22,    f:v=>v+"%"},
+  ad       :{l:"Annual drop thereafter",     min:4,    max:20,  step:0.5,  v:11,    f:v=>v+"%/yr", h:"Model 3 leads UK EV residual tables at ~12%/yr, but used EV prices fell ~10% YoY in early 2026."},
+
+  pHome    :{l:"Home off-peak rate",         min:3,    max:30,  step:0.5,  v:7,     f:v=>v+"p/kWh", h:"Intelligent Octopus Go: 4–7p since the April 2026 cut."},
+  pPub     :{l:"Public rapid rate",          min:30,   max:90,  step:1,    v:65,    f:v=>v+"p/kWh"},
+  homeShare:{l:"Charged at home",            min:0,    max:100, step:5,    v:90,    f:v=>v+"%"},
+
+  ins      :{l:"Insurance",                  min:400,  max:2500,step:25,   v:950,   f:v=>"£"+v.toLocaleString()+"/yr", h:"Model Y sits a little above the Model 3 — heavier, dearer to repair. Identical across all five routes, so it never changes the ranking."},
+  maint    :{l:"Tyres + consumables, yr 1",  min:0,    max:1200,step:25,   v:375,   f:v=>"£"+v.toLocaleString()+"/yr"},
+  maintEsc :{l:"Maintenance escalation",     min:0,    max:20,  step:1,    v:8,     f:v=>"+"+v+"%/yr", h:"Compounds with age. Barely matters over 2 years, starts to bite by 5."},
+  postWar  :{l:"Post-warranty repair budget",min:0,    max:2000,step:50,   v:450,   f:v=>"£"+v.toLocaleString()+"/yr", h:"Applies from year 5. Tesla's vehicle warranty is 4 yrs / 50,000 mi; battery and drive unit 8 yrs."},
+
+  hpDep    :{l:"HP deposit",                 min:0,    max:25000,step:50,  v:6250,  f:v=>"£"+v.toLocaleString(), h:"Matched to the PCP cash deposit so the routes are comparable. HP gets no deposit contribution."},
+  hpApr    :{l:"HP APR",                     min:0,    max:12,  step:0.1,  v:5.9,   f:v=>v.toFixed(1)+"%", h:"Tesla HP quoted at 3.9–8.9% depending on profile. You own it from day one, no balloon."},
+  hpTerm   :{l:"HP term",                    min:24,   max:60,  step:12,   v:60,    f:v=>v+" months"},
+
+  pcpCash  :{l:"Your cash deposit",          min:0,    max:25000,step:50,  v:6250,  f:v=>"£"+v.toLocaleString(), h:"Tesla's example: £8,750 total down payment, of which £2,500 is their contribution — so £6,250 is your money."},
+  contrib  :{l:"Tesla deposit contribution", min:0,    max:5000,step:50,   v:2500,  f:v=>"£"+v.toLocaleString(), h:"Free money, but ONLY if you finance. Cash buyers forgo it. Applies to 24–48 month terms, not stackable."},
+  pcpTerm  :{l:"PCP term",                   min:24,   max:60,  step:12,   v:48,    f:v=>v+" months", h:"47 monthly payments then the Optional Final Payment. Beyond the term you settle it and own the car."},
+  pcpCap   :{l:"PCP mileage cap",            min:0,    max:4,   step:1,    v:1,     f:v=>TESLA_MILEAGE[v].mi.toLocaleString()+" mi/yr → £"+TESLA_MILEAGE[v].monthly+"/mo, OFP £"+TESLA_MILEAGE[v].ofp.toLocaleString(), h:"Tesla's five actual options, read off the configurator. Defaulted to 10,000 to match your mileage — see the cap analysis below. Raising the cap raises the monthly and lowers the OFP; total payable stays £37,990 either way."},
+  pcpExcess:{l:"PCP excess mileage",         min:5,    max:35,  step:0.1,  v:16.8,  f:v=>v.toFixed(1)+"p/mile", h:"14p plus VAT = 16.8p."},
+  pcpApr48 :{l:"48-month PCP APR",           min:0,    max:15,  step:0.05, v:0,     f:v=>v.toFixed(2)+"%", h:"CONFIRMED 0%. This trim KEEPS the promotion — unlike the Model Y Premium Long Range, which is quoted at 2.90%. Total payable equals the £44,990 cash price."},
+  options  :{l:"Options added (paint, wheels…)",min:0,  max:9000,step:250,  v:0,     f:v=>"£"+v.toLocaleString()+(v>=5010?"  ⚠ over £50k":""), h:"List price plus options decides the Expensive Car Supplement. At £44,990 you have £5,010 of headroom — enough for most option combinations, but check the total."},
+  pcpApr   :{l:"60-month PCP APR",           min:0,    max:15,  step:0.05, v:8.10,  f:v=>v.toFixed(2)+"%", h:"Confirmed 8.10%. At 60 months you pay £10,681 of interest against £0 at 48 — the whole cost of choosing the longer term."},
+  pcp60Ofp :{l:"60-month OFP",               min:8000, max:30000,step:1,   v:15699, f:v=>"£"+v.toLocaleString(), h:"VERIFIED: 60 months / 10,000 mi gives £529/mo, OFP £15,699, £10,681 of interest, total payable £55,671 against a £44,990 cash price."},
+
+  leaseM   :{l:"PCH monthly (inc VAT)",      min:150,  max:1200,step:1,    v:311,   f:v=>"£"+v, h:"VERIFIED: Tesla\u2019s own Personal Contract Hire, 24 months / 10,000 mi."},
+  leaseAdv :{l:"PCH advance rental",         min:0,    max:16000,step:1,   v:3927,  f:v=>"£"+v.toLocaleString(), h:"VERIFIED. Paid up front and ADDITIONAL to all 24 monthly payments \u2014 total payable £11,381, not the £7,464 the headline implies."},
+  leaseTerm:{l:"Lease term per cycle",       min:24,   max:48,  step:12,   v:24,    f:v=>v+" months"},
+  cap      :{l:"Mileage cap",                min:5000, max:25000,step:1000,v:10000, f:v=>v.toLocaleString()+" mi/yr"},
+  excess   :{l:"Excess mileage charge",      min:5,    max:30,  step:1,    v:12,    f:v=>v+"p/mile"},
+  uplift   :{l:"Rental uplift per renewal",  min:0,    max:20,  step:1,    v:6,     f:v=>"+"+v+"%", h:"Each renewal is on a newer, dearer car, so a 5-year horizon means three PCH cycles."},
+
+  opp      :{l:"Opportunity cost of capital",min:0,    max:12,  step:0.25, v:5,     f:v=>v.toFixed(2)+"%", h:"Post-tax return on cash you'd otherwise deploy. Higher rates punish tying up £38k."}
+};
+
+const SCEN = {
+  base:   {n:"Tesla's actual offer", d:"Tesla's live representative example: £44,990 OTR, £6,250 of your cash, £2,500 deposit contribution, 47 × £365, £19,081 Optional Final Payment, 0% APR at 10,000 mi/yr, £0 interest. This trim KEEPS the promotion. Order by 30 Sep 2026.", o:{}},
+  ecs:    {n:"£5,250 of options", d:"You load the car heavily enough to push list price past £50,000. That triggers the Expensive Car Supplement: £440/yr in years 2-6, £2,200 you get nothing for. Much harder to hit than on the Model Y Long Range, which starts only £1,010 away.", o:{options:5250}},
+  lapsed: {n:"Offer lapsed",     d:"You miss the 30 September deadline. No 0%, no £2,500 contribution — back to a standard 4.9% PCP. Compare the pink column against the green one to see what the deadline is worth.", o:{}},
+  bear:   {n:"Used-EV bear case",d:"Ex-fleet and salary-sacrifice EVs keep flooding the used market; residuals slide harder. Watch the OFP become a valuable put option — you hand the car back rather than settle.", o:{fyd:28,ad:14}},
+  bull:   {n:"Residuals hold",   d:"Used EV supply tightens and Model 3 values hold up. The friendliest world for owning, and the OFP put option expires worthless.", o:{fyd:16,ad:8}},
+  highmi: {n:"High mileage",     d:"20k miles/yr against an 8,000 cap. Punishes the lease outright, and removes your option to hand the PCP back — you'd owe £4,032 in excess mileage, so you're committed to settling.", o:{miles:20000,ad:14}},
+  nohome: {n:"No home charger",  d:"Public rapid charging only. Energy cost rises sharply but hits all five routes equally, so the ranking barely moves.", o:{homeShare:10}},
+  equity: {n:"8% capital hurdle",d:"You price capital at 8% because you'd otherwise be invested. Punishes paying cash, rewards 0% finance heavily — you keep £31,840 invested while Tesla funds the car for free.", o:{opp:8}}
+};
+
+const HORIZONS=[24,36,48,60];
+let S={}; Object.keys(SPEC).forEach(k=>S[k]=SPEC[k].v);
+let H=24, active="base";
+
+/* ================= engine ================= */
+function engine(H,s0){
+  // The mileage cap is an index into Tesla's real table; it fixes both the
+  // Optional Final Payment and (at 0%) the monthly payment.
+  const cap=TESLA_MILEAGE[Math.round(s0.pcpCap)]||TESLA_MILEAGE[0];
+  const s={...s0, pcpCap:cap.mi, ofp:cap.ofp};
+  const otr=s.otr, r=Math.pow(1+s.opp/100,1/12)-1, fv=(a,m)=>a*Math.pow(1+r,m);
+  const val=m=>otr*Math.max(0.08,
+      Math.pow(1-s.fyd/100, Math.min(m,12)/12) * Math.pow(1-s.ad/100, Math.max(0,m-12)/12));
+  const pMix=(s.homeShare/100)*(s.pHome/100)+(1-s.homeShare/100)*(s.pPub/100);
+  const em=(s.miles/12)/s.eff*1.08*pMix;
+  const VED=200, MOT=55;
+
+  // running cost in month m on an OWNERSHIP path (cash, HP, PCP)
+  // Expensive Car Supplement: list price PLUS options decides it. For a
+  // zero-emission car the threshold is £50,000 and the supplement is £440,
+  // charged in years 2-6 on top of the standard rate. At £48,990 this trim has
+  // only £1,010 of headroom, so a paint or wheel upgrade triggers £2,200.
+  const ecsDue = (otr + (s.options||0)) >= 50000;
+  const own=m=>{
+    const y=Math.floor(m/12)+1;
+    let c=em + s.ins/12 + s.maint*Math.pow(1+s.maintEsc/100,y-1)/12;
+    if(y>4) c+=s.postWar/12;
+    if(m>0 && m%12===0) c+=VED;
+    if(ecsDue && m>0 && m%12===0 && m<=60) c+=440;
+    if(m>=36 && m%12===0) c+=MOT;
+    return c;
+  };
+  // lease path: car is always new — no VED, no MOT, always in warranty
+  const lea=m=> em + s.ins/12 + s.maint/12;
+
+  const acc=f=>{let t=0;for(let m=0;m<H;m++)t+=fv(f(m),H-m-1);return t;};
+  const rawSum=f=>{let t=0;for(let m=0;m<H;m++)t+=f(m);return t;};
+  const ownFV=acc(own), ownRaw=rawSum(own), leaFV=acc(lea), leaRaw=rawSum(lea);
+
+  // split ownership running costs into display buckets
+  const bucket=(f,H)=>{let e=0,i=0,mv=0;
+    for(let m=0;m<H;m++){const y=Math.floor(m/12)+1;
+      e+=em; i+=s.ins/12;
+      mv+=s.maint*Math.pow(1+s.maintEsc/100,y-1)/12 + (y>4?s.postWar/12:0)
+          + ((m>0&&m%12===0)?200:0) + ((ecsDue&&m>0&&m%12===0&&m<=60)?440:0)
+          + ((m>=36&&m%12===0)?55:0);}
+    return {energy:e,ins:i,maint:mv};};
+  const ob=bucket(own,H);
+  const lb={energy:em*H, ins:s.ins/12*H, maint:s.maint/12*H};
+
+  const mv=val(H);
+  const R={};
+
+  /* ---- CASH ---- */
+  R.cash={dep:otr-mv, interest:0, ...ob,
+    opp:(fv(otr,H)-otr)+(ownFV-ownRaw), asset:-mv, monthly:0,
+    total: fv(otr,H)+ownFV-mv};
+
+  /* ---- amortising loan helper ---- */
+  const amort=(P,apr,n,balloon)=>{
+    const i=Math.pow(1+apr/100,1/12)-1;
+    const pay = i>0 ? (P-balloon/Math.pow(1+i,n))*i/(1-Math.pow(1+i,-n)) : (P-balloon)/n;
+    const bal=[]; let b=P, int=0;
+    for(let k=0;k<n;k++){const t=b*i; int+=t; b=b+t-pay; bal.push(b);}
+    return {pay,bal,i};
+  };
+
+  /* ---- HIRE PURCHASE ---- */
+  {
+    const {pay,bal}=amort(otr-s.hpDep, s.hpApr, s.hpTerm, 0);
+    const n=Math.min(H,s.hpTerm);
+    let int=0,b=otr-s.hpDep; const ii=Math.pow(1+s.hpApr/100,1/12)-1;
+    for(let k=0;k<n;k++){const t=b*ii; int+=t; b=b+t-pay;}
+    let payFV=0; for(let m=0;m<n;m++) payFV+=fv(pay,H-m-1);
+    const asset = H>=s.hpTerm ? mv : (mv-Math.max(bal[n-1],0));
+    R.hp={dep:(s.hpDep+pay*n-int)-asset, interest:int, ...ob,
+      opp:(fv(s.hpDep,H)-s.hpDep)+(payFV-pay*n)+(ownFV-ownRaw), asset:-asset, monthly:pay,
+      total: fv(s.hpDep,H)+payFV+ownFV-asset, settle:Math.max(bal[n-1],0)};
+  }
+
+  /* ---- PCP ----
+     Tesla structure: `pcpTerm` month agreement, (pcpTerm-1) monthly payments,
+     then the Optional Final Payment. A deposit contribution reduces the amount
+     financed at no cost to you, but is only available if you finance.
+     At term the OFP behaves as a put option on the residual: settle and keep the
+     car if it's worth more than the OFP, or hand it back (and pay excess mileage)
+     if it isn't. Excess mileage is charged only on hand-back.                     */
+  const mkPcp=(apr,contribution,term,gmIn)=>{
+    term=term||s.pcpTerm; const gm=(gmIn==null?s.ofp:gmIn), nPay=term-1;
+    const principal=otr-s.pcpCash-contribution;
+    const {pay,bal}=amort(principal, apr, nPay, gm);
+    // Instalments fall at months 1..term-1 with the OFP at month `term`, matching
+    // Tesla's 47-payments-then-settle structure. Over a horizon of H months you
+    // have therefore made min(H-1, term-1) instalments, not min(H, term-1).
+    const n=Math.min(Math.max(H-1,0),nPay);
+    let int=0,b=principal; const ii=Math.pow(1+apr/100,1/12)-1;
+    for(let k=0;k<n;k++){const t=b*ii; int+=t; b=b+t-pay;}
+    let payFV=0; for(let m=1;m<=n;m++) payFV+=fv(pay,H-m);
+    let total=fv(s.pcpCash,H)+payFV+ownFV, asset, oppB=0, mode, equity=null;
+    const excessDue=Math.max(0,s.miles-s.pcpCap)*(term/12)*(s.pcpExcess/100);
+
+    if(H>term){                            // must settle the OFP to keep driving it
+      const bFV=fv(gm,H-term); oppB=bFV-gm;
+      total+=bFV-mv; asset=mv; mode="Settle OFP at month "+term+", keep the car";
+    } else if(H===term){                   // the put option bites here
+      const keep=mv-gm, hand=-excessDue;
+      asset=Math.max(keep,hand); total-=asset;
+      mode = keep>=hand
+        ? (keep>=0 ? "Settle OFP, keep "+money(keep)+" of equity"
+                   : "Settle OFP — "+money(-keep)+" underwater, but cheaper than "+money(excessDue)+" of excess mileage")
+        : "Hand it back — worth "+money(gm-mv)+" less than the OFP, Tesla absorbs it";
+      equity=asset;
+    } else {                               // exit before term
+      asset=mv-(n>0?bal[n-1]:principal); total-=asset; equity=asset;
+      mode="Exit before term — equity "+money(asset);
+    }
+    const capConsumed=(s.pcpCash+pay*n-int)+(H>term?gm:0)-asset;
+    return {dep:capConsumed, interest:int, ...ob,
+      opp:(fv(s.pcpCash,H)-s.pcpCash)+(payFV-pay*n)+oppB+(ownFV-ownRaw),
+      asset:-asset, monthly:pay, total, balloon:gm, settle:bal[n-1], term,
+      equity, mode, contribution, excessIfHandBack:excessDue};
+  };
+  // Tesla's live promo: 48 months, 0% APR, £2,500 contribution. If the horizon
+  // runs past 48 months you settle the OFP and keep the car — still cheaper than
+  // taking a 60-month term, because the promo excludes terms over 48 months.
+  R.pcp0 = mkPcp(s.pcpApr48, s.contrib, s.pcpTerm, s.ofp);
+  // The actual 5-year product: 60 months at 8.10%. NOTE the configurator still
+  // applies the £2,500 deposit contribution here (total down £7,800, credit
+  // £34,190 — identical to the 48-month quote) even though the small print says
+  // the contribution is for 24-48 month terms only. Modelled as quoted.
+  R.pcp  = mkPcp(s.pcpApr, s.contrib, 60, s.pcp60Ofp);
+
+  /* ---- ROLLING LEASE ---- */
+  {
+    // Tesla PCH: an advance rental up front PLUS a payment every month of the
+    // term. The advance does NOT buy out the first months — it is additional.
+    let rentFV=0, rentRaw=0;
+    for(let m=0;m<H;m++){
+      const cyc=Math.floor(m/s.leaseTerm), pos=m%s.leaseTerm, esc=Math.pow(1+s.uplift/100,cyc);
+      let due=s.leaseM*esc;
+      if(pos===0) due+=s.leaseAdv*esc;
+      rentFV+=fv(due,H-m-1); rentRaw+=due;
+    }
+    const over=Math.max(0,s.miles-s.cap)*(H/12)*(s.excess/100);
+    R.lease={dep:rentRaw+over, interest:0, ...lb,
+      opp:(rentFV-rentRaw)+(leaFV-leaRaw), asset:0, monthly:s.leaseM,
+      total: rentFV+leaFV+over, cycles:Math.ceil(H/s.leaseTerm), excess:over};
+  }
+
+  R._mv=mv; R._res=mv/otr; R._H=H; R._mkPcp=mkPcp;
+  return R;
+}
+
+/* ================= per-year cost of ownership =================
+   Accrual basis. For each year y:
+
+     cost(y) = [cash paid during year y, compounded to year end]
+             + E(y-1)·(1+opp) − E(y)
+
+   where E is your net position: the car's market value minus any outstanding
+   finance. E(0)=0 because you own nothing before delivery, and E is always 0 on
+   a lease. This telescopes exactly to the headline total — compounding each
+   year's cost forward to the horizon and summing reproduces engine().total to
+   the penny, which is the identity the verification harness checks.          */
+function annual(s0,years){
+  const cap=TESLA_MILEAGE[Math.round(s0.pcpCap)]||TESLA_MILEAGE[0];
+  const s={...s0, pcpCap:cap.mi, ofp:cap.ofp};
+  const otr=s.otr, R=s.opp/100, r=Math.pow(1+R,1/12)-1;
+  const val=m=>otr*Math.max(0.08,
+      Math.pow(1-s.fyd/100,Math.min(m,12)/12)*Math.pow(1-s.ad/100,Math.max(0,m-12)/12));
+  const pMix=(s.homeShare/100)*(s.pHome/100)+(1-s.homeShare/100)*(s.pPub/100);
+  const em=(s.miles/12)/s.eff*1.08*pMix;
+  const ecsDue=(otr+(s.options||0))>=50000;
+  const ownRun=m=>{const y=Math.floor(m/12)+1;
+    let c=em+s.ins/12+s.maint*Math.pow(1+s.maintEsc/100,y-1)/12;
+    if(y>4)c+=s.postWar/12;
+    if(m>0&&m%12===0)c+=200;
+    if(ecsDue&&m>0&&m%12===0&&m<=60)c+=440;
+    if(m>=36&&m%12===0)c+=55;
+    return c;};
+  const leaRun=()=>em+s.ins/12+s.maint/12;
+  // Two compounding conventions, matching engine() exactly:
+  //  - finance cash flows fall at the START of month m  -> compound (end - m)
+  //  - running costs fall at the END of month m         -> compound (end - m - 1)
+  const yrFVs=(f,y)=>{let t=0;for(let m=y*12;m<(y+1)*12;m++)t+=f(m)*Math.pow(1+r,(y+1)*12-m);return t;};
+  const yrFVe=(f,y)=>{let t=0;for(let m=y*12;m<(y+1)*12;m++)t+=f(m)*Math.pow(1+r,(y+1)*12-m-1);return t;};
+  const yrRaw=(f,y)=>{let t=0;for(let m=y*12;m<(y+1)*12;m++)t+=f(m);return t;};
+
+  const amort=(P,apr,n,bal0)=>{const i=Math.pow(1+apr/100,1/12)-1;
+    const pay=i>0?(P-bal0/Math.pow(1+i,n))*i/(1-Math.pow(1+i,-n)):(P-bal0)/n;
+    const bal=[P]; let b=P;
+    for(let k=0;k<n;k++){b=b*(1+i)-pay; bal.push(b);}
+    return {pay,bal};};
+
+  const out={};
+  // startCash: flows engine() compounds as (end - m); endCash: as (end - m - 1)
+  const build=({startCash=()=>0, endCash=()=>0, debtAt=()=>0, runFn, hasAsset})=>{
+    const rows=[];
+    for(let y=0;y<years;y++){
+      const cashFV = yrFVs(startCash,y) + yrFVe(endCash,y) + yrFVe(runFn,y);
+      const Ep = y===0 ? 0 : (hasAsset? val(y*12)-debtAt(y*12) : 0);
+      const En = hasAsset? val((y+1)*12)-debtAt((y+1)*12) : 0;
+      const fin = yrRaw(startCash,y)+yrRaw(endCash,y);
+      rows.push({year:y+1, finance:fin, running:yrRaw(runFn,y),
+        cashOut: fin+yrRaw(runFn,y),
+        econ: cashFV + Ep*(1+R) - En,
+        equity: En, value: hasAsset? val((y+1)*12):0});
+    }
+    return rows;
+  };
+
+  out.cash = build({startCash:m=>m===0?otr:0, runFn:ownRun, hasAsset:true});
+
+  // HP: engine pays the deposit at month 0 (start convention) and the instalments
+  // at months 0..term-1 (end convention). Debt outstanding at month m is bal[m].
+  {const {pay,bal}=amort(otr-s.hpDep,s.hpApr,s.hpTerm,0);
+   out.hp = build({startCash:m=>m===0?s.hpDep:0,
+                   endCash:m=>m<s.hpTerm?pay:0,
+                   debtAt:m=>m>=s.hpTerm?0:Math.max(bal[m]||0,0),
+                   runFn:ownRun, hasAsset:true});}
+
+  // PCP: deposit at month 0, instalments at months 1..term-1, OFP at month `term`
+  // (all start convention). Debt is still the OFP *at* month `term` — you have not
+  // settled until you pay it — so the settlement lands in the correct year.
+  const mkP=(apr,contrib,term,gm)=>{
+    const n=term-1, {pay,bal}=amort(otr-s.pcpCash-contrib,apr,n,gm);
+    // Instalments fall at the START of months 1..n, so by the month-m boundary
+    // exactly (m-1) of them have been made and the balance is bal[m-1].
+    return build({startCash:m=>(m===0?s.pcpCash:0)+(m>=1&&m<=n?pay:0)+(m===term?gm:0),
+                  debtAt:m=> m>term ? 0 : (m-1>=n ? gm : Math.max(bal[Math.max(m-1,0)]||0,0)),
+                  runFn:ownRun, hasAsset:true});
+  };
+  out.pcp0 = mkP(s.pcpApr48, s.contrib, s.pcpTerm, s.ofp);
+  out.pcp  = mkP(s.pcpApr, s.contrib, 60, s.pcp60Ofp);
+
+  // Lease: engine compounds rentals on the end convention.
+  {const rent=m=>{const c=Math.floor(m/s.leaseTerm),p=m%s.leaseTerm,
+      esc=Math.pow(1+s.uplift/100,c);
+      return s.leaseM*esc + (p===0? s.leaseAdv*esc : 0);};
+   out.lease = build({endCash:rent, runFn:leaRun, hasAsset:false});}
+  return out;
+}
+
+/* Price an arbitrary Tesla quote (as read off the configurator) over horizon H.
+   Reuses the identical running-cost and opportunity-cost machinery.            */
+function priceQuote(H,s,q){
+  const st={...s, pcpCash:q.cash, pcpTerm:q.term, ofp:q.ofp, pcpCap:q.cap, pcpExcess:q.excess};
+  return engine(H,st)._mkPcp(q.apr, q.contrib);
+}
+/* Arithmetic check: does the quote reconcile to the OTR price?
+   `implied` is the monthly a genuine 0% deal must produce. If a quote is
+   labelled 0% but its stated monthly implies a larger total, the difference
+   is interest wearing a different hat.                                        */
+function checkQuote(s,q){
+  const credit = s.otr - q.cash - q.contrib, n=q.term-1;
+  const i = Math.pow(1+(q.apr||0)/100,1/12)-1;
+  // Monthly the quote's own terms imply, amortised at its stated APR.
+  // The balloon must be DISCOUNTED back, not simply subtracted — you pay
+  // interest on it for the whole term. At 0% the two collapse to the same thing.
+  const implied = i>0
+    ? (credit - q.ofp/Math.pow(1+i,n))*i/(1-Math.pow(1+i,-n))
+    : (credit - q.ofp)/n;
+  const zeroImplied = (credit-q.ofp)/n;                 // what a true 0% would give
+  const monthly = (q.monthly==null||isNaN(q.monthly)) ? implied : q.monthly;
+  const payable = q.cash + q.contrib + monthly*n + q.ofp;
+  return {payable, credit, implied, zeroImplied, monthly,
+          interest: payable - s.otr,
+          zeroPct: Math.abs(payable-s.otr) < 30};
+}
+
+const OPTS=[
+  {k:"cash", n:"Cash outright",          c:"var(--c-cash)"},
+  {k:"hp",   n:"Tesla HP",               c:"var(--c-hp)"},
+  {k:"pcp",  n:"PCP 60mo @ 8.10%",       c:"var(--c-pcp)"},
+  {k:"pcp0", n:"PCP 48mo @ 0%",        c:"var(--c-pcp0)"},
+  {k:"lease",n:"Rolling lease",          c:"var(--c-lease)"}
+];
+
+/* ================= render ================= */
+const $=id=>document.getElementById(id);
+const money=v=>(v<0?"-£":"£")+Math.abs(Math.round(v)).toLocaleString();
+const yrLabel=h=>(h/12)+" year"+(h>12?"s":"");
+
+function buildSliders(){
+  document.querySelectorAll(".row[data-k]").forEach(row=>{
+    const k=row.dataset.k, sp=SPEC[k];
+    row.innerHTML=`<div class="rtop"><label for="s_${k}">${sp.l}</label><span class="rval" id="v_${k}"></span></div>
+      <input type="range" id="s_${k}" min="${sp.min}" max="${sp.max}" step="${sp.step}">
+      ${sp.h?`<div class="hint">${sp.h}</div>`:""}`;
+    row.querySelector("input").addEventListener("input",e=>{
+      S[k]=parseFloat(e.target.value); active=null; render();});
+  });
+}
+function buildTabs(){
+  $("htabs").innerHTML=HORIZONS.map(h=>
+    `<button class="htab" data-h="${h}">${h/12} years<small>${h} months</small></button>`).join("");
+  $("htabs").querySelectorAll(".htab").forEach(b=>b.onclick=()=>{H=+b.dataset.h;render();});
+}
+function buildChips(){
+  $("chips").innerHTML=Object.entries(SCEN).map(([k,v])=>
+    `<button class="chip" data-s="${k}">${v.n}</button>`).join("");
+  $("chips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
+    active=b.dataset.s;
+    Object.keys(SPEC).forEach(k=>S[k]=SPEC[k].v);
+    Object.entries(SCEN[active].o).forEach(([k,v])=>S[k]=v);
+    render();});
+}
+function sync(){
+  Object.keys(SPEC).forEach(k=>{const el=$("s_"+k);
+    if(el){el.value=S[k]; $("v_"+k).textContent=SPEC[k].f(S[k]);}});
+  $("chips").querySelectorAll(".chip").forEach(b=>b.classList.toggle("on",b.dataset.s===active));
+  $("htabs").querySelectorAll(".htab").forEach(b=>b.classList.toggle("on",+b.dataset.h===H));
+  $("scdesc").textContent=active?SCEN[active].d:"Custom — you've moved a slider off the preset.";
+  const v=m=>S.otr*Math.max(.08,Math.pow(1-S.fyd/100,Math.min(m,12)/12)*Math.pow(1-S.ad/100,Math.max(0,m-12)/12));
+  $("curve").innerHTML="Retained value: <b>"+[24,36,48,60].map(m=>
+    (m/12)+"yr "+(v(m)/S.otr*100).toFixed(0)+"% ("+money(v(m))+")").join(" · ")+"</b>";
+  $("hlabel").textContent=yrLabel(H); $("hlabel2").textContent=yrLabel(H);
+}
+
+function render(){
+  sync();
+  const R=engine(H,S);
+  const rank=[...OPTS].sort((a,b)=>R[a.k].total-R[b.k].total);
+  const best=rank[0], second=rank[1];
+
+  /* option cards */
+  $("opts").innerHTML=OPTS.map(o=>{
+    const d=R[o.k], isB=o.k===best.k;
+    const rows=[["Capital consumed",d.dep]];
+    if(d.interest>0) rows.push(["Interest",d.interest]);
+    rows.push(["Energy",d.energy],["Insurance",d.ins],
+      [o.k==="lease"?"Maintenance":"Maint, VED, MOT",d.maint],["Opportunity cost",d.opp]);
+    let extra="";
+    if(o.k==="lease") extra=`<div class="ln"><span>Lease cycles</span><span>${d.cycles}</span></div>`+
+      (d.excess>0?`<div class="ln"><span>Excess mileage</span><span>${money(d.excess)}</span></div>`:"");
+    if(o.k==="pcp"||o.k==="pcp0"){
+      extra="";
+      if(d.contribution>0) extra+=`<div class="ln eq"><span>Tesla contribution</span><span>−${money(d.contribution)}</span></div>`;
+      extra+= d.equity!==null
+        ? `<div class="ln ${d.equity<0?"eqneg":"eq"}"><span>Equity on exit</span><span>${money(d.equity)}</span></div>`
+        : `<div class="ln"><span>OFP settled</span><span>${money(d.balloon)}</span></div>`;
+      extra+=`<div class="ln" style="color:var(--tx3);font-size:10.5px"><span>${d.mode}</span><span></span></div>`;
+    }
+    if(o.k!=="lease"&&o.k!=="pcp"&&o.k!=="pcp0")
+      extra=`<div class="ln"><span>Car worth at end</span><span>${money(-d.asset)}</span></div>`;
+    return `<div class="opt ${isB?"best":""}">
+      ${isB?'<span class="badge">CHEAPEST</span>':""}
+      <div class="oname">${o.n}${d.monthly?`<br><span style="color:var(--tx3);font-size:10px">${money(d.monthly)}/mo</span>`:""}</div>
+      <div class="obig">${money(d.total)}</div>
+      <div class="oper">${money(d.total/H)}/mo all-in · ${(d.total/(S.miles*H/12)*100).toFixed(0)}p/mile</div>
+      <div class="lines">
+        ${rows.map(x=>`<div class="ln"><span>${x[0]}</span><span>${money(x[1])}</span></div>`).join("")}
+        ${extra}
+        <div class="ln tot"><span>Total</span><span>${money(d.total)}</span></div>
+      </div></div>`;
+  }).join("");
+
+  /* matrix across horizons */
+  let mrows="";
+  HORIZONS.forEach(h=>{
+    const r=engine(h,S), vals=OPTS.map(o=>({o,t:r[o.k].total}));
+    const mn=Math.min(...vals.map(v=>v.t));
+    const win=vals.find(v=>v.t===mn);
+    const runner=vals.filter(v=>v.t!==mn).sort((a,b)=>a.t-b.t)[0];
+    mrows+=`<tr${h===H?' style="background:var(--hi)"':''}>
+      <td>${h/12} years${h===H?' <span style="color:var(--acc)">◀</span>':''}</td>
+      ${vals.map(v=>`<td class="${v.t===mn?"w":""}">${money(v.t)}</td>`).join("")}
+      <td style="color:var(--win);font-weight:700">${win.o.n}</td>
+      <td style="color:var(--tx2)">${money(runner.t-mn)}</td></tr>`;
+  });
+  $("matrix").innerHTML=`<tr><th>Horizon</th>${OPTS.map(o=>`<th>${o.n}</th>`).join("")}
+    <th>Winner</th><th>Margin</th></tr>${mrows}`;
+
+  /* cumulative chart + quote comparator */
+  drawChart();
+  renderOpt();
+  renderAnnual();
+  renderCap();
+  renderQuotes();
+
+  /* bars */
+  const mx=Math.max(...OPTS.map(o=>R[o.k].total));
+  $("bars").innerHTML=OPTS.map(o=>{const d=R[o.k];
+    const segs=[[d.dep,"var(--c-cash)"],[d.interest,"var(--c-hp)"],[d.energy,"var(--c-energy)"],
+                [d.ins,"var(--c-pcp)"],[d.maint,"var(--c-maint)"],[d.opp,"var(--c-opp)"]];
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+        <span>${o.n}</span><span style="color:var(--tx2)">${money(d.total)}</span></div>
+      <div style="height:20px;background:var(--panel2);border-radius:5px;overflow:hidden;display:flex">
+        ${segs.map(g=>g[0]>0?`<div style="width:${g[0]/mx*100}%;background:${g[1]}" title="${money(g[0])}"></div>`:"").join("")}
+      </div></div>`;}).join("");
+  $("clegend").innerHTML=OPTS.map(o=>
+    `<span><i class="sw" style="background:${o.c}"></i>${o.n}</span>`).join("");
+
+  /* break-evens */
+  const bisect=(lo,hi,f)=>{for(let z=0;z<70;z++){const m=(lo+hi)/2; if(f(m)>0)lo=m;else hi=m;}return (lo+hi)/2;};
+  const bestOwn=st=>{const r=engine(H,st);return Math.min(r.cash.total,r.hp.total,r.pcp.total,r.pcp0.total);};
+  const leaseBE=bisect(100,2000,m=>{const st={...S,leaseM:m};const r=engine(H,st);
+    return bestOwn(st)-r.lease.total;});
+  const aprBE=bisect(0,25,a=>{const st={...S,pcpApr:a};const r=engine(H,st);
+    return r.lease.total-r.pcp.total;});
+  const rows=[
+    ["Lease monthly at which leasing stops winning", money(leaseBE)+"/mo",
+      leaseBE>S.leaseM
+        ? `Quoted at ${money(S.leaseM)} — leasing still wins, with ${money(leaseBE-S.leaseM)}/mo of headroom.`
+        : `Quoted at ${money(S.leaseM)}, already ${money(S.leaseM-leaseBE)}/mo above the level where owning wins.`],
+    ["PCP APR at which PCP beats the lease", aprBE<=0?"not reachable":aprBE.toFixed(1)+"%",
+      aprBE>=S.pcpApr
+        ? `You're at ${S.pcpApr.toFixed(1)}% — PCP already beats the lease over ${yrLabel(H)}.`
+        : `You'd need better than ${aprBE.toFixed(1)}%; you're quoted ${S.pcpApr.toFixed(1)}%.`],
+    ["Value of a 0% APR promotion vs your quoted APR",
+      money(R.pcp.total-R.pcp0.total)+" over "+yrLabel(H),
+      S.pcpApr===0?"You've already priced 0%.":"The largest single lever in this model. Worth waiting for."],
+    ["Cheapest route, per mile", (R[best.k].total/(S.miles*H/12)*100).toFixed(0)+"p",
+      `${best.n} at ${S.miles.toLocaleString()} mi/yr over ${yrLabel(H)}. Most expensive route is ${(Math.max(...OPTS.map(o=>R[o.k].total))/(S.miles*H/12)*100).toFixed(0)}p.`],
+    ["Horizon at which owning overtakes leasing",
+      (()=>{for(let h=12;h<=144;h+=3){const r=engine(h,S);
+        if(Math.min(r.cash.total,r.hp.total,r.pcp.total,r.pcp0.total)<r.lease.total)
+          return (h/12).toFixed(1)+" years";} return "beyond 12 years";})(),
+      "Before this point renting the depreciation is cheaper; after it, owning is. The single most important number here."]
+  ];
+  $("be").innerHTML=`<tr><th>Break-even</th><th>Threshold</th><th>Read</th></tr>`+
+    rows.map(r=>`<tr><td>${r[0]}</td><td class="w">${r[1]}</td><td class="l">${r[2]}</td></tr>`).join("");
+
+  /* qualitative */
+  $("qual").innerHTML=`<tr><th>Factor</th>${OPTS.map(o=>`<th style="text-align:left">${o.n}</th>`).join("")}</tr>`+
+   [["Residual risk","Yours","Yours","Yours unless you hand back","Yours unless you hand back","Lessor's"],
+    ["Own it at the end","Yes","Yes","Only if balloon paid","Only if balloon paid","Never"],
+    ["Mileage freedom","Unlimited","Unlimited","Charged at term","Charged at term","Capped, charged per mile"],
+    ["Capital tied up","All £38k","Deposit only","Deposit only","Deposit only","Initial rental only"],
+    ["Early exit","Sell privately","Settle then sell","VT after 50% paid","VT after 50% paid","Penalty fees"],
+    ["Repair exposure after yr 4","Yours","Yours","Yours","Yours","None — always new"],
+    ["Admin burden","Sell it yourself","Sell it yourself","Hand back or refinance","Hand back or refinance","Hand keys back"]
+   ].map(r=>`<tr><td>${r[0]}</td>${r.slice(1).map(c=>`<td class="l">${c}</td>`).join("")}</tr>`).join("");
+
+  /* verdict */
+  const gap=R[second.k].total-R[best.k].total;
+  const promoGain=R.pcp.total-R.pcp0.total;
+  let body;
+  if(best.k==="lease")
+    body=`Over ${yrLabel(H)} you never escape the steepest part of the depreciation curve, and you keep none of it.
+      A lessor spreads that same depreciation across a car bought at fleet discount, on a more optimistic residual
+      assumption, and absorbs the residual risk, VED and warranty for you. Renting the depreciation wins at this horizon.`;
+  else if(best.k==="pcp0")
+    body=`Tesla's live offer wins because it is not really a finance product — it is a
+      <b>${money(S.contrib)} discount plus an interest-free loan</b>. Total amount payable is
+      ${money(S.pcpCash+S.contrib+R.pcp0.monthly*(S.pcpTerm-1)+R.pcp0.balloon)}, the same as the cash price, so the
+      borrowing costs nothing; meanwhile ${money(S.otr-S.pcpCash)} of your capital stays invested at ${S.opp}%.
+      Paying cash forfeits the contribution and the carry, which is why it comes out
+      <b>${money(R.cash.total-R.pcp0.total)} worse</b> over ${yrLabel(H)}. The Optional Final Payment is also a free
+      option: at month ${S.pcpTerm} you settle it only if the car is worth more, and hand it back if it isn't.`;
+  else if(best.k==="cash")
+    body=`Over ${yrLabel(H)} the depreciation is spread thin enough that owning outright wins, and no lender
+      takes a cut. This only holds while your opportunity cost stays at ${S.opp}% — push it higher and cheap
+      finance starts to look better than tying up ${money(S.otr)}.`;
+  else if(best.k==="hp")
+    body=`Hire purchase wins here: you own from day one, there's no balloon and no mileage cap, and at
+      ${S.hpApr}% the interest costs less than the return you keep earning on the cash you didn't hand over.`;
+  else
+    body=`Over ${yrLabel(H)} the 60-month PCP wins on these settings — but check the interest line before
+      accepting that, since at ${S.pcpApr}% it is the only route here paying for money at all.`;
+
+  // the term trap — the most actionable finding once 60 months is on the table
+  if(H>S.pcpTerm && R.pcp0.total<R.pcp.total)
+    body+=` <b>Note the term trap:</b> Tesla's 0% promo covers 24–48 month terms only, so a 5-year PCP is quoted at
+      ${S.pcpApr}% with no ${money(S.contrib)} contribution. If you want the car for ${yrLabel(H)}, don't take the
+      60-month product — take the 48-month 0% deal and settle the ${money(R.pcp0.balloon)} OFP at month
+      ${S.pcpTerm}. Same car, same horizon, <b>${money(R.pcp.total-R.pcp0.total)} cheaper</b>.`;
+
+  let flag="";
+  const altBest=[...OPTS].filter(o=>o.k!=="pcp0").sort((a,b)=>R[a.k].total-R[b.k].total)[0];
+  if(best.k==="pcp0")
+    flag=`<div class="flag"><b>This has a deadline: order by 30 September 2026, delivery by 31 December 2026.</b>
+      Miss it and the same PCP at ${S.pcpApr.toFixed(1)}% with no deposit contribution costs ${money(R.pcp.total)} —
+      <b>${money(promoGain)} more</b> — which would make ${altBest.n} the better route over ${yrLabel(H)}.
+      The deadline is worth more than every other variable in this model combined. Get the 0% and the
+      ${money(S.contrib)} contribution confirmed in writing on your order agreement.</div>`;
+  else if(promoGain>500)
+    flag=`<div class="flag"><b>Tesla's live 0% offer isn't winning at this setting, which is unusual — check why.</b>
+      It costs ${money(R.pcp0.total)} over ${yrLabel(H)} versus ${money(R[best.k].total)} for ${best.n}.</div>`;
+
+  {const head=50000-(S.otr+S.options);
+   flag+= head>0
+    ? `<div class="flag"><b>You have ${money(head)} of headroom before the Expensive Car Supplement.</b>
+        At £44,990 this trim has real headroom, unlike the Model Y Long Range. Add ${money(head)} of paint,
+        wheels or interior and you would trigger <b>£440 a year for five years — £2,200</b>, none of which buys you
+        anything. Comfortable, but still worth checking the total on your order agreement rather than the base price.</div>`
+    : `<div class="flag"><b>Expensive Car Supplement triggered.</b> ${money(S.otr+S.options)} is over the £50,000
+        zero-emission threshold, so you owe <b>£440 a year in years two to six — £2,200</b> on top of the standard
+        £200 VED. Dropping ${money(-head+10)} of options would avoid it entirely.</div>`;}
+
+  if(S.miles>S.pcpCap)
+    flag+=`<div class="flag"><b>Mileage cap mismatch.</b> The offer caps you at ${S.pcpCap.toLocaleString()} mi/yr but
+      you drive ${S.miles.toLocaleString()}. That costs nothing while you intend to settle the Optional Final Payment
+      and keep the car — excess mileage is only charged on hand-back. But it does mean the hand-back option would
+      cost you ${money(R.pcp0.excessIfHandBack)}, so treat it as insurance you'd rather not claim on, not a free out.</div>`;
+
+  if(H===S.pcpTerm && R.pcp0.equity!==null && R.pcp0.equity<0)
+    flag+=`<div class="flag good"><b>The Optional Final Payment is doing real work here.</b> The car would be worth
+      ${money(R._mv)} against an OFP of ${money(R.pcp0.balloon)}, so you'd hand it back and let Tesla absorb the
+      shortfall. That downside protection is the strongest argument for PCP over hire purchase or cash.</div>`;
+
+  $("verdict").innerHTML=`
+    <div class="vtitle">
+      <span style="font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--tx2)">Over ${yrLabel(H)}, choose</span>
+      <span class="vwin">${best.n}</span>
+      <span class="vmargin">${money(R[best.k].total)} · ${money(R[best.k].total/H)}/mo all-in ·
+        ${money(gap)} cheaper than ${second.n} (${(gap/R[second.k].total*100).toFixed(0)}%)</span></div>
+    <div class="vbody">${body}</div>${flag}`;
+}
+
+/* ================= optimal holding period =================
+   Equivalent annual cost. engine() returns a value compounded to the horizon
+   end, so discount it back to today, then annuitise over the holding period.
+   This is the only sound way to rank periods of unequal length.            */
+function eac(total,months){
+  const R=S.opp/100, Y=months/12;
+  if(R<=0) return total/Y;
+  return (total/Math.pow(1+R,Y)) * R/(1-Math.pow(1+R,-Y));
+}
+function renderOpt(){
+  const grid=OPTS.map(o=>({o, v:HORIZONS.map(h=>eac(engine(h,S)[o.k].total,h))}));
+  const globalMin=Math.min(...grid.flatMap(g=>g.v));
+  const winner=grid.find(g=>g.v.includes(globalMin));
+  const wIdx=winner.v.indexOf(globalMin), wYrs=HORIZONS[wIdx]/12;
+
+  $("optTable").innerHTML=
+    `<tr><th>Option</th>${HORIZONS.map(h=>`<th>${h/12} years</th>`).join("")}<th>Its best period</th></tr>`+
+    grid.map(g=>{const mn=Math.min(...g.v);
+      return `<tr><td><span class="sw" style="background:${g.o.c}"></span>${g.o.n}</td>`+
+        g.v.map(x=>`<td class="${x===globalMin?"w":""}" ${x===mn&&x!==globalMin?'style="color:var(--tx-mute);font-weight:600"':''}>${money(x)}</td>`).join("")+
+        `<td style="color:var(--tx2)">${HORIZONS[g.v.indexOf(mn)]/12} years</td></tr>`;}).join("")+
+    `<tr><td colspan="${HORIZONS.length+2}" style="border:none;padding-top:9px;color:var(--tx3);font-size:11px">
+       Equivalent annual cost. Green = cheapest cell in the whole table. Grey = that option's own best period.</td></tr>`;
+
+  // penalty for picking the wrong period on the winning product
+  const pen=HORIZONS.map((h,i)=>({yrs:h/12, gap:winner.v[i]-globalMin}));
+  const worst=pen.reduce((a,b)=>a.gap>b.gap?a:b);
+  // is the winner's period robust, or a coin-flip with its neighbour?
+  const sorted=[...winner.v].sort((a,b)=>a-b);
+  const margin=sorted[1]-sorted[0];
+  const runnerYrs=HORIZONS[winner.v.indexOf(sorted[1])]/12;
+
+  $("optVerdict").innerHTML=`
+    <div class="flag good" style="margin-top:12px">
+      <b>Cheapest: ${winner.o.n}, held for ${wYrs} years — ${money(globalMin)} per year.</b>
+      Holding the same deal for only ${worst.yrs} years costs <b>${money(worst.gap)} more per year</b>
+      (${money(worst.gap*worst.yrs)} over the period), because you never get past the steep early depreciation.
+      ${margin<50
+        ? `Note ${wYrs} and ${runnerYrs} years are within ${money(margin)}/yr of each other — that is noise, not a
+           finding. Treat them as equivalent and let the non-financial factors decide.`
+        : `${wYrs} years beats the next-best period by ${money(margin)}/yr, which is a real margin.`}
+    </div>
+    <div class="hint" style="margin-top:9px">
+      <b>Why 4 years is the natural stopping point.</b> It is not a coincidence — month 48 is where three things
+      land at once: the 0% promotional term ends, the ${money(curCap().ofp)} Optional Final Payment falls due, and
+      Tesla's 4-year vehicle warranty expires. It is the last moment you can hand the car back and walk away with
+      no exposure to what it is actually worth. Past it you have settled the OFP, you own the car outright, and you
+      start carrying repair risk.<br><br>
+      <b>Each route wants a different period.</b> The rolling lease is cheapest at its <i>shortest</i> period and
+      gets worse with time — rentals never stop and never build equity. The ownership routes are the opposite: they
+      keep improving as the front-loaded depreciation spreads over more years, and would continue improving past
+      5 years if you let them. The 0% PCP sits between the two, which is exactly why it wins.<br><br>
+      <b>Caveat.</b> This table only ranks the four periods you asked for. On the ownership routes the curve is still
+      falling at 5 years, so if you would realistically keep the car 7 or 8 years the cheapest answer becomes
+      "hold it longer", and the gap over leasing widens further.</div>`;
+}
+
+/* ================= per-year table ================= */
+let annMode="econ";
+function renderAnnual(){
+  const Y=H/12, A=annual(S,Y);
+  const yrs=[...Array(Y).keys()].map(i=>i+1);
+  const cell=r=>annMode==="econ"?r.econ:r.cashOut;
+  const best=yrs.map(y=>Math.min(...OPTS.map(o=>cell(A[o.k][y-1]))));
+  $("annTable").innerHTML=
+    `<tr><th>Option</th>${yrs.map(y=>`<th>Year ${y}</th>`).join("")}<th>${Y}-yr total</th><th>Avg / yr</th></tr>`+
+    OPTS.map(o=>{const rows=A[o.k], tot=engine(H,S)[o.k].total;
+      const sum=rows.reduce((t,r)=>t+cell(r),0);
+      return `<tr><td><span class="sw" style="background:${o.c}"></span>${o.n}</td>
+        ${rows.map((r,i)=>`<td class="${cell(r)===best[i]?"w":""}">${money(cell(r))}</td>`).join("")}
+        <td style="font-weight:700">${money(annMode==="econ"?tot:sum)}</td>
+        <td style="color:var(--tx2)">${money((annMode==="econ"?tot:sum)/Y)}</td></tr>`;}).join("");
+
+  const p=A.pcp0, ofpYear=Math.ceil((S.pcpTerm+1)/12), ofpInView=ofpYear<=Y;
+  $("annNote").innerHTML = annMode==="econ"
+    ? `<div class="hint" style="margin-top:10px"><b>Economic cost</b> is what each year actually costs you:
+        depreciation suffered, interest paid, running costs, and the return forgone on capital tied up — whether or
+        not cash moved. Year 1 is always the most expensive on the ownership routes because that is when the car
+        loses the most value. The lease is nearly flat by construction, which is its real selling point: it converts
+        a lumpy cost into a subscription. These figures compound forward exactly to the headline
+        ${yrLabel(H)} totals.</div>`
+    : `<div class="hint" style="margin-top:10px"><b>Cash out of pocket</b> is what leaves your account — useful for
+        budgeting, misleading for comparison. Paying cash shows ${money(A.cash[0].cashOut)} in year 1 and almost
+        nothing after, but that does not make years 2 onward free: you are still absorbing depreciation.
+        ${ofpInView
+          ? `The 0% PCP shows a ${money(p[ofpYear-1].cashOut)} spike in year ${ofpYear} when the
+             ${money(curCap().ofp)} Optional Final Payment falls due — plan for that, or plan to hand the car back.`
+          : `Note the 0% PCP's ${money(curCap().ofp)} Optional Final Payment falls due in year ${ofpYear}, beyond this
+             ${yrLabel(H)} view — so its cash column here understates what the agreement eventually asks for.`}
+        Switch to economic cost to compare options honestly.</div>`;
+}
+$("annEcon").onclick=()=>{annMode="econ";
+  $("annEcon").classList.add("on"); $("annCash").classList.remove("on"); renderAnnual();};
+$("annCash").onclick=()=>{annMode="cash";
+  $("annCash").classList.add("on"); $("annEcon").classList.remove("on"); renderAnnual();};
+
+/* ================= mileage-cap decision ================= */
+function renderCap(){
+  const term=48, drive=S.miles;
+  const rows=TESLA_MILEAGE.map(t=>{
+    const s={...S, pcpCap:TESLA_MILEAGE.indexOf(t)};
+    const base=engine(term,s);
+    const mv=base._mv, excess=Math.max(0,drive-t.mi)*(term/12)*(S.pcpExcess/100);
+    // reconstruct both branches from the same pre-asset total
+    const preAsset=base.pcp0.total + (-base.pcp0.asset);
+    return {t, excess, mv,
+            settle: preAsset-(mv-t.ofp),      // settle OFP, keep a car worth mv
+            hand:   preAsset+excess,          // walk away, pay excess mileage
+            strike: t.ofp-excess};            // effective hand-back threshold
+  });
+  const bs=Math.min(...rows.map(r=>r.settle)), bh=Math.min(...rows.map(r=>r.hand));
+  $("capTable").innerHTML=`<tr><th>Cap</th><th>Monthly</th><th>OFP</th><th>Excess if handed back</th>
+    <th>Cost if you settle &amp; keep</th><th>Cost if you hand back</th></tr>`+
+    rows.map(r=>`<tr${r.t.mi===capRow(TESLA_MILEAGE[Math.round(S.pcpCap)].mi).mi?' style="background:var(--hi)"':''}>
+      <td>${r.t.mi.toLocaleString()} mi</td><td>${money(r.t.monthly)}</td><td>${money(r.t.ofp)}</td>
+      <td>${r.excess>0?money(r.excess):"—"}</td>
+      <td class="${r.settle===bs?"w":""}">${money(r.settle)}</td>
+      <td class="${r.hand===bh?"w":""}">${money(r.hand)}</td></tr>`).join("");
+
+  const lo=rows[0], best=rows.find(r=>r.settle===bs), bestH=rows.find(r=>r.hand===bh);
+  const gainKeep = lo.settle<=bs ? rows.filter(r=>r!==lo).reduce((a,b)=>Math.min(a,b.settle),Infinity)-lo.settle : 0;
+  const lossHand = lo.hand-bh;
+  const pStar = lossHand>0 ? gainKeep/(gainKeep+lossHand) : 1;
+  $("capVerdict").innerHTML=`
+    <div class="flag" style="margin-top:12px"><b>Take the ${bestH.t.mi.toLocaleString()}-mile cap, not 8,000.</b>
+      Choosing 8,000 and paying the excess saves only <b>${money(gainKeep)}</b> if you settle the OFP and keep the car,
+      but costs <b>${money(lossHand)}</b> if you hand it back. That is a
+      ${(lossHand/Math.max(gainKeep,1)).toFixed(0)}:1 asymmetry against you. It only pays if you are more than
+      <b>${((1-pStar)*100).toFixed(0)}% certain</b> you will keep the car — and the whole reason a PCP is worth having
+      is the option <i>not</i> to.</div>
+    <div class="hint" style="margin-top:9px">
+      Why the "settle &amp; keep" column barely moves: at 0% APR the cap shifts money between the monthly and the OFP
+      but the total payable is £37,990 regardless, so the only difference is the timing of your own cash.
+      The hand-back column moves a lot because the excess charge is genuinely new money.
+      Note too that a higher cap raises your effective hand-back threshold — you would walk away from a car worth less
+      than ${money(bestH.strike)} on the ${bestH.t.mi.toLocaleString()}-mile deal, against only ${money(lo.strike)}
+      on the 8,000-mile one, so the bigger cap also buys a <i>more</i> valuable put option, not a less valuable one.</div>`;
+}
+
+/* ================= Tesla quote comparator ================= */
+/* Only the 48-month / 8,000-mile quote is verified from Tesla's own
+   representative example. The others are DERIVED: at 0% APR the monthly
+   payment is pure arithmetic, (credit − OFP) / (term − 1), so the only thing
+   Tesla's table really controls is the OFP. Those OFPs are estimates and are
+   flagged as such — replace them with real figures off the configurator.      */
+/* Every row below was read directly off Tesla's UK configurator on 30 July 2026,
+   including the 60-month row. Nothing here is estimated.                       */
+const QSEED=()=>[
+  {label:"48 mo / 8k   ✓ configurator",  term:48, cash:6250, contrib:2500, monthly:349, ofp:19831, cap:8000,  excess:16.8, apr:0,    verified:true},
+  {label:"48 mo / 10k  ✓ configurator",  term:48, cash:6250, contrib:2500, monthly:365, ofp:19081, cap:10000, excess:16.8, apr:0,    verified:true},
+  {label:"48 mo / 12k  ✓ configurator",  term:48, cash:6250, contrib:2500, monthly:382, ofp:18282, cap:12000, excess:16.8, apr:0,    verified:true},
+  {label:"48 mo / 15k  ✓ configurator",  term:48, cash:6250, contrib:2500, monthly:407, ofp:17134, cap:15000, excess:16.8, apr:0,    verified:true},
+  {label:"48 mo / 20k  ✓ configurator",  term:48, cash:6250, contrib:2500, monthly:445, ofp:15335, cap:20000, excess:16.8, apr:0,    verified:true},
+  {label:"60 mo / 10k @ 8.10%  ✓ config",term:60, cash:6250, contrib:2500, monthly:529, ofp:15699, cap:10000, excess:16.8, apr:8.10, verified:true}
+]
+let QUOTES=QSEED();
+
+const QF=[
+  {k:"label",   t:"text", w:"20%"},
+  {k:"term",    t:"num",  lab:"Term"},
+  {k:"cash",    t:"num",  lab:"Your cash"},
+  {k:"contrib", t:"num",  lab:"Tesla contrib"},
+  {k:"ofp",     t:"num",  lab:"OFP"},
+  {k:"cap",     t:"num",  lab:"Cap"},
+  {k:"apr",     t:"num",  lab:"APR %"}
+];
+
+function renderQuotes(){
+  let head=`<tr><th>Quote</th><th>Term</th><th>Your cash</th><th>Tesla contrib</th><th>OFP</th>
+    <th>Cap</th><th>APR</th><th>Monthly</th>`+HORIZONS.map(h=>`<th>${h/12}yr</th>`).join("")+`<th></th></tr>`;
+  const costs=QUOTES.map(q=>{
+    const chk=checkQuote(S,q);
+    const eff={...q, monthly: chk.monthly};
+    return {q, chk, byH: HORIZONS.map(h=>priceQuote(h,S,eff).total), monthly:chk.monthly};
+  });
+  const bestPerH=HORIZONS.map((h,i)=>Math.min(...costs.map(c=>c.byH[i])));
+  const body=costs.map((c,ri)=>{
+    const q=c.q;
+    const cell=(k,val,fmt)=>`<td contenteditable="true" data-r="${ri}" data-k="${k}"
+      style="outline:none;border-bottom:1px dashed var(--line)">${fmt}</td>`;
+    return `<tr>
+      <td contenteditable="true" data-r="${ri}" data-k="label" style="outline:none;text-align:left">
+        ${q.label}${q.verified?' <span style="color:var(--pcp0);font-size:9.5px">✓ VERIFIED</span>'
+                              :' <span style="color:var(--warn-fg);font-size:9.5px">OFP est.</span>'}</td>
+      ${cell("term",q.term,q.term)}
+      ${cell("cash",q.cash,"£"+q.cash.toLocaleString())}
+      ${cell("contrib",q.contrib,"£"+q.contrib.toLocaleString())}
+      ${cell("ofp",q.ofp,"£"+q.ofp.toLocaleString())}
+      ${cell("cap",q.cap,q.cap.toLocaleString())}
+      ${cell("apr",q.apr,q.apr+"%")}
+      <td style="font-weight:700">${money(c.monthly)}${q.monthly==null?'<span style="color:var(--tx3)">*</span>':''}</td>
+      ${c.byH.map((v,i)=>`<td class="${v===bestPerH[i]?"w":""}">${money(v)}</td>`).join("")}
+      <td><span data-del="${ri}" style="cursor:pointer;color:var(--tx3)">✕</span></td></tr>`;
+  }).join("");
+  $("qtable").innerHTML=head+body;
+
+  // warnings
+  let w=[];
+  costs.forEach(c=>{
+    if(c.q.apr===0 && !c.chk.zeroPct)
+      w.push(`<b>${c.q.label}</b>: marked 0% but the numbers total ${money(c.chk.payable)} against an OTR of
+        ${money(S.otr)} — that's ${money(c.chk.interest)} of cost that isn't showing as interest. At a true 0% the
+        monthly should be ${money(c.chk.zeroImplied)}. Recheck the figures.`);
+    if(c.q.apr>0)
+      w.push(`<b>${c.q.label}</b>: at ${c.q.apr}% you pay ${money(c.chk.payable)} in total against a
+        ${money(S.otr)} cash price — <b>${money(c.chk.interest)} of interest</b>. The same car on the 0% promo
+        costs ${money(c.chk.zeroImplied)}/mo over ${c.q.term-1} payments with nothing added.`);
+    if(c.chk.monthly<0)
+      w.push(`<b>${c.q.label}</b>: deposit is too large to be coherent — ${money(c.q.cash)} plus the
+        ${money(c.q.contrib)} contribution plus the ${money(c.q.ofp)} OFP already exceeds the
+        ${money(S.otr)} price. Maximum sensible deposit here is ${money(S.otr-c.q.contrib-c.q.ofp)}.`);
+    if(S.miles>c.q.cap)
+      w.push(`<b>${c.q.label}</b>: ${c.q.cap.toLocaleString()} mi cap against your ${S.miles.toLocaleString()} —
+        hand-back would cost ${money(Math.max(0,S.miles-c.q.cap)*(c.q.term/12)*(c.q.excess/100))} in excess mileage.
+        Harmless if you intend to settle the OFP and keep the car.`);
+  });
+
+  // the deposit finding — worth stating explicitly because the configurator hides it
+  const dq=a=>({term:48,cash:a,contrib:S.contrib,monthly:null,ofp:curCap().ofp,cap:curCap().mi,excess:S.pcpExcess,apr:0});
+  const dep0=priceQuote(60,S,{...dq(0),monthly:checkQuote(S,dq(0)).monthly}).total;
+  const depN=priceQuote(60,S,{...dq(S.pcpCash),monthly:checkQuote(S,dq(S.pcpCash)).monthly}).total;
+  const depNote = S.opp>0.25 && depN-dep0>50
+    ? `<div class="flag good" style="margin-top:9px"><b>At 0% APR, put down as little as possible.</b>
+        Dropping your cash deposit from ${money(S.pcpCash)} to nil raises the monthly from
+        ${money(checkQuote(S,dq(S.pcpCash)).monthly)} to ${money(checkQuote(S,dq(0)).monthly)} but
+        <b>saves ${money(depN-dep0)} over five years</b>, because the borrowing is free and your capital keeps
+        earning ${S.opp}%. The configurator frames every choice as a monthly payment, which makes the opposite look
+        true. This reverses entirely if the 0% lapses — at ${S.pcpApr}% the deposit barely matters either way, since
+        the interest you'd avoid roughly equals the return you'd forgo.</div>`
+    : "";
+
+  $("qwarn").innerHTML = `<div class="hint" style="margin-top:10px">
+    <span style="color:var(--tx3)">*</span> monthly derived from the other figures at 0% APR:
+    (price − deposits − OFP) ÷ (term − 1). Leave the monthly alone and it stays arithmetically consistent.</div>`
+    + depNote
+    + (w.length?`<div class="flag" style="margin-top:9px">${w.join("<br>")}</div>`:"");
+
+  // wire editing
+  $("qtable").querySelectorAll("[contenteditable]").forEach(td=>{
+    td.addEventListener("blur",()=>{
+      const r=+td.dataset.r, k=td.dataset.k, raw=td.textContent.trim();
+      if(k==="label"){ QUOTES[r].label=raw.replace(/✓ VERIFIED|OFP est\./g,"").trim(); }
+      else { const n=parseFloat(raw.replace(/[£,%\s]/g,""));
+             if(!isNaN(n)){ QUOTES[r][k]=n; QUOTES[r].monthly=null; QUOTES[r].verified=false; } }
+      renderQuotes();
+    });
+    td.addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault(); td.blur();} });
+  });
+  $("qtable").querySelectorAll("[data-del]").forEach(x=>x.onclick=()=>{
+    QUOTES.splice(+x.dataset.del,1); renderQuotes();});
+}
+$("qadd").onclick=()=>{ QUOTES.push({label:"New quote",term:48,cash:6150,contrib:2500,
+  monthly:null,ofp:17633,cap:8000,excess:16.8,apr:0,verified:false}); renderQuotes();};
+$("qreset").onclick=()=>{ QUOTES=QSEED(); renderQuotes();};
+
+/* ---- cumulative cost chart, hand-rolled SVG ---- */
+function drawChart(){
+  const W=820,Hh=290,pad={l:56,r:14,t:12,b:26};
+  const maxH=60, step=1, minH=6;
+  const series=OPTS.map(o=>{
+    const pts=[];
+    for(let m=minH;m<=maxH;m+=step){ pts.push([m, engine(m,S)[o.k].total]); }
+    return {o,pts};
+  });
+  const maxY=Math.max(...series.flatMap(s=>s.pts.map(p=>p[1])))*1.04;
+  const X=m=>pad.l+(m/maxH)*(W-pad.l-pad.r);
+  const Y=v=>Hh-pad.b-(v/maxY)*(Hh-pad.t-pad.b);
+  const gridY=[];
+  for(let v=0;v<=maxY;v+=20000) gridY.push(v);
+  let svg=`<svg viewBox="0 0 ${W} ${Hh}" style="width:100%;height:auto;display:block">`;
+  gridY.forEach(v=>{svg+=`<line x1="${pad.l}" y1="${Y(v)}" x2="${W-pad.r}" y2="${Y(v)}" stroke="var(--grid)" stroke-width="1"/>
+    <text x="${pad.l-7}" y="${Y(v)+3.5}" fill="var(--c-opp)" font-size="9.5" text-anchor="end">£${(v/1000)|0}k</text>`;});
+  [24,36,48,60].forEach(m=>{
+    svg+=`<line x1="${X(m)}" y1="${pad.t}" x2="${X(m)}" y2="${Hh-pad.b}" stroke="${m===H?"var(--c-energy)":"var(--grid2)"}" stroke-width="1" ${m===H?'':'stroke-dasharray="3,3"'}/>
+      <text x="${X(m)}" y="${Hh-pad.b+14}" fill="${m===H?"var(--c-energy)":"var(--c-opp)"}" font-size="9.5" text-anchor="middle">${m/12}yr</text>`;});
+  series.forEach(s=>{
+    svg+=`<path d="${s.pts.map((p,i)=>(i?"L":"M")+X(p[0])+" "+Y(p[1])).join(" ")}"
+      fill="none" stroke="${s.o.c}" stroke-width="2" stroke-linejoin="round"/>`;
+    const last=s.pts[s.pts.length-1];
+    svg+=`<circle cx="${X(last[0])}" cy="${Y(last[1])}" r="2.6" fill="${s.o.c}"/>`;
+  });
+  svg+=`</svg>`;
+  $("chart").innerHTML=svg;
+}
+
+$("foot").innerHTML=`
+<b>Method.</b> Every cash outflow is compounded forward to the end of the horizon at your opportunity rate;
+whatever you still hold at that point (resale value, or PCP/HP equity = market value − settlement figure) is
+subtracted. Financed routes are amortised properly: the monthly payment is solved from principal, APR and any
+balloon, then the balance is rolled forward month by month to a true settlement figure. If the horizon runs past
+the finance term, the balloon is settled and the car retained. The lease is modelled as <i>rolling</i> — a new
+agreement every ${S.leaseTerm} months at a ${S.uplift}% higher rental. Depreciation follows a two-stage curve (year-one drop, then a compounding annual rate) floored at 8% of
+list. Energy includes 8% charging losses. VED is £10 in year one (already inside the OTR price) then £200 annually;
+the £50,000 zero-emission Expensive Car Supplement is modelled explicitly; at £44,990 this trim has £5,010 of headroom. MOT from year three.
+Tesla's vehicle warranty is 4 years / 50,000 miles, so a post-warranty repair budget applies from year five on the
+ownership routes but never on a rolling lease. Verified against an independent Python implementation.<br>
+<b>Deliberately excluded.</b> Salary sacrifice. At a 4% BIK rate it beats all five of these by a wide margin — if
+your employer offers it, that is the answer and this calculator is the wrong tool.<br>
+<b>Tesla Finance figures are measured, not estimated.</b> The PCP mileage table, the 60-month 8.10% terms and the
+Personal Contract Hire quote were all read directly off Tesla's UK configurator on 30 July 2026 by driving it in a
+browser. The Hire Purchase APR is the one figure still taken from reported ranges (3.9–8.9%) — re-quote it.<br>
+<b>Sources.</b>
+<a href="https://evinfo.info/tesla-price-tracker-uk/">UK price tracker</a> ·
+<a href="https://www.kandoo.co.uk/guides/how-to-finance-a-tesla-model-3">Tesla finance rates</a> ·
+<a href="https://www.teslarati.com/tesla-uk-0-percent-apr-offer-model-3-model-y/">0% APR promo</a> ·
+<a href="https://www.honestjohn.co.uk/news/tax-insurance-and-warranties/2026-04/april-ved-tax-increases-2026-rates-explained/">VED 2026/27</a> ·
+<a href="https://www.nimblefins.co.uk/cheap-car-insurance/tesla-3-cost">insurance</a> ·
+<a href="https://energy-stats.uk/intelligent-octopus-go/">Octopus Intelligent Go</a> ·
+<a href="https://www.tesla.com/en_gb/model3/design">Tesla Model 3 configurator</a> ·
+<a href="https://motorway.co.uk/sell-my-car/guides/electric-car-depreciation">EV depreciation</a>.
+Not financial advice — re-quote before committing.`;
+
+buildTabs(); buildSliders(); buildChips(); render();
+</script>
+<script>
+/* Toggle button. Because these pages are opened as local files — where browsers
+   often refuse localStorage — the choice is also carried between pages on the
+   query string, so navigation keeps the theme either way. */
+(function(){
+  var SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>';
+  var MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8Z"/></svg>';
+  var b=document.createElement("button");
+  b.id="themeBtn"; b.type="button";
+  function cur(){return document.documentElement.getAttribute("data-theme")||"dark";}
+  function paint(){
+    var d=cur()==="dark";
+    b.innerHTML=(d?SUN:MOON)+"<span>"+(d?"Light":"Dark")+"</span>";
+    b.setAttribute("aria-label","Switch to "+(d?"light":"dark")+" theme");
+    b.title="Switch to "+(d?"light":"dark")+" theme";
+  }
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      var h=a.getAttribute("href");
+      if(!h||/^(https?:|mailto:|#)/.test(h)||!/\.html/.test(h))return;
+      try{var u=new URL(h,location.href);u.searchParams.set("theme",t);
+          a.setAttribute("href",u.pathname.split("/").pop()+u.search+u.hash);}catch(e){}
+    });
+  }
+  b.onclick=function(){
+    var t=cur()==="dark"?"light":"dark";
+    document.documentElement.setAttribute("data-theme",t);
+    try{localStorage.setItem("tesla-tco-theme",t);}catch(e){}
+    paint(); propagate(t);
+  };
+  paint(); propagate(cur());
+  document.body.appendChild(b);
+})();
+</script>
+</body>
+</html>

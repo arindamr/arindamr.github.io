@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Which Tesla? — UK cost-of-ownership decision hub</title>
+<style>
+  :root{
+    --bg:#0e1116; --panel:#161b23; --panel2:#1d2430; --line:#2b3441;
+    --tx:#e6ebf2; --tx2:#96a2b4; --tx3:#6b7787; --acc:#4da3ff;
+    --m3:#4da3ff; --m3lr:#8a6dd4; --my:#3ecf8e; --mylr:#e5679a;
+    --win:#3ecf8e; --warn:#e8c78f; --bad:#f2707f;
+    /* semantic tokens (dark defaults) */
+    --tx-soft:#cdd6e2; --tx-mute:#b8c3d1; --strong:#ffffff; --link:#7aa5cf;
+    --on-acc:#08131f;
+    --ok-bg:#12251d; --ok-bd:#2c5c45; --ok-fg:#9fdcbd;
+    --warn-bg:#241c12; --warn-bd:#4a3620;
+    --info-bg:#141d29; --info-bd:#26384d; --info-fg:#a8c4de;
+    --dl-a:#3a2a12; --dl-b:#241c12; --dl-bd:#4a3620; --dl-hi:#ffd89a;
+    --res-a:#12251d; --res-b:#161b23;
+    --tag-m3-bg:#12251d;  --tag-m3-fg:#3ecf8e;
+    --tag-lr-bg:#1c1630;  --tag-lr-fg:#a98ee8;
+    --tag-my-bg:#12251d;  --tag-my-fg:#3ecf8e;
+    --tag-bad-bg:#2a1620; --tag-bad-fg:#e5679a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font:14.5px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--acc)}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px 72px}
+
+  /* deadline banner */
+  .deadline{background:linear-gradient(90deg,var(--dl-a),var(--dl-b));border-bottom:1px solid var(--dl-bd);
+    padding:11px 20px;text-align:center;font-size:13.5px;color:var(--warn);position:sticky;top:0;z-index:50}
+  .deadline b{color:var(--dl-hi)}
+  .dcount{font-variant-numeric:tabular-nums;font-weight:700}
+
+  header{padding:34px 0 8px}
+  h1{font-size:30px;margin:0 0 8px;letter-spacing:-.03em;line-height:1.15}
+  .sub{color:var(--tx2);font-size:14.5px;max-width:74ch;margin:0}
+
+  /* nav */
+  nav{display:flex;gap:2px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;
+    padding:4px;margin:26px 0 22px;overflow-x:auto}
+  nav button{flex:1;min-width:104px;padding:10px 8px;border:none;background:none;border-radius:8px;
+    color:var(--tx2);font-size:13.2px;font-weight:600;cursor:pointer;transition:.12s;white-space:nowrap;
+    font-family:inherit}
+  nav button:hover{color:var(--tx)}
+  nav button.on{background:var(--acc);color:var(--on-acc)}
+  .sec{display:none} .sec.on{display:block}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:20px;margin-bottom:16px}
+  h2{font-size:19px;margin:0 0 6px;letter-spacing:-.02em}
+  h3{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--tx2);margin:0 0 12px;font-weight:700}
+  p{margin:0 0 12px} p:last-child{margin-bottom:0}
+  .lede{font-size:15px;color:var(--tx-soft)}
+
+  /* chooser */
+  .q{margin-bottom:20px}
+  .qlab{font-size:14px;font-weight:600;margin-bottom:9px}
+  .qhint{font-size:12.3px;color:var(--tx3);margin:-6px 0 9px}
+  .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .opt{background:var(--panel2);border:1px solid var(--line);color:var(--tx2);border-radius:9px;
+    padding:9px 14px;font-size:13.2px;cursor:pointer;transition:.12s;font-family:inherit}
+  .opt:hover{border-color:var(--acc);color:var(--tx)}
+  .opt.on{background:var(--acc);border-color:var(--acc);color:var(--on-acc);font-weight:650}
+  .result{margin-top:18px;padding:18px;border-radius:11px;background:linear-gradient(135deg,var(--res-a),var(--res-b));
+    border:1px solid var(--ok-bd)}
+  .rtitle{font-size:21px;font-weight:700;color:var(--win);letter-spacing:-.02em;margin-bottom:4px}
+  .rsub{font-size:13px;color:var(--tx2);margin-bottom:11px}
+  .rbody{font-size:13.8px;color:var(--tx-soft)}
+  .rwarn{margin-top:12px;padding:11px 13px;background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:9px;
+    font-size:12.8px;color:var(--warn)}
+
+  /* cards grid */
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+  @media(max-width:960px){.grid4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid4{grid-template-columns:1fr}}
+  .car{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:15px;position:relative;
+    display:flex;flex-direction:column}
+  .car .tag{font-size:9.8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+    padding:3px 8px;border-radius:9px;display:inline-block;margin-bottom:9px}
+  .car h4{margin:0 0 2px;font-size:15px;letter-spacing:-.02em}
+  .car .price{font-size:12.5px;color:var(--tx2);margin-bottom:10px;font-variant-numeric:tabular-nums}
+  .spec{font-size:12px;color:var(--tx2);border-top:1px solid var(--line);padding-top:9px;margin-top:auto}
+  .spec div{display:flex;justify-content:space-between;padding:2px 0}
+  .spec b{color:var(--tx);font-variant-numeric:tabular-nums;font-weight:650}
+  .links{margin-top:11px;display:flex;gap:6px;flex-wrap:wrap}
+  .links a{font-size:11.5px;background:var(--panel);border:1px solid var(--line);border-radius:7px;
+    padding:5px 9px;text-decoration:none;color:var(--tx2);transition:.12s}
+  .links a:hover{border-color:var(--acc);color:var(--acc)}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:9px 9px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+  th{color:var(--tx2);font-weight:700;font-size:10.8px;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:none}
+  td.w{color:var(--win);font-weight:700}
+  .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;vertical-align:middle}
+
+  .flag{padding:13px 15px;border-radius:10px;font-size:13.2px;margin-bottom:12px}
+  .flag.warn{background:var(--warn-bg);border:1px solid var(--warn-bd);color:var(--warn)}
+  .flag.good{background:var(--ok-bg);border:1px solid var(--ok-bd);color:var(--ok-fg)}
+  .flag.info{background:var(--info-bg);border:1px solid var(--info-bd);color:var(--info-fg)}
+  .flag b{color:var(--strong)}
+
+  .suits{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+  @media(max-width:720px){.suits{grid-template-columns:1fr}}
+  .suits ul{margin:6px 0 0;padding-left:19px;font-size:13.2px;color:var(--tx-mute)}
+  .suits li{margin-bottom:5px}
+  .suits h5{margin:0;font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:700}
+  .yes h5{color:var(--win)} .no h5{color:var(--bad)}
+
+  .assump{display:flex;gap:10px;flex-wrap:wrap;font-size:12.3px;color:var(--tx2)}
+  .assump span{background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:5px 10px}
+  .assump b{color:var(--tx)}
+  footer{margin-top:26px;font-size:11.8px;color:var(--tx3);line-height:1.7}
+  footer a{color:var(--link)}
+
+/* ── universal theme toggle ── */
+#themeBtn{position:fixed;top:14px;right:16px;z-index:9999;display:flex;align-items:center;gap:7px;
+  padding:8px 13px;border-radius:20px;cursor:pointer;font:600 12.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+  border:1px solid var(--tt-bd);background:var(--tt-bg);color:var(--tt-fg);
+  box-shadow:0 2px 10px rgba(0,0,0,.18);transition:transform .12s,border-color .12s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#themeBtn:hover{transform:translateY(-1px);border-color:var(--tt-hv)}
+#themeBtn svg{width:15px;height:15px;flex:none}
+@media print{#themeBtn{display:none}}
+@media(max-width:600px){#themeBtn span{display:none}#themeBtn{padding:9px;border-radius:50%}}
+:root{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6ebf2;--tt-hv:#4da3ff}
+html[data-theme="light"]{--tt-bg:rgba(255,255,255,.94);--tt-bd:#dfe4ea;--tt-fg:#1a1f27;--tt-hv:#1a63c7}
+html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6ebf2;--tt-hv:#7ab4ff}
+
+html[data-theme="light"]{
+  --bg:#ffffff; --panel:#f7f8fa; --panel2:#eef1f6; --line:#dfe4ea;
+  --tx:#1a1f27; --tx2:#5c6673; --tx3:#8b949e; --acc:#1a63c7;
+  --m3:#1a63c7; --m3lr:#6b4fb8; --my:#0f7a52; --mylr:#c2456f;
+  --win:#0f7a52; --warn:#7a5312; --bad:#b3372b;
+  --tx-soft:#39424f; --tx-mute:#4a5462; --strong:#0d1117; --link:#1a63c7;
+  --on-acc:#ffffff;
+  --ok-bg:#eef8f2; --ok-bd:#b9dfcc; --ok-fg:#0f7a52;
+  --warn-bg:#fdf6ec; --warn-bd:#eed9b4;
+  --info-bg:#eef4fb; --info-bd:#c9dcf0; --info-fg:#2c5a8a;
+  --dl-a:#fdf3e0; --dl-b:#fdf6ec; --dl-bd:#eed9b4; --dl-hi:#6b4710;
+  --res-a:#eef8f2; --res-b:#f7f8fa;
+  --tag-m3-bg:#e4f3ea;  --tag-m3-fg:#0f7a52;
+  --tag-lr-bg:#eeeaf8;  --tag-lr-fg:#5a3fa8;
+  --tag-my-bg:#e4f3ea;  --tag-my-fg:#0f7a52;
+  --tag-bad-bg:#fbe9ef; --tag-bad-fg:#b0335c;
+  color-scheme:light;
+}
+html[data-theme="light"] .deadline{color:var(--warn)}
+html[data-theme="light"] .result{box-shadow:0 1px 3px rgba(0,0,0,.04)}
+</style>
+<script>
+/* Universal theme, shared across every page in this folder.
+   Order of precedence: ?theme= in the URL, then saved choice, then the OS setting.
+   Runs in <head> so the correct theme is applied before first paint. */
+(function(){
+  var DEF="dark";
+  function saved(){try{return localStorage.getItem("tesla-tco-theme");}catch(e){return null;}}
+  var p=new URLSearchParams(location.search).get("theme");
+  var t=p||saved();
+  if(!t){try{t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}catch(e){t=DEF;}}
+  document.documentElement.setAttribute("data-theme",t);
+  if(p){try{localStorage.setItem("tesla-tco-theme",p);}catch(e){}}
+})();
+</script>
+</head>
+<body>
+
+<div class="deadline">
+  <b>0% APR + £2,500 deposit contribution</b> — order and apply for finance by <b>30 September 2026</b>,
+  delivery by 31 December. <span class="dcount" id="dcount"></span>
+</div>
+
+<div class="wrap">
+<header>
+  <h1>Which Tesla should you buy?</h1>
+  <p class="sub">Four UK models, priced from Tesla's own configurator on 30 July 2026 and run through the same
+     cost-of-ownership engine. Every finance figure here was read off the live site, not estimated.
+     This page is the hub — each car links through to its full interactive calculator and live tracker.</p>
+</header>
+
+<nav id="nav"></nav>
+
+<!-- ══════════════════ CHOOSE ══════════════════ -->
+<section class="sec on" id="s-choose">
+  <div class="card">
+    <h2>Answer four questions</h2>
+    <p class="lede">These are the only four that actually change the answer. Everything else is detail.</p>
+    <div id="chooser"></div>
+    <div id="result"></div>
+  </div>
+
+  <div class="card">
+    <h3>The assumptions behind every number on this page</h3>
+    <div class="assump">
+      <span><b>10,000</b> miles/year</span>
+      <span>Home charging at <b>7p/kWh</b> off-peak</span>
+      <span><b>90%</b> home / 10% public</span>
+      <span>Personal <b>post-tax</b> money</span>
+      <span>Opportunity cost <b>5%</b></span>
+      <span>Insurance <b>£950–1,000</b>/yr</span>
+      <span>Residuals: <b>−22%</b> yr 1, <b>−11%</b>/yr after</span>
+    </div>
+    <p style="margin-top:12px;font-size:12.8px;color:var(--tx2)">
+      These are <i>your</i> circumstances, not generic defaults, which is why the conclusions are sharper than a
+      typical review. The two that move the answer most are the opportunity cost (how hard your cash would
+      otherwise work) and the residual curve. Both are adjustable in each car's calculator.</p>
+  </div>
+</section>
+
+<!-- ══════════════════ COMPARE ══════════════════ -->
+<section class="sec" id="s-compare">
+  <div class="card">
+    <h2>All four, side by side</h2>
+    <p class="lede">Best route for each car, at your assumptions. Green marks the cheapest at that horizon.</p>
+    <div class="grid4" id="carGrid" style="margin:16px 0 20px"></div>
+    <h3>Total economic cost by horizon</h3>
+    <table id="cmpTable"></table>
+    <p style="font-size:12.5px;color:var(--tx2);margin-top:11px">
+      Economic cost, not cash out: every payment compounded forward at 5%, minus whatever the car or your equity
+      in it is worth at the end. That is why paying cash never looks free.</p>
+  </div>
+
+  <div class="card">
+    <h3>Cost per year — the fairer comparison</h3>
+    <table id="eacTable"></table>
+    <p style="font-size:12.5px;color:var(--tx2);margin-top:11px">
+      Equivalent annual cost: each horizon's total discounted back and annuitised, so periods of different length
+      can be compared honestly. Every car is cheapest per year at 4–5 years, and dearest at 2 — you never escape
+      the front-loaded depreciation in two years.</p>
+  </div>
+
+  <div class="card">
+    <h3>What the money actually buys</h3>
+    <table id="deltaTable"></table>
+    <p style="font-size:12.5px;color:var(--tx2);margin-top:11px">
+      Read the right-hand column as the monthly price of the upgrade over four years. It is a more useful number
+      than the sticker gap, because the £2,500 contribution and 0% terms are identical on three of the four cars.</p>
+  </div>
+</section>
+
+<!-- ══════════════════ PER-CAR ══════════════════ -->
+<section class="sec" id="s-m3"></section>
+<section class="sec" id="s-m3lr"></section>
+<section class="sec" id="s-my"></section>
+<section class="sec" id="s-mylr"></section>
+
+<!-- ══════════════════ TRAPS ══════════════════ -->
+<section class="sec" id="s-traps">
+  <div class="card">
+    <h2>Five ways to lose money that have nothing to do with which car you pick</h2>
+    <p class="lede">Each of these is worth more than the difference between two trims. They are ordered by
+       how much they cost and how easily they are missed.</p>
+  </div>
+
+  <div class="card">
+    <h3>1 · The 60-month PCP · costs £10,300–11,600</h3>
+    <p>Every car here is quoted at <b>8.10% APR over 60 months</b>, against 0% (or 2.90% on the Model Y Long
+       Range) over 48. Tesla's promotion covers 24–48 month terms only, so asking for a five-year deal quietly
+       moves you off it. On the Model 3 Long Range that is <b>£10,681 of interest against zero</b>.</p>
+    <p>If you want the car for five years, do not take a five-year PCP. Take the 48-month deal and settle the
+       Optional Final Payment at month 48. Same car, same five years, and on the base Model 3 it is
+       <b>£12,514 cheaper</b>.</p>
+  </div>
+
+  <div class="card">
+    <h3>2 · Paying cash · costs £5,500–11,000</h3>
+    <p>Cash forfeits the <b>£2,500 deposit contribution</b>, which is only available if you finance, and it
+       forfeits the return on capital you would otherwise keep invested. On the base Model 3 at 0%, the total
+       payable equals the cash price exactly — so the borrowing is genuinely free and paying cash comes out
+       <b>£5,475 worse over two years</b>, rising to £10,911 over ten.</p>
+    <p>The only honest argument for cash is not wanting a credit agreement on your file.</p>
+  </div>
+
+  <div class="card">
+    <h3>3 · The Personal Contract Hire headline · understates by 40–50%</h3>
+    <p>Tesla quotes PCH as a monthly rental, but charges an <b>advance rental on top of every one of the 24
+       payments</b> — it does not buy out the first months. The Model Y Long Range shows £449/mo; the actual
+       total payable is <b>£16,374</b>, an effective £682/mo. Broker leases usually work the other way round,
+       which makes this easy to misread.</p>
+    <p>PCH is only competitive at exactly two years, and only on the Model 3 Long Range does it actually win.
+       Because the advance recurs at every renewal, rolling PCH is the most expensive route at five years on
+       every car.</p>
+  </div>
+
+  <div class="card">
+    <h3>4 · Options past £50,000 · costs £2,200</h3>
+    <p>The Expensive Car Supplement is <b>£440 a year in years two to six</b> for zero-emission cars over
+       £50,000 list — and list means price <i>including options</i>. The Model Y Premium Long Range starts at
+       £48,990, leaving only <b>£1,010 of headroom</b>. A £1,300 paint upgrade on that car really costs about
+       £3,500.</p>
+    <p>The Model 3 Long Range has £5,010 of room and the two base cars are nowhere near it.</p>
+  </div>
+
+  <div class="card">
+    <h3>5 · Over-sizing the deposit at 0% · costs £700–900</h3>
+    <p>At 0% APR the total payable is fixed regardless of deposit, so a bigger deposit only moves your own money
+       forward in time. On the base Model 3, dropping the cash deposit from £6,150 to nil raises the monthly from
+       £249 to £380 but <b>saves £719 over five years</b>, because the borrowing is free and your capital keeps
+       earning.</p>
+    <p>This reverses if the promotion lapses: at a real APR the interest you avoid roughly equals the return you
+       forgo, and the deposit stops mattering. It is specific to 0%.</p>
+  </div>
+
+  <div class="card">
+    <h3>And one thing that is not a trap: the mileage cap</h3>
+    <p>At 0% every mileage option totals the same amount payable — a bigger cap simply moves money out of the
+       Optional Final Payment and into the monthly. Taking 8,000 miles and paying the 16.8p/mile excess saves
+       about <b>£70</b> if you settle and keep the car, but costs <b>£599</b> if you hand it back. Take the
+       10,000-mile cap: the £70 is not worth an 8:1 asymmetry, and the higher cap also raises your hand-back
+       threshold, so it buys a <i>more</i> valuable option, not a less valuable one.</p>
+  </div>
+</section>
+
+<!-- ══════════════════ VERDICT ══════════════════ -->
+<section class="sec" id="s-verdict">
+  <div class="card">
+    <h2>Where this lands</h2>
+    <p class="lede">You asked for balance rather than a single winner, so this is framed as who each car
+       suits. But two things are not close, and it would be evasive to pretend otherwise.</p>
+  </div>
+
+  <div class="card">
+    <div class="flag good"><b>The financing decision is settled, whichever car you choose.</b>
+      Take the 48-month PCP with the £2,500 contribution, put down the smallest deposit Tesla will accept,
+      choose the 10,000-mile cap, and plan to settle the Optional Final Payment at month 48. That combination is
+      cheapest on all four cars at every horizon from three years out. The car choice is a separate, and much
+      more personal, question.</div>
+    <div class="flag warn"><b>The Model Y Premium Long Range is hard to defend on numbers alone.</b>
+      It is the only one of the four Tesla will not give 0% on, so you pay £3,468 of interest that the others
+      avoid. It costs £6,379 more than the Model 3 Long Range over four years while offering 88 fewer miles of
+      range, and it starts £1,010 from a £2,200 tax cliff. If you need the SUV body it is the only Long Range
+      SUV here — but that body is the entire case for it.</div>
+  </div>
+
+  <div class="card">
+    <h3>The honest summary, car by car</h3>
+    <table id="verdictTable"></table>
+  </div>
+
+  <div class="card">
+    <h3>Three things this page deliberately does not cover</h3>
+    <div class="flag info"><b>Salary sacrifice.</b> At a 4% benefit-in-kind rate it beats every route on this
+      page by a wide margin — typically enough to make a Long Range car cost less than a base car bought
+      personally. If Exeter or your employer offers a scheme, this entire comparison is the wrong question and
+      you should price that first.</div>
+    <div class="flag info"><b>All-wheel drive and Performance trims.</b> Model 3 Long Range AWD (£399/mo) and
+      Model Y Long Range AWD (£449/mo), plus both Performance cars, were not swept. They sit above the trims here
+      and, on the Model Y side, further past the £50,000 supplement threshold. If AWD matters for where you live,
+      they are worth quoting — the same finance logic applies.</div>
+    <div class="flag info"><b>Used and ex-demonstrator cars.</b> A one- to two-year-old Tesla has already taken
+      the steepest part of the depreciation curve, which is the single largest cost on this page. That advantage
+      is real and can exceed everything discussed here. The trade-off is that you forfeit the 0% finance and the
+      £2,500 contribution, and used PCP rates are materially higher. Worth pricing properly rather than
+      assuming either way.</div>
+  </div>
+</section>
+
+<footer id="foot"></footer>
+</div>
+
+<script>
+/* ============================================================
+   Consolidated results. Every finance figure was read directly off
+   tesla.com/en_gb on 30 July 2026 by driving the configurator; the
+   cost totals come from the per-car calculators, which reproduce
+   Tesla's quoted monthly payments exactly.
+   ============================================================ */
+const CARS=[
+  {id:"m3",   key:"Model 3 RWD",              name:"Model 3",                trim:"Rear-Wheel Drive",
+   otr:37990, range:332, zeroToSixty:6.2, apr:0,    monthly:263, ofp:16958, colour:"var(--m3)",
+   tag:"Best value overall", tagBg:"var(--tag-m3-bg)", tagFg:"var(--tag-m3-fg)",
+   totals:{24:13570,36:19258,48:25014,60:32063}, eac:{24:6620,36:6109,48:5804,60:5803},
+   ecsHead:12010, body:"saloon",
+   calc:"model3-tco-calculator.html", track:"model3-market-tracker.html"},
+
+  {id:"m3lr", key:"Model 3 Premium LR RWD",   name:"Model 3",                trim:"Premium Long Range RWD",
+   otr:44990, range:466, zeroToSixty:4.9, apr:0,    monthly:365, ofp:19081, colour:"var(--m3lr)",
+   tag:"Best value Long Range", tagBg:"var(--tag-lr-bg)", tagFg:"var(--tag-lr-fg)",
+   totals:{24:15998,36:22470,48:29028,60:36980}, eac:{24:7804,36:7128,48:6735,60:6692},
+   ecsHead:5010, body:"saloon", pchWins24:15573,
+   calc:"model3-LR-tco-calculator.html", track:"model3-LR-market-tracker.html"},
+
+  {id:"my",   key:"Model Y RWD",              name:"Model Y",                trim:"Rear-Wheel Drive",
+   otr:41990, range:314, zeroToSixty:6.9, apr:0,    monthly:319, ofp:19206, colour:"var(--my)",
+   tag:"Pay for the space", tagBg:"var(--tag-m3-bg)", tagFg:"var(--tag-m3-fg)",
+   totals:{24:15069,36:21266,48:27548,60:35237}, eac:{24:7351,36:6746,48:6391,60:6377},
+   ecsHead:8010, body:"SUV",
+   calc:"modelY-tco-calculator.html", track:"modelY-market-tracker.html"},
+
+  {id:"mylr", key:"Model Y Premium LR RWD",   name:"Model Y",                trim:"Premium Long Range RWD",
+   otr:48990, range:378, zeroToSixty:5.4, apr:2.90, monthly:420, ofp:22078, colour:"var(--mylr)",
+   tag:"Poorest value on paper", tagBg:"var(--tag-bad-bg)", tagFg:"var(--tag-bad-fg)",
+   totals:{24:19679,36:27579,48:35407,60:44147}, eac:{24:9564,36:8728,48:8215,60:7989},
+   ecsHead:1010, body:"SUV",
+   calc:"modelY-LR-tco-calculator.html", track:"modelY-LR-market-tracker.html"}
+];
+const byId=id=>CARS.find(c=>c.id===id);
+const money=v=>(v<0?"−£":"£")+Math.abs(Math.round(v)).toLocaleString();
+const $=id=>document.getElementById(id);
+const HZ=[24,36,48,60];
+
+/* ---------- narrative, per car ---------- */
+const NARR={
+ m3:{
+  head:"The one to beat, and the hardest to argue against.",
+  value:`At <b>${money(25014)}</b> over four years it is the cheapest car here by £2,534, and cheapest per year at
+    every horizon. Nothing else on the page gets close on pure cost. The 0% deal, the £2,500 contribution and a
+    332-mile range make it the default recommendation for most people, and the burden of proof sits with the
+    other three.`,
+  practical:`332 miles WLTP is roughly 260–280 in real winter use, which covers almost any single UK journey with
+    one stop. A saloon boot with a deep well and a frunk is more practical than the shape suggests, but it is a
+    low car: if you regularly load bulky items, fold rear seats for cargo, or lift a child seat in and out daily,
+    the Model Y's height is a real ergonomic difference that no spreadsheet captures.`,
+  traps:`The most efficient car of the four at ~4.4 mi/kWh, so energy costs less too. £12,010 of headroom before
+    the £50,000 supplement means options are a non-issue. The only trap specific to this car is that its low
+    price makes the 60-month PCP look affordable at £433/mo — it is not, it costs £12,514 more than settling the
+    48-month deal.`,
+  risk:`Optional Final Payment of £16,958 at month 48 against a modelled market value of about £20,900, so you
+    would normally settle and keep roughly £3,900 of equity. In a deep used-EV downturn you hand it back and
+    Tesla absorbs the shortfall. That downside protection costs you nothing at 0%.`,
+  yes:["You want the lowest cost, full stop","You do most of your driving solo or with one passenger",
+       "You value efficiency and the sharpest handling of the four","Your longest regular trip is under about 250 miles"],
+  no:["You need SUV height or boot volume","You regularly carry four adults plus luggage",
+      "You want the longest possible range between stops"]},
+
+ m3lr:{
+  head:"The most car for the money, if you can live without the SUV body.",
+  value:`<b>${money(29028)}</b> over four years — £4,084 more than the base Model 3, about £85/month, for 134
+    extra miles of range and 1.3 seconds to 60. Against the Model Y Long Range it is <b>£6,379 cheaper</b> with
+    88 <i>more</i> miles of range. On numbers this is the standout of the four, and the only reason it is not the
+    outright recommendation is that a saloon does not suit everyone.`,
+  practical:`466 miles WLTP is the longest range Tesla sells in the UK — comfortably 380–400 in real winter
+    conditions. That is genuinely different in kind, not degree: it removes charging from the planning of almost
+    any UK journey rather than merely shortening the stop. If you do occasional long drives and resent stopping,
+    this is the car that changes the experience most.`,
+  traps:`Uniquely among the four, Tesla's own PCH actually wins at exactly two years — £15,573 against £15,998
+    for the 0% PCP. Its advance rental is £3,927 against the Model Y Long Range's £5,591, so the lease is priced
+    unusually keenly. If your horizon really is two years, quote both. Beyond two years the recurring advance
+    makes PCH far worse.`,
+  risk:`Tesla prices its residual slightly less generously than the Model Y trims — the Optional Final Payment is
+    42.4% of list against 45.1%. That is already reflected in the figures above, and it slightly increases the
+    chance the hand-back option is worth using, which is not a bad thing.`,
+  yes:["You want maximum range and do real long-distance driving","You want the best value in the Long Range class",
+       "A saloon body works for your life","Your horizon is two years and you'll quote the PCH"],
+  no:["You need a hatchback tailgate or SUV height","You cannot justify £85/month over the base car",
+      "Your longest trip is 150 miles and you charge at home"]},
+
+ my:{
+  head:"The sensible family answer, and much closer to the Model 3 than the sticker suggests.",
+  value:`<b>${money(27548)}</b> over four years is only £2,534 more than the base Model 3 — roughly £53/month —
+    despite a £4,000 price gap. The £2,500 contribution and 0% terms are identical, and Tesla prices the Y's
+    residual slightly stronger, so most of the sticker difference does not survive into total cost. That makes it
+    much better value than a straight price comparison implies.`,
+  practical:`This is the practical choice and the reason most buyers pick it. A hatchback tailgate, a deep boot
+    with underfloor storage, a flat load bay with the seats down, and a higher hip point that makes child seats
+    and older passengers markedly easier. 314 miles WLTP is the shortest range here — realistically 250–270 in
+    winter — which is fine for a 10,000-mile-a-year home charger but the weakest of the four for long trips.`,
+  traps:`Least efficient of the four at ~3.9 mi/kWh, costing roughly £45/year more in electricity — immaterial.
+    £8,010 of headroom before the £50,000 supplement, so options are safe. Watch the PCH: £320/mo headline but
+    £11,712 total payable once the £4,037 advance is counted.`,
+  risk:`Optional Final Payment of £19,206 at 45.7% of list, the strongest relative residual of the four. Tesla is
+    signalling it expects the Y to hold value best, which slightly reduces the value of your hand-back option but
+    improves your equity if you settle.`,
+  yes:["You need SUV space, height or a tailgate","You carry children, dogs, bikes or bulky loads",
+       "You want practicality without paying the Long Range premium","You charge at home and rarely drive over 250 miles"],
+  no:["You want maximum range — it is the shortest here","You want the cheapest option overall",
+      "You value efficiency and driving feel over space"]},
+
+ mylr:{
+  head:"The only Long Range SUV here — and you pay twice for that privilege.",
+  value:`<b>${money(35407)}</b> over four years, £6,379 more than the Model 3 Long Range and £7,859 more than the
+    base Model Y. Part of that is the £7,000 price gap; the rest is that this is the <b>only one of the four
+    Tesla will not give 0% on</b>. At 2.90% it carries £3,468 of interest the others simply avoid. Per year it
+    costs £8,215 against £6,391 for the base Model Y — you are paying £152/month for range and pace on top of an
+    already premium body.`,
+  practical:`378 miles WLTP against the base Y's 314 — a real improvement, roughly 310–330 in winter, and 5.4
+    seconds to 60 makes it noticeably brisker. All the SUV practicality of the base car with most of the range
+    anxiety removed. If you need SUV space <i>and</i> genuinely do long journeys, nothing else here does both.`,
+  traps:`Two specific to this car. First, the 2.90% APR — check whether it has moved before ordering, because 0%
+    would save about £3,500 and close most of the gap. Second, at £48,990 you have only <b>£1,010</b> before the
+    £50,000 Expensive Car Supplement, so a single paint or wheel option triggers £2,200 of tax. That is the
+    cheapest mistake to avoid on this page.`,
+  risk:`The strongest Optional Final Payment in absolute terms at £22,078, so the hand-back option protects a
+    large amount of value. Given this is the dearest car and the one carrying interest, that protection is worth
+    more here than anywhere else — do not give it up by taking hire purchase.`,
+  yes:["You need SUV space AND long range — nothing else here does both","You do regular long journeys with a full car",
+       "The extra pace and 64 miles justify £152/month to you"],
+  no:["You are choosing on value — it is the weakest of the four","You could live with a saloon (the Model 3 LR is £6,379 less with more range)",
+      "You want to add options (only £1,010 before a £2,200 tax cliff)","The base Model Y meets your range needs"]}
+};
+
+/* ---------- deadline counter ---------- */
+(function(){
+  const d=new Date(2026,8,30), now=new Date();
+  const days=Math.ceil((d-now)/86400000);
+  $("dcount").textContent = days>0 ? `${days} days left` : "Deadline passed — re-check terms";
+  if(days<=28&&days>0) $("dcount").style.color="var(--bad)";
+})();
+
+/* ---------- nav ---------- */
+const TABS=[["choose","Choose"],["compare","Compare"],["m3","Model 3"],["m3lr","Model 3 LR"],
+            ["my","Model Y"],["mylr","Model Y LR"],["traps","Money traps"],["verdict","Verdict"]];
+$("nav").innerHTML=TABS.map(([k,l],i)=>`<button data-t="${k}" class="${i===0?'on':''}">${l}</button>`).join("");
+$("nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  $("nav").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  TABS.forEach(([k])=>$("s-"+k).classList.toggle("on",k===b.dataset.t));
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+/* ---------- car cards ---------- */
+$("carGrid").innerHTML=CARS.map(c=>`
+  <div class="car">
+    <span class="tag" style="background:${c.tagBg};color:${c.tagFg}">${c.tag}</span>
+    <h4>${c.name} <span style="color:var(--tx2);font-weight:500">${c.trim.replace("Rear-Wheel Drive","RWD").replace("Premium Long Range RWD","Premium LR")}</span></h4>
+    <div class="price">${money(c.otr)} · ${c.apr===0?"0% APR":c.apr.toFixed(2)+"% APR"}</div>
+    <div class="spec">
+      <div><span>Range (WLTP)</span><b>${c.range} mi</b></div>
+      <div><span>0–60</span><b>${c.zeroToSixty}s</b></div>
+      <div><span>PCP monthly</span><b>${money(c.monthly)}</b></div>
+      <div><span>4-year cost</span><b>${money(c.totals[48])}</b></div>
+      <div><span>Per year</span><b>${money(c.eac[48])}</b></div>
+    </div>
+    <div class="links">
+      <a href="${c.calc}">Calculator →</a><a href="${c.track}">Tracker →</a>
+    </div>
+  </div>`).join("");
+
+/* ---------- comparison tables ---------- */
+$("cmpTable").innerHTML=`<tr><th>Car</th>${HZ.map(h=>`<th>${h/12} years</th>`).join("")}<th>Best route</th></tr>`+
+  CARS.map(c=>{
+    const best=HZ.map(h=>Math.min(...CARS.map(x=>x.totals[h])));
+    return `<tr><td><span class="sw" style="background:${c.colour}"></span>${c.name} ${c.trim.replace("Rear-Wheel Drive","RWD").replace("Premium Long Range RWD","Premium LR")}</td>`+
+      HZ.map((h,i)=>`<td class="${c.totals[h]===best[i]?"w":""}">${money(c.totals[h])}</td>`).join("")+
+      `<td style="color:var(--tx2)">48-mo PCP${c.pchWins24?" *":""}</td></tr>`;}).join("")+
+  `<tr><td colspan="6" style="border:none;padding-top:9px;color:var(--tx3);font-size:11.6px">
+     * On the Model 3 Long Range, Tesla's own PCH is cheaper than the PCP at exactly two years
+     (${money(15573)} vs ${money(15998)}). It loses at every longer horizon.</td></tr>`;
+
+$("eacTable").innerHTML=`<tr><th>Car</th>${HZ.map(h=>`<th>${h/12} years</th>`).join("")}<th>Cheapest at</th></tr>`+
+  CARS.map(c=>{const v=HZ.map(h=>c.eac[h]), mn=Math.min(...v);
+    return `<tr><td><span class="sw" style="background:${c.colour}"></span>${c.name} ${c.trim.replace("Rear-Wheel Drive","RWD").replace("Premium Long Range RWD","Premium LR")}</td>`+
+      v.map(x=>`<td class="${x===mn?"w":""}">${money(x)}</td>`).join("")+
+      `<td style="color:var(--tx2)">${HZ[v.indexOf(mn)]/12} years</td></tr>`;}).join("");
+
+const base=byId("m3");
+$("deltaTable").innerHTML=`<tr><th>Upgrade</th><th>Extra list price</th><th>Extra 4-yr cost</th><th>What you get</th><th>Per month</th></tr>`+
+  [["m3","m3lr","134 miles of range, 1.3s quicker"],
+   ["m3","my","SUV body, tailgate, higher seating — 18 miles less range"],
+   ["my","mylr","64 miles of range, 1.5s quicker — but loses the 0% deal"],
+   ["m3lr","mylr","SUV body — but 88 miles LESS range, and 2.90% APR"]
+  ].map(([a,b,what])=>{
+    const A=byId(a),B=byId(b);
+    const dList=B.otr-A.otr, dCost=B.totals[48]-A.totals[48];
+    return `<tr><td>${A.name} ${A.trim.replace("Rear-Wheel Drive","RWD").replace("Premium Long Range RWD","Premium LR")}
+      → ${B.name} ${B.trim.replace("Rear-Wheel Drive","RWD").replace("Premium Long Range RWD","Premium LR")}</td>
+      <td>${money(dList)}</td><td class="${dCost<0?'w':''}">${money(dCost)}</td>
+      <td style="text-align:left;color:var(--tx-mute);font-size:12.4px">${what}</td>
+      <td style="font-weight:700">${money(dCost/48)}</td></tr>`;}).join("");
+
+/* ---------- per-car sections ---------- */
+CARS.forEach(c=>{
+  const n=NARR[c.id];
+  $("s-"+c.id).innerHTML=`
+    <div class="card">
+      <span class="tag" style="background:${c.tagBg};color:${c.tagFg};font-size:9.8px;font-weight:800;
+        letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:9px;display:inline-block;margin-bottom:10px">${c.tag}</span>
+      <h2>${c.name} ${c.trim}</h2>
+      <p class="lede">${n.head}</p>
+      <div class="assump" style="margin-top:14px">
+        <span>${money(c.otr)} OTR</span><span>${c.range} mi WLTP</span><span>0–60 ${c.zeroToSixty}s</span>
+        <span>${c.apr===0?"<b>0% APR</b>":"<b>"+c.apr.toFixed(2)+"% APR</b>"}</span>
+        <span>${money(c.monthly)}/mo</span><span>OFP ${money(c.ofp)}</span>
+        <span>${money(c.ecsHead)} to the £50k cliff</span>
+      </div>
+      <div class="links" style="margin-top:14px">
+        <a href="${c.calc}">Open the full calculator →</a><a href="${c.track}">Open the live tracker →</a>
+      </div>
+    </div>
+
+    <div class="card"><h3>Cost and value</h3><p>${n.value}</p></div>
+    <div class="card"><h3>Practicality — space, range, real use</h3><p>${n.practical}</p></div>
+    <div class="card"><h3>Finance traps on this car</h3><p>${n.traps}</p></div>
+    <div class="card"><h3>Risk and flexibility</h3><p>${n.risk}</p></div>
+
+    <div class="card">
+      <h3>Who it suits</h3>
+      <div class="suits">
+        <div class="yes"><h5>Choose it if</h5><ul>${n.yes.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+        <div class="no"><h5>Look elsewhere if</h5><ul>${n.no.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+      </div>
+    </div>`;
+});
+
+/* ---------- verdict table ---------- */
+$("verdictTable").innerHTML=`<tr><th>Car</th><th>4-yr cost</th><th>Per year</th><th style="text-align:left">The one-line case</th></tr>`+
+  [["m3","Cheapest by a clear margin and the most efficient. The default unless you specifically need something it lacks."],
+   ["m3lr","The most range of any Tesla sold here, for £6,379 less than the Model Y Long Range. Best value if a saloon works."],
+   ["my","The practical family choice, and only £53/month more than the base Model 3 in real terms. Shortest range here."],
+   ["mylr","The only Long Range SUV — but the only car denied 0%, the dearest by far, and £1,010 from a £2,200 tax cliff."]
+  ].map(([id,line])=>{const c=byId(id);
+    return `<tr><td><span class="sw" style="background:${c.colour}"></span>${c.name} ${c.trim.replace("Rear-Wheel Drive","RWD").replace("Premium Long Range RWD","Premium LR")}</td>
+      <td>${money(c.totals[48])}</td><td>${money(c.eac[48])}</td>
+      <td style="text-align:left;color:var(--tx-mute);font-size:12.6px">${line}</td></tr>`;}).join("");
+
+/* ============================================================
+   Guided chooser
+   ============================================================ */
+const QS=[
+ {k:"suv", q:"Do you need SUV space?",
+  hint:"The biggest single fork. It removes two cars either way, so answer it honestly rather than aspirationally.",
+  a:[["no","No — a saloon is fine"],["maybe","Would prefer it, not essential"],["yes","Yes — boot, height or tailgate matter"]]},
+ {k:"years", q:"How long will you realistically keep it?",
+  hint:"Changes which finance route wins, and whether leasing is ever viable.",
+  a:[["2","About 2 years"],["3","About 3 years"],["4","About 4 years"],["5","5 years or more"]]},
+ {k:"budget", q:"What monthly payment are you comfortable with?",
+  hint:"The PCP monthly at a 10,000-mile cap, before running costs. Insurance and electricity add roughly £110/month on top.",
+  a:[["270","Up to about £270"],["330","Up to about £330"],["380","Up to about £380"],["999","£400+ is fine"]]},
+ {k:"range", q:"What's your longest regular journey?",
+  hint:"Tests whether Long Range is worth paying for. Assume real winter range is roughly 80% of the WLTP figure.",
+  a:[["short","Under 150 miles"],["mid","150–250 miles"],["long","250+ miles, often"]]}
+];
+let ANS={};
+function drawChooser(){
+  $("chooser").innerHTML=QS.map(q=>`
+    <div class="q">
+      <div class="qlab">${q.q}</div>
+      <div class="qhint">${q.hint}</div>
+      <div class="opts">${q.a.map(([v,l])=>
+        `<button class="opt ${ANS[q.k]===v?'on':''}" data-k="${q.k}" data-v="${v}">${l}</button>`).join("")}</div>
+    </div>`).join("");
+  $("chooser").querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    ANS[b.dataset.k]=b.dataset.v; drawChooser(); decide();});
+}
+function decide(){
+  const need=QS.length, got=Object.keys(ANS).length;
+  if(got<need){
+    $("result").innerHTML=`<div class="result" style="background:var(--panel2);border-color:var(--line)">
+      <div class="rsub" style="margin:0">${got} of ${need} answered — the recommendation appears here.</div></div>`;
+    return;
+  }
+  const wantsSUV=ANS.suv==="yes", mightSUV=ANS.suv==="maybe";
+  const needsLR = ANS.range==="long" || (ANS.range==="mid" && !wantsSUV);
+  const budget=+ANS.budget, yrs=+ANS.years;
+
+  // shortlist by body, then by range need, then check affordability
+  let pool = wantsSUV ? ["my","mylr"] : mightSUV ? ["m3","m3lr","my","mylr"] : ["m3","m3lr"];
+  let ranked = pool.map(byId).sort((a,b)=>a.totals[yrs*12]-b.totals[yrs*12]);
+  if(needsLR){
+    const lr=ranked.filter(c=>c.range>=378);
+    if(lr.length) ranked=lr.concat(ranked.filter(c=>c.range<378));
+  }
+  const afford=ranked.filter(c=>c.monthly<=budget);
+  const pick=(afford.length?afford:ranked)[0];
+  const stretched=!afford.length;
+  const alt=ranked.find(c=>c!==pick);
+
+  const n=NARR[pick.id];
+  let why=[];
+  if(wantsSUV) why.push("you need the SUV body, which leaves only the two Model Y trims");
+  else if(!mightSUV) why.push("a saloon works for you, which opens up the two cheaper, more efficient Model 3s");
+  if(needsLR) why.push(`your ${ANS.range==="long"?"250+ mile":"150–250 mile"} journeys justify paying for Long Range`);
+  else why.push("your journeys don't require paying the Long Range premium");
+  why.push(`over ${yrs} years it costs ${money(pick.totals[yrs*12])}, or ${money(pick.eac[yrs*12])} a year`);
+
+  let warn="";
+  if(stretched)
+    warn+=`<div class="rwarn"><b>Nothing in your shortlist meets that budget.</b> The cheapest car that fits your
+      other answers is ${money(pick.monthly)}/month on the PCP. Either raise the ceiling, put down a larger deposit
+      (which lowers the monthly but costs slightly more overall at 0%), or relax the body or range requirement.</div>`;
+  if(pick.id==="mylr")
+    warn+=`<div class="rwarn"><b>Before you commit to this one.</b> It is the only car of the four Tesla will not
+      give 0% on — 2.90% costs £3,468 of interest the others avoid — and at £48,990 you have just £1,010 before a
+      £2,200 tax cliff. If a saloon could work, the Model 3 Long Range is <b>£6,379 cheaper over four years with
+      88 more miles of range</b>. Worth a second look before ordering.</div>`;
+  if(pick.id==="m3lr" && yrs===2)
+    warn+=`<div class="rwarn"><b>At exactly two years, quote the lease as well.</b> Uniquely on this car, Tesla's
+      own PCH comes out at ${money(15573)} against ${money(15998)} for the PCP. It loses badly at any longer
+      horizon, so this only applies if two years is genuinely firm.</div>`;
+  if(yrs===2)
+    warn+=`<div class="rwarn"><b>Two years is the most expensive way to own any of these.</b> Every car here is
+      cheapest per year at four to five years — you never escape the front-loaded depreciation in two. If the
+      horizon is flexible, holding to month 48 and settling the Optional Final Payment is worth roughly
+      ${money(pick.eac[24]-pick.eac[48])} a year.</div>`;
+  if(alt)
+    warn+=`<div class="rwarn" style="background:var(--info-bg);border-color:var(--info-bd);color:var(--info-fg)"><b>Worth comparing:</b>
+      ${alt.name} ${alt.trim} at ${money(alt.totals[yrs*12])} over ${yrs} years
+      (${money(alt.totals[yrs*12]-pick.totals[yrs*12])} ${alt.totals[yrs*12]>pick.totals[yrs*12]?"more":"less"}),
+      ${alt.range} miles of range. <a href="#" data-go="${alt.id}">Read the case for it →</a></div>`;
+
+  $("result").innerHTML=`
+    <div class="result">
+      <div class="rsub">Based on your four answers</div>
+      <div class="rtitle">${pick.name} ${pick.trim}</div>
+      <div class="rsub">${money(pick.otr)} · ${pick.range} mi · ${pick.apr===0?"0% APR":pick.apr.toFixed(2)+"% APR"}
+        · ${money(pick.monthly)}/mo on the 48-month PCP</div>
+      <div class="rbody">${n.head} Recommended because ${why.join(", ")}.</div>
+      <div class="links" style="margin-top:13px">
+        <a href="#" data-go="${pick.id}">Read the full case →</a>
+        <a href="${pick.calc}">Open the calculator →</a>
+        <a href="${pick.track}">Open the live tracker →</a>
+      </div>
+      ${warn}
+    </div>`;
+  $("result").querySelectorAll("[data-go]").forEach(a=>a.onclick=e=>{
+    e.preventDefault();
+    const t=$("nav").querySelector(`[data-t="${a.dataset.go}"]`); if(t) t.click();});
+}
+drawChooser(); decide();
+
+$("foot").innerHTML=`
+<b>Where these numbers come from.</b> Every price, APR, monthly payment, Optional Final Payment, mileage table and
+lease quote on this page was read directly off <a href="https://www.tesla.com/en_gb/model3/design">tesla.com/en_gb</a>
+on 30 July 2026 by driving the configurator in a browser — not estimated, and not taken from third-party summaries.
+Each car's calculator reproduces Tesla's own quoted monthly payments exactly across all five mileage options.<br><br>
+<b>How cost is measured.</b> Economic cost, not cash out of pocket: every payment compounded forward to the end of
+the horizon at your 5% opportunity rate, minus whatever the car — or your equity in it — is worth at that point.
+Financed routes are amortised properly from principal, APR and balloon. The Optional Final Payment is modelled as a
+put option on the residual: at month 48 you settle only if the car is worth more than the OFP, and hand it back if
+it is not. Depreciation follows a two-stage curve (−22% in year one, −11%/yr after) which is adjustable in each
+calculator. Verified against an independent Python implementation, with every annual breakdown reconciling to its
+horizon total to the penny.<br><br>
+<b>Still estimated.</b> Insurance, real-world efficiency, tyre and consumable costs, the depreciation curve, and the
+Hire Purchase APR. None of them changes the ranking, but all are adjustable. <b>Indicative only and not financial
+advice</b> — re-quote before committing, and get the 0% APR, the £2,500 contribution, the Optional Final Payment and
+the mileage cap written into the order agreement itself rather than relying on the configurator.`;
+</script>
+<script>
+/* Toggle button. Because these pages are opened as local files — where browsers
+   often refuse localStorage — the choice is also carried between pages on the
+   query string, so navigation keeps the theme either way. */
+(function(){
+  var SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>';
+  var MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8Z"/></svg>';
+  var b=document.createElement("button");
+  b.id="themeBtn"; b.type="button";
+  function cur(){return document.documentElement.getAttribute("data-theme")||"dark";}
+  function paint(){
+    var d=cur()==="dark";
+    b.innerHTML=(d?SUN:MOON)+"<span>"+(d?"Light":"Dark")+"</span>";
+    b.setAttribute("aria-label","Switch to "+(d?"light":"dark")+" theme");
+    b.title="Switch to "+(d?"light":"dark")+" theme";
+  }
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      var h=a.getAttribute("href");
+      if(!h||/^(https?:|mailto:|#)/.test(h)||!/\.html/.test(h))return;
+      try{var u=new URL(h,location.href);u.searchParams.set("theme",t);
+          a.setAttribute("href",u.pathname.split("/").pop()+u.search+u.hash);}catch(e){}
+    });
+  }
+  b.onclick=function(){
+    var t=cur()==="dark"?"light":"dark";
+    document.documentElement.setAttribute("data-theme",t);
+    try{localStorage.setItem("tesla-tco-theme",t);}catch(e){}
+    paint(); propagate(t);
+  };
+  paint(); propagate(cur());
+  document.body.appendChild(b);
+})();
+</script>
+</body>
+</html>
