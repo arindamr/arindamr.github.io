@@ -364,7 +364,7 @@ const SPEC = {
   postWar  :{l:"Post-warranty repair budget",min:0,    max:2000,step:50,   v:450,   f:v=>"£"+v.toLocaleString()+"/yr", h:"Applies from year 5. Tesla's vehicle warranty is 4 yrs / 50,000 mi; battery and drive unit 8 yrs."},
 
   hpDep    :{l:"HP deposit",                 min:0,    max:25000,step:50,  v:8150,  f:v=>"£"+v.toLocaleString(), h:"Matched to the PCP cash deposit so the routes are comparable. HP gets no deposit contribution."},
-  hpApr    :{l:"HP APR",                     min:0,    max:12,  step:0.1,  v:5.9,   f:v=>v.toFixed(1)+"%", h:"Tesla HP quoted at 3.9–8.9% depending on profile. You own it from day one, no balloon."},
+  hpApr    :{l:"HP APR",                     min:0,    max:12,  step:0.1,  v:2.90,  f:v=>v.toFixed(1)+"%", h:"CONFIRMED 2.90% — read directly off Tesla's own Hire Purchase quote for this trim (60mo, £649/mo, £12,800 down, £36,190 total credit), 3 Aug 2026. Corrects a previous 5.9% third-party estimate. You own it from day one, no balloon."},
   hpTerm   :{l:"HP term",                    min:24,   max:60,  step:12,   v:60,    f:v=>v+" months"},
 
   pcpCash  :{l:"Your cash deposit",          min:0,    max:25000,step:50,  v:8150,  f:v=>"£"+v.toLocaleString(), h:"Tesla's example: £10,650 total down payment, of which £2,500 is their contribution — so £8,150 is your money."},
@@ -1208,9 +1208,9 @@ Tesla's vehicle warranty is 4 years / 50,000 miles, so a post-warranty repair bu
 ownership routes but never on a rolling lease. Verified against an independent Python implementation.<br>
 <b>Deliberately excluded.</b> Salary sacrifice. At a 4% BIK rate it beats all five of these by a wide margin — if
 your employer offers it, that is the answer and this calculator is the wrong tool.<br>
-<b>Tesla Finance figures are measured, not estimated.</b> The PCP mileage table, the 60-month 8.10% terms and the
-Personal Contract Hire quote were all read directly off Tesla's UK configurator on 30 July 2026 by driving it in a
-browser. The Hire Purchase APR is the one figure still taken from reported ranges (3.9–8.9%) — re-quote it.<br>
+<b>Tesla Finance figures are measured, not estimated.</b> The PCP mileage table, the 60-month 8.10% terms, the
+Personal Contract Hire quote and the Hire Purchase APR (2.90%, confirmed 3 Aug 2026 — corrects an earlier 5.9%
+third-party estimate) were all read directly off Tesla's UK configurator by driving it in a browser.<br>
 <b>Sources.</b>
 <a href="https://evinfo.info/tesla-price-tracker-uk/">UK price tracker</a> ·
 <a href="https://www.kandoo.co.uk/guides/how-to-finance-a-tesla-model-3">Tesla finance rates</a> ·

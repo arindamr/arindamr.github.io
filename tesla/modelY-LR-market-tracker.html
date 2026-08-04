@@ -141,53 +141,54 @@ html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6eb
    TRACKED MARKET DATA — the weekly refresh task rewrites this block only.
    ============================================================ */
 const DATA = {
-  asOf: "30 July 2026",
-  prevAsOf: "first run",
+  asOf: "3 August 2026",
+  prevAsOf: "30 July 2026",
   inputs: [
     {k:"otr",     label:"Premium LR RWD OTR price",    v:48990, prev:48990, f:"gbp",  src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
-     note:"£7,000 above the base Model Y RWD. Only £1,010 below the £50,000 zero-emission Expensive Car Supplement threshold — see the options warning below. 378 mi est. range, 0-60 in 5.4s."},
-    {k:"pcpApr",  label:"Tesla PCP APR — 48 months",   v:2.90,  prev:0,     f:"pct",  src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
-     note:"CONFIRMED 2.90% — this trim is NOT on the 0% promotion. The base Model Y RWD and Model 3 both get 0%; this one carries £3,468 of interest over 48 months at 10,000 mi. The single biggest difference between this car and the cheaper trims."},
+     note:"RECONFIRMED 3 Aug 2026, unchanged. £7,000 above the base Model Y RWD. Only £1,010 below the £50,000 zero-emission Expensive Car Supplement threshold — see the options warning below. 378 mi est. range, 0-60 in 5.4s."},
+    {k:"pcpApr",  label:"Tesla PCP APR — 48 months",   v:2.90,  prev:2.90,  f:"pct",  src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
+     note:"RECONFIRMED 3 Aug 2026 — still 2.90%, still NOT on the 0% promotion. The base Model Y RWD and Model 3 both get 0%; this one carries £3,468 of interest over 48 months at 10,000 mi. The single biggest difference between this car and the cheaper trims."},
     {k:"contrib", label:"Tesla deposit contribution",  v:2500,  prev:2500,  f:"gbp",  src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
-     note:"Still £2,500, and still only if you finance. Total down payment £10,650 of which £8,150 is your cash."},
-    {k:"gmfvPct", label:"Optional Final Payment",      v:45.1,  prev:45.7,  f:"pctOtr", src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
-     note:"£22,078 at the 10,000-mile cap. Acts as a put option on the residual: settle only if the car beats it, hand it back if not."},
+     note:"RECONFIRMED. Still £2,500, and still only if you finance. Total down payment £10,650 of which £8,150 is your cash."},
+    {k:"gmfvPct", label:"Optional Final Payment",      v:45.1,  prev:45.1,  f:"pctOtr", src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
+     note:"RECONFIRMED. £22,078 at the 10,000-mile cap. Acts as a put option on the residual: settle only if the car beats it, hand it back if not."},
     {k:"pcpCap",  label:"PCP mileage cap",             v:10000, prev:10000, f:"mi",   src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
-     note:"VERIFIED 8k/10k/12k/15k/20k. Monthlies £399/£420/£440/£467/£507, OFPs £23,128/£22,078/£21,079/£19,755/£17,733. Because this trim carries interest, a bigger cap slightly REDUCES total interest (£3,526 at 8k down to £3,231 at 20k)."},
+     note:"RE-VERIFIED 3 Aug 2026, all five tiers unchanged: £399/£420/£440/£467/£507 monthly, OFPs £23,128/£22,078/£21,079/£19,755/£17,733. Because this trim carries interest, a bigger cap slightly REDUCES total interest (£3,526 at 8k down to £3,231 at 20k)."},
     {k:"pcp60Apr",label:"Tesla PCP APR — 60 months",   v:8.10,  prev:8.10,  f:"pct",  src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
-     note:"CONFIRMED 8.10%. At 60 months / 10,000 mi: £537/mo, OFP £18,240, interest £11,598, total payable £60,588 against a £48,990 cash price. An £8,130 penalty over the 48-month deal."},
-    {k:"hpApr",   label:"Tesla Finance HP APR",        v:5.9,   prev:5.9,   f:"pct",  src:"https://myteslajourney.co.uk/tesla-financing-options-in-the-uk-pcp-hire-purchase-and-salary-sacrifice-schemes/", srcName:"My Tesla Journey",
-     note:"The one figure still taken from reported ranges (3.9-8.9%) rather than measured. Re-quote it."},
+     note:"RECONFIRMED 8.10%. At 60 months / 10,000 mi: £537/mo, OFP £18,240, interest £11,598, total payable £60,588 against a £48,990 cash price. An £8,130 penalty over the 48-month deal."},
+    {k:"hpApr",   label:"Tesla Finance HP APR",        v:2.90,  prev:5.9,   f:"pct",  src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
+     note:"CORRECTED 3 Aug 2026 — read directly off Tesla's own Hire Purchase quote for this trim (Personal: Hire Purchase, 60 months, £649/mo, £12,800 down payment, £36,190 total credit, Representative APR 2.90%), replacing the third-party estimate of 5.9% used until now. This is a materially better rate than assumed and changes HP's standing versus cash — see the change log."},
     {k:"leaseM",  label:"Tesla PCH, 24mo / 10k",       v:449,   prev:449,   f:"gbpm", src:"https://www.tesla.com/en_gb/modely/design", srcName:"Tesla configurator",
-     note:"VERIFIED. Headline £449/mo, but a £5,591 advance rental is charged ON TOP of all 24 payments — total payable £16,374, an effective £682/mo. Excess from 16.5p+VAT."},
+     note:"RE-VERIFIED. Headline £449/mo, but a £5,591 advance rental is charged ON TOP of all 24 payments — total payable £16,374, an effective £682/mo. Excess from 16.5p+VAT."},
     {k:"fyd",     label:"Year-1 value drop",           v:22,    prev:22,    f:"pct",  src:"https://motorway.co.uk/sell-my-car/guides/electric-car-depreciation", srcName:"Motorway",
-     note:"Assumed same curve as the other Teslas. Tesla's OFP implies a similar residual profile (45.1% of list at 48 months)."},
+     note:"Unchanged. Reported Model Y residuals are stabilising through 2026, particularly for well-kept Long Range cars — consistent with, not a reason to revise, this curve. Tesla's OFP implies a similar residual profile (45.1% of list at 48 months)."},
     {k:"ad",      label:"Annual drop thereafter",      v:11,    prev:11,    f:"pcty", src:"", srcName:"",
-     note:"Used EV prices fell ~10% YoY in early 2026. Risk to the downside, but the OFP caps your exposure."},
+     note:"Unchanged. Used EV prices fell ~10% YoY in early 2026, but Model Y specifically is now holding value better than the average EV crossover. Risk still skews to the downside; the OFP caps your exposure."},
     {k:"pHome",   label:"Home off-peak electricity",   v:7,     prev:7,     f:"pkwh", src:"https://energy-stats.uk/intelligent-octopus-go/", srcName:"Energy Stats",
-     note:"Intelligent Octopus Go, 4-7p by region since the April 2026 cut."},
-    {k:"eff",     label:"Real-world efficiency",       v:4.0,   prev:3.9,   f:"mikwh", src:"", srcName:"",
-     note:"ESTIMATED. The Long Range pack is a little more efficient per mile than the base RWD despite the extra weight. Immaterial to the ranking either way."},
-    {k:"ins",     label:"Insurance",                   v:1000,  prev:950,   f:"gbpy", src:"https://www.nimblefins.co.uk/cheap-car-insurance/tesla-3-cost", srcName:"NimbleFins",
-     note:"ESTIMATED, above the base Model Y. Identical across all five routes, so it never changes the ranking."},
+     note:"RECONFIRMED 3 Aug 2026. Intelligent Octopus Go cut rates up to 39% on 1 Apr 2026; still ~7p/kWh (4-7p by region) over the guaranteed overnight window."},
+    {k:"eff",     label:"Real-world efficiency",       v:4.0,   prev:4.0,   f:"mikwh", src:"", srcName:"",
+     note:"Unchanged, still ESTIMATED. The Long Range pack is a little more efficient per mile than the base RWD despite the extra weight. Immaterial to the ranking either way."},
+    {k:"ins",     label:"Insurance",                   v:1000,  prev:1000,  f:"gbpy", src:"https://www.zego.com/blog/tesla-model-y-insurance-uk-costs-and-insurance-groups/", srcName:"Zego",
+     note:"ESTIMATED, unchanged. Thatcham's early-2026 Juniper re-assessment placed this trim's insurance group at 39 (down from 45), supporting rather than moving this £1,000 estimate. Identical across all five routes, so it never changes the ranking."},
     {k:"ved",     label:"VED, year two onward",        v:200,   prev:200,   f:"gbpy", src:"https://www.honestjohn.co.uk/news/tax-insurance-and-warranties/2026-04/april-ved-tax-increases-2026-rates-explained/", srcName:"Honest John",
-     note:"£200 standard rate. PLUS £440/yr in years 2-6 if list price with options reaches £50,000 — only £1,010 away."},
+     note:"RECONFIRMED. £200 standard rate. PLUS £440/yr in years 2-6 if list price with options reaches £50,000 — only £1,010 away. Threshold itself reconfirmed unchanged at £50,000 for zero-emission cars."},
     {k:"opp",     label:"Opportunity cost of capital", v:5,     prev:5,     f:"pct",  src:"", srcName:"",
      note:"Your assumption, not a market quote."}
   ],
   log: [
-    "<b>30 Jul 2026 — this trim is NOT on the 0% promotion.</b> Swept on the configurator: Premium Long Range RWD is quoted at <b>2.90% APR</b>, carrying £3,468 of interest over 48 months, where both the base Model Y RWD and the Model 3 get 0% and pay nothing. That is the most important fact about this car and it is easy to miss, because the £2,500 deposit contribution and the 30 September deadline are identical.",
-    "<b>£1,010 from the Expensive Car Supplement.</b> At £48,990 almost any option — paint, wheels, white interior — pushes list price over £50,000 and triggers £440/yr in years 2-6. A £1,300 paint upgrade really costs about £3,500.",
-    "<b>Costs about £16,600 more than the base Model Y RWD over four years</b> (£35,407 against £27,548 on each car's best route), and roughly £7,900 more than the Model 3. Some of that is the £7,000 price gap; the rest is losing the 0% deal.",
-    "<b>Tesla's own PCH is the worst route here beyond two years.</b> £449/mo headline plus a £5,591 advance charged on top of all 24 payments — total payable £16,374, an effective £682/mo. Because the advance recurs at every renewal, a rolling PCH reaches £62,215 over five years.",
-    "<b>60-month PCP confirmed at 8.10%</b>: £11,598 of interest. Take the 48-month deal and settle the OFP instead."
+    "<b>3 Aug 2026 — Tesla HP APR corrected from an estimated 5.9% to a confirmed 2.90%,</b> read directly off Tesla's own configurator (60mo, £649/mo, £12,800 down, Representative APR 2.90%) rather than a third-party range. This MOVES THE DECISION for anyone weighing HP against cash: on the old estimate HP was essentially tied with the 60-month PCP for worst option beyond 2 years (4-yr total £42,233); on the confirmed rate it becomes the clear runner-up (4-yr total £38,920), beating cash outright from year 3 on. The 48-month 2.90% PCP remains the outright cheapest route at every horizon regardless.",
+    "<b>Everything else reproduces the 30 Jul reading exactly.</b> OTR £48,990, the 48-month APR still 2.90% (not 0%), the £2,500 contribution, all five mileage tiers, the 60-month PCP at 8.10%, and PCH at £449/mo plus the £5,591 advance rental all checked out identical on the configurator. This shifts nothing — every route moves by the same amount (none), so the ranking and winner are unchanged.",
+    "<b>30 September order/finance deadline confirmed still live and unchanged.</b> About 8.5 weeks away — outside the 4-week urgency window, so no escalation flag this cycle.",
+    "<b>Corrected a stale comparison from last cycle.</b> This trim costs about £7,900 more than the base Model Y RWD over four years on each car's best route (£35,407 against £27,548), and about £10,400 more than the Model 3 (£25,014) — the previous log had these two deltas mismatched (it read £16,600 / £7,900). Some of the gap is the £7,000-11,000 price difference; the rest is losing the 0% promo this trim doesn't get.",
+    "<b>VED, the £50,000 Expensive Car Supplement threshold and the Octopus off-peak rate all reconfirmed unchanged</b> via independent sources — no change to any running-cost assumption this cycle."
   ],
   watch: [
     "<b>Options are the cheapest mistake to avoid.</b> Keep list price under £50,000 and you save £2,200 of Expensive Car Supplement for nothing. This is the highest-return decision on the whole configurator page for this trim.",
     "<b>If 0% ever extends to this trim, re-run everything.</b> Moving from 2.90% to 0% would save roughly £3,500 and would close most of the gap to the cheaper cars. Watch for it before 30 September.",
-    "<b>Consider whether the base Model Y RWD does the job.</b> £16,600 cheaper over four years, and it keeps the 0% deal. The Long Range premium buys 64 miles of range and 1.5 seconds to 60 — worth roughly £345/month.",
+    "<b>Consider whether the base Model Y RWD does the job.</b> About £7,900 cheaper over four years (£27,548 against £35,407 on each car's best route), and it keeps the 0% deal. The Long Range premium buys 64 miles of range and 1.5 seconds to 60 — worth roughly £165/month.",
     "<b>Never take the 60-month PCP.</b> 8.10% against 2.90% costs £8,130 in extra interest.",
     "<b>Tesla PCH only makes sense at exactly two years.</b> Beyond that the recurring advance rental makes it the most expensive route by a wide margin.",
+    "<b>Tesla HP is worth a second look now the real rate is known.</b> At the confirmed 2.90% it beats paying cash outright from year 3 — no longer the also-ran the old 5.9% estimate suggested.",
     "<b>Salary sacrifice.</b> At a 4% BIK rate it still beats all five routes, and it matters more here because the car is dearer."
   ]
 };
@@ -407,9 +408,9 @@ $("foot").innerHTML=`<b>Method.</b> All cash outflows compounded to the end of e
   Depreciation uses a two-stage curve floored at 8% of list. Energy includes 8% charging losses. Post-warranty repair
   budget applies from year five on ownership routes only (Tesla warranty 4 yrs / 50,000 mi). Salary sacrifice
   excluded — at 4% BIK it beats all five and is a different question. Verified against an independent Python model.<br>
-  <b>Tesla Finance figures are indicative.</b> Tesla UK does not publish live rates in fetchable form; defaults come
-  from reported ranges (PCP from 4.9%, HP 3.9–8.9%, 24–60 month terms, 8–12k mile caps) plus documented 0% APR
-  promotions. Get a real quote and re-enter the actual APR, GMFV and monthly.<br>
+  <b>Tesla Finance figures are measured, not estimated.</b> The 48-month PCP (2.90%), the mileage table, the
+  60-month PCP (8.10%), the Hire Purchase APR (2.90%, corrected 3 Aug 2026) and the Personal Contract Hire quote
+  were all read directly off Tesla's UK configurator by driving it in a browser.<br>
   <b>Freshness.</b> Rebuilt weekly by the <i>model3-market-watch</i> scheduled task, which re-checks price, PCP and HP
   rates, any 0% promotion, lease quotes, residuals, energy tariffs, insurance and VED, then rewrites the tracked-inputs
   block and change log. Indicative only, not financial advice.`;

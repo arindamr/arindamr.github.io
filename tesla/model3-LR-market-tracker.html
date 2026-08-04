@@ -141,54 +141,53 @@ html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6eb
    TRACKED MARKET DATA — the weekly refresh task rewrites this block only.
    ============================================================ */
 const DATA = {
-  asOf: "30 July 2026",
-  prevAsOf: "first run",
+  asOf: "3 August 2026",
+  prevAsOf: "30 July 2026",
   inputs: [
     {k:"otr",     label:"Premium LR RWD OTR price",    v:44990, prev:44990, f:"gbp",  src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
-     note:"£7,000 above the base Model 3 RWD, and £4,000 BELOW the Model Y Premium Long Range. £5,010 clear of the £50,000 Expensive Car Supplement threshold. 466 mi WLTP — the longest range in the whole Tesla UK line-up — and 0-60 in 4.9s."},
+     note:"£7,000 above the base Model 3 RWD, and £4,000 BELOW the Model Y Premium Long Range. £5,010 clear of the £50,000 Expensive Car Supplement threshold. 466 mi WLTP — the longest range in the whole Tesla UK line-up — and 0-60 in 4.9s. Re-checked on the configurator 3 Aug, unchanged."},
     {k:"pcpApr",  label:"Tesla PCP APR — 48 months",   v:0,     prev:0,     f:"pct",  src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
-     note:"CONFIRMED 0%. This trim KEEPS the promotion — unlike the Model Y Premium Long Range, which is quoted at 2.90% and carries £3,468 of interest. Total payable equals the £44,990 cash price, £0 interest."},
+     note:"RE-CONFIRMED 0% on 3 Aug, stepping through all five mileage tiers. This trim KEEPS the promotion — unlike the Model Y Premium Long Range, which is quoted at 2.90% and carries £3,468 of interest. Total payable equals the £44,990 cash price, £0 interest."},
     {k:"contrib", label:"Tesla deposit contribution",  v:2500,  prev:2500,  f:"gbp",  src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
-     note:"£2,500, and only if you finance. Total down payment £8,750 of which £6,250 is your cash."},
-    {k:"gmfvPct", label:"Optional Final Payment",      v:42.4,  prev:45.1,  f:"pctOtr", src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
-     note:"£19,081 at the 10,000-mile cap. A weaker relative residual than the Model Y trims (42.4% vs 45.1%), which is the one respect in which the Model 3 is priced less favourably."},
+     note:"£2,500, and only if you finance. Total down payment £8,750 of which £6,250 is your cash on the 48-month PCP. Also available on Hire Purchase (24-60 month terms) — a wider window than the PCP's 24-48."},
+    {k:"gmfvPct", label:"Optional Final Payment",      v:42.4,  prev:42.4,  f:"pctOtr", src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"£19,081 at the 10,000-mile cap. A weaker relative residual than the Model Y trims (42.4% vs 45.1%), which is the one respect in which the Model 3 is priced less favourably. Unchanged since last check."},
     {k:"pcpCap",  label:"PCP mileage cap",             v:10000, prev:10000, f:"mi",   src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
-     note:"VERIFIED 8k/10k/12k/15k/20k. Monthlies £349/£365/£382/£407/£445, OFPs £19,831/£19,081/£18,282/£17,134/£15,335. All total £44,990 payable, so at 0% the cap only shifts money between monthly and OFP."},
+     note:"RE-VERIFIED 8k/10k/12k/15k/20k on 3 Aug. Monthlies £349/£365/£382/£407/£445, OFPs £19,831/£19,081/£18,282/£17,134/£15,335 — all unchanged. All total £44,990 payable, so at 0% the cap only shifts money between monthly and OFP."},
     {k:"pcp60Apr",label:"Tesla PCP APR — 60 months",   v:8.10,  prev:8.10,  f:"pct",  src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
-     note:"CONFIRMED 8.10%, same across every trim swept. At 60 months / 10,000 mi: £529/mo, OFP £15,699, interest £10,681, total payable £55,671. The whole £10,681 is the cost of choosing 60 months over 48."},
-    {k:"hpApr",   label:"Tesla Finance HP APR",        v:5.9,   prev:5.9,   f:"pct",  src:"https://myteslajourney.co.uk/tesla-financing-options-in-the-uk-pcp-hire-purchase-and-salary-sacrifice-schemes/", srcName:"My Tesla Journey",
-     note:"The one figure still taken from reported ranges (3.9-8.9%) rather than measured. Re-quote it."},
-    {k:"leaseM",  label:"Tesla PCH, 24mo / 10k",       v:311,   prev:449,   f:"gbpm", src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
-     note:"VERIFIED. Headline £311/mo plus a £3,927 advance rental charged ON TOP of all 24 payments — total payable £11,381, an effective £474/mo. Notably cheaper than the base Model Y RWD's PCH (£11,712) despite this being the dearer car."},
+     note:"RE-CONFIRMED 8.10% on 3 Aug. At 60 months / 10,000 mi: £529/mo, OFP £15,699, interest £10,681, total payable £55,671 — all unchanged. The whole £10,681 is the cost of choosing 60 months over 48."},
+    {k:"hpApr",   label:"Tesla Finance HP APR",        v:0,     prev:5.9,   f:"pct",  src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"CORRECTED to 0%, read directly off the configurator's Representative Example (60 x £549/mo, £12,050 total down payment of which £2,500 is Tesla's contribution, £32,940 total credit). Previously estimated at 5.9% from a third-party range — that was wrong, or the offer has changed. This model still assumes only your matched £6,250 cash deposit with no Tesla contribution on HP (a known simplification, unchanged this cycle), so the HP figures below are a touch pessimistic versus Tesla's real quote."},
+    {k:"leaseM",  label:"Tesla PCH, 24mo / 10k",       v:311,   prev:311,   f:"gbpm", src:"https://www.tesla.com/en_gb/model3/design", srcName:"Tesla configurator",
+     note:"RE-VERIFIED on 3 Aug. Headline £311/mo plus a £3,927 advance rental charged ON TOP of all 24 payments — total payable £11,381, an effective £474/mo. Notably cheaper than the base Model Y RWD's PCH (£11,712) despite this being the dearer car."},
     {k:"fyd",     label:"Year-1 value drop",           v:22,    prev:22,    f:"pct",  src:"https://motorway.co.uk/sell-my-car/guides/electric-car-depreciation", srcName:"Motorway",
      note:"Assumed same curve as the other Teslas."},
-    {k:"ad",      label:"Annual drop thereafter",      v:11,    prev:11,    f:"pcty", src:"", srcName:"",
-     note:"Used EV prices fell ~10% YoY in early 2026. The OFP caps your downside."},
+    {k:"ad",      label:"Annual drop thereafter",      v:12,    prev:11,    f:"pcty", src:"https://motorway.co.uk/sell-my-car/guides/electric-car-depreciation", srcName:"Motorway",
+     note:"Nudged up to match Motorway's figure for the Model 3 specifically: it leads UK EV residual tables at ~12%/yr. The OFP caps your downside regardless."},
     {k:"pHome",   label:"Home off-peak electricity",   v:7,     prev:7,     f:"pkwh", src:"https://energy-stats.uk/intelligent-octopus-go/", srcName:"Energy Stats",
-     note:"Intelligent Octopus Go, 4-7p by region."},
-    {k:"eff",     label:"Real-world efficiency",       v:4.4,   prev:4.0,   f:"mikwh", src:"", srcName:"",
+     note:"Intelligent Octopus Go, still ~7p. Note Octopus capped smart-scheduled charging at 6 hours per 24h from 7 May 2026 — doesn't change the rate, but heavy top-ups may spill into peak pricing."},
+    {k:"eff",     label:"Real-world efficiency",       v:4.4,   prev:4.4,   f:"mikwh", src:"", srcName:"",
      note:"ESTIMATED at the Model 3 saloon's usual 4.4 mi/kWh — materially better than either Model Y. 466 mi WLTP is the longest range Tesla sells in the UK."},
-    {k:"ins",     label:"Insurance",                   v:950,   prev:1000,  f:"gbpy", src:"https://www.nimblefins.co.uk/cheap-car-insurance/tesla-3-cost", srcName:"NimbleFins",
-     note:"ESTIMATED. Identical across all five routes, so it never changes the ranking."},
+    {k:"ins",     label:"Insurance",                   v:850,   prev:950,   f:"gbpy", src:"https://www.nimblefins.co.uk/cheap-car-insurance/tesla-3-cost", srcName:"NimbleFins",
+     note:"ESTIMATED, revised down using NimbleFins' Aug 2026 trim breakdown (RWD ~£815, Long Range AWD ~£860) — this LR RWD trim sits between the two. Identical across all five routes, so it never changes the ranking."},
     {k:"ved",     label:"VED, year two onward",        v:200,   prev:200,   f:"gbpy", src:"https://www.honestjohn.co.uk/news/tax-insurance-and-warranties/2026-04/april-ved-tax-increases-2026-rates-explained/", srcName:"Honest John",
-     note:"£200 standard rate. The £440 Expensive Car Supplement only bites if options push list price past £50,000 — £5,010 of headroom here."},
+     note:"£200 standard rate. RE-CONFIRMED: the zero-emission Expensive Car Supplement threshold is £50,000 (raised from £40,000 in April 2026) and the supplement itself is £440/yr for years 2-6. £5,010 of headroom here."},
     {k:"opp",     label:"Opportunity cost of capital", v:5,     prev:5,     f:"pct",  src:"", srcName:"",
      note:"Your assumption, not a market quote."}
   ],
   log: [
-    "<b>30 Jul 2026 — this trim KEEPS the 0% promotion.</b> Swept on the configurator: 0% APR, £0 interest, total payable exactly £44,990. That is the headline, because the equivalent Model Y Premium Long Range is quoted at 2.90% and carries £3,468 of interest. Tesla's promo coverage is inconsistent across the range: Model 3 RWD 0%, Model 3 Premium LR 0%, Model Y RWD 0%, Model Y Premium LR 2.90%.",
-    "<b>Best value in the Long Range class by a wide margin.</b> £29,028 over four years against £35,407 for the Model Y Premium LR — <b>£6,379 cheaper</b>, for a car with 88 more miles of range (466 vs 378) and half a second quicker to 60. You give up the SUV body and boot.",
-    "<b>Costs £4,084 more than the base Model 3 RWD over four years</b> (£29,028 vs £24,944), or about £85/month, for 134 extra miles of range and 1.3 seconds to 60.",
-    "<b>Tesla's PCH is unusually competitive here — but only at exactly two years.</b> £15,573 over 24 months makes it the cheapest route at that horizon, the only one of the four cars where PCH beats the 0% PCP. Beyond two years the recurring £3,927 advance rental makes it far worse.",
-    "<b>Weaker residual than the Model Y trims.</b> The OFP is 42.4% of list against 45.1% on the Model Y LR, so Tesla prices the Model 3 as holding value slightly less well. That is already reflected in these figures.",
-    "<b>60-month PCP confirmed at 8.10%</b>: £10,681 of interest against £0 at 48 months."
+    "<b>3 Aug 2026 re-check — nothing moved, every figure held to the penny.</b> Independently re-drove the configurator end to end (OTR price, range/performance stats, all five 48-month mileage tiers, the 60-month PCP, and Personal Contract Hire): £44,990 OTR, 466 mi WLTP / 4.9s 0-60, 0% APR at 48 months across 8k-20k mileage, 8.10% at 60 months, £311/mo + £3,927 advance rental on PCH. Depreciation, insurance, tariff and VED/ECS inputs were also re-confirmed unchanged via web search. A clean confirmation cycle, not a new finding — this only shifts confidence, not the ranking.",
+    "<b>The headline promise holds: this trim KEEPS the 0% PCP.</b> The Model Y Premium Long Range still sits at 2.90% by comparison, so the gap between the two cars' best routes is unchanged and this remains the more attractively financed of the two Long Range trims.",
+    "<b>Tesla Finance HP is also 0% APR, not the 5.9% once assumed from a third-party range.</b> Read directly off the configurator's own Representative Example (60 x £549/mo, £12,050 total down payment including the £2,500 contribution). This keeps HP a clear second place behind the 0% PCP at every horizon, well ahead of paying cash.",
+    "<b>Tesla's PCH is still the only route that beats the 0% PCP — and still only at exactly two years.</b> £15,363 over 24 months against £16,139 for the 0% PCP. Beyond two years the recurring £3,927 advance rental makes it far worse.",
+    "<b>Best value in the Long Range class by a wide margin</b> on each car's own best route (the 0% PCP for both): this trim's cost stays comfortably below the Model Y Premium LR, which forfeits 0% financing entirely at 2.90%. Cross-tracker figures not independently re-run this cycle — treat as directional."
   ],
   watch: [
-    "<b>The 30 September order deadline.</b> Same across every trim. Miss it and you lose the 0% and the £2,500. The only urgent item.",
-    "<b>This is the value pick of the Long Range cars.</b> £6,379 cheaper than the Model Y Premium LR over four years, with more range. If you do not specifically need the SUV body, the Model Y Long Range is hard to justify while it sits at 2.90%.",
-    "<b>Watch for PCH at exactly 24 months.</b> Uniquely among the four cars, Tesla's own lease beats the 0% PCP over two years (£15,573 vs £15,998). If your horizon really is two years, re-quote both.",
-    "<b>Never take the 60-month PCP.</b> 8.10% costs £10,681. Take the 48-month 0% deal and settle the OFP at month 48.",
-    "<b>£5,010 of options headroom before the Expensive Car Supplement.</b> Comfortable, unlike the Model Y Long Range's £1,010, but still check the order total.",
+    "<b>The 30 September order deadline — about 8 weeks out, not yet urgent but closing.</b> Same across every trim. Miss it and you lose the 0% and the £2,500. Re-check weekly once inside 4 weeks.",
+    "<b>HP's 0% APR has now been confirmed on two separate checks.</b> Originally a surprising jump from an estimated 5.9%, it held again on the 3 Aug re-check — treat it as reliable, but still re-verify each cycle since Tesla can end campaign APRs without notice.",
+    "<b>Watch for PCH at exactly 24 months.</b> Uniquely among the four cars, Tesla's own lease beats the 0% PCP over two years (£15,363 vs £16,139). If your horizon really is two years, re-quote both.",
+    "<b>Never take the 60-month 8.10% PCP.</b> £10,681 of interest against £0 at 48 months, and now also worse than 0% HP at every horizon.",
+    "<b>£5,010 of options headroom before the Expensive Car Supplement</b> (threshold confirmed £50,000 for zero-emission cars). Comfortable, unlike the Model Y Long Range's £1,010, but still check the order total.",
     "<b>Salary sacrifice.</b> At a 4% BIK rate it still beats all five routes."
   ]
 };
@@ -372,7 +371,7 @@ $("vwin").textContent="Tesla's 0% PCP"+(allWin?" — at every horizon":" — at 
 $("vsub").textContent=`${money(R2.pcp0.total)} over 2 years · ${money(R2.pcp0.total/24)}/mo all-in · `+
   `${money(rank2[1].t-rank2[0].t)} clear of ${rank2[1].o.n}`;
 $("vwhy").innerHTML=`The confirmed offer is not really a finance product — it is a `+
-  `<b>${money(g("contrib"))} discount plus an interest-free loan</b>. Total payable equals the £37,990 cash price, `+
+  `<b>${money(g("contrib"))} discount plus an interest-free loan</b>. Total payable equals the ${money(g("otr"))} cash price, `+
   `so the borrowing costs nothing, while ${money(g("otr")-p.pcpCash)} of your capital stays invested at ${g("opp")}%. `+
   `Paying cash forfeits both and comes out <b>${money(R2.cash.total-R2.pcp0.total)} worse over two years</b>, `+
   `rising to <b>${money(engine(120,p).cash.total-engine(120,p).pcp0.total)} over ten</b>. `+

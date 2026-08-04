@@ -286,8 +286,8 @@ html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6eb
       <div class="card">
         <h2>Mileage cap — is it cheaper to take 8,000 and pay the excess?</h2>
         <p class="hint" style="margin:-6px 0 12px">
-          Tesla's five real options, read off the configurator on 30 July 2026. At 0% APR every one totals
-          <b>£37,990 payable</b> — raising the cap simply moves money out of the Optional Final Payment and into the
+          Tesla's five real options, reconfirmed live on the configurator on 3 August 2026. At 0% APR every one totals
+          <b>£41,990 payable</b> — raising the cap simply moves money out of the Optional Final Payment and into the
           monthly. So the cap is not really a price decision. It is a bet on whether you will
           <b>settle the OFP and keep the car</b>, or <b>hand it back</b>.</p>
         <table id="capTable"></table>
@@ -327,10 +327,11 @@ html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6eb
 
 <script>
 /* ================= Tesla's actual OFP table =================
-   Read directly off the UK configurator on 30 July 2026 (Personal: PCP,
-   48 months, total down payment £7,800, total credit £34,190, 0% APR).
-   Every row totals £41,990 payable — the mileage cap only moves money
-   between the monthly payment and the Optional Final Payment.          */
+   Read directly off the UK configurator, reconfirmed live 3 Aug 2026
+   (Personal: PCP, 48 months, total down payment £7,800, total credit
+   £34,190, 0% APR). Every row totals £41,990 payable — the mileage cap
+   only moves money between the monthly payment and the Optional Final
+   Payment. Unchanged since the 30 Jul 2026 check.                      */
 const TESLA_MILEAGE=[
   {mi:8000,  monthly:299, ofp:20131},
   {mi:10000, monthly:319, ofp:19206},
@@ -360,14 +361,14 @@ const SPEC = {
   maintEsc :{l:"Maintenance escalation",     min:0,    max:20,  step:1,    v:8,     f:v=>"+"+v+"%/yr", h:"Compounds with age. Barely matters over 2 years, starts to bite by 5."},
   postWar  :{l:"Post-warranty repair budget",min:0,    max:2000,step:50,   v:450,   f:v=>"£"+v.toLocaleString()+"/yr", h:"Applies from year 5. Tesla's vehicle warranty is 4 yrs / 50,000 mi; battery and drive unit 8 yrs."},
 
-  hpDep    :{l:"HP deposit",                 min:0,    max:20000,step:50,  v:5300,  f:v=>"£"+v.toLocaleString(), h:"Matched to the PCP cash deposit so the routes are comparable. HP gets no deposit contribution."},
-  hpApr    :{l:"HP APR",                     min:0,    max:12,  step:0.1,  v:5.9,   f:v=>v.toFixed(1)+"%", h:"Tesla HP quoted at 3.9–8.9% depending on profile. You own it from day one, no balloon."},
+  hpDep    :{l:"HP deposit",                 min:0,    max:20000,step:50,  v:12050, f:v=>"£"+v.toLocaleString(), h:"CORRECTED 3 Aug 2026 to match Tesla's live HP quote: £12,050 down (of which £2,500 is the deposit contribution), giving £29,940 total credit. Previously modelled at £5,300 to match the PCP cash deposit — that understated the real cash HP requires; this is now the measured figure."},
+  hpApr    :{l:"HP APR",                     min:0,    max:12,  step:0.1,  v:0,     f:v=>v.toFixed(1)+"%", h:"UPDATED 3 Aug 2026: Tesla's configurator now quotes HP at 0% representative APR too (checked at 48 and 60 months), as part of the same promo as the 0% PCP. Previously modelled at 5.9% from third-party reports — this is now a measured first-party figure. You own the car from day one, no balloon."},
   hpTerm   :{l:"HP term",                    min:24,   max:60,  step:12,   v:60,    f:v=>v+" months"},
 
   pcpCash  :{l:"Your cash deposit",          min:0,    max:20000,step:50,  v:5300,  f:v=>"£"+v.toLocaleString(), h:"Tesla's example: £7,800 total down payment, of which £2,500 is their contribution — so £5,300 is your money."},
   contrib  :{l:"Tesla deposit contribution", min:0,    max:5000,step:50,   v:2500,  f:v=>"£"+v.toLocaleString(), h:"Free money, but ONLY if you finance. Cash buyers forgo it. Applies to 24–48 month terms, not stackable."},
   pcpTerm  :{l:"PCP term",                   min:24,   max:60,  step:12,   v:48,    f:v=>v+" months", h:"47 monthly payments then the Optional Final Payment. Beyond the term you settle it and own the car."},
-  pcpCap   :{l:"PCP mileage cap",            min:0,    max:4,   step:1,    v:1,     f:v=>TESLA_MILEAGE[v].mi.toLocaleString()+" mi/yr → £"+TESLA_MILEAGE[v].monthly+"/mo, OFP £"+TESLA_MILEAGE[v].ofp.toLocaleString(), h:"Tesla's five actual options, read off the configurator. Defaulted to 10,000 to match your mileage — see the cap analysis below. Raising the cap raises the monthly and lowers the OFP; total payable stays £37,990 either way."},
+  pcpCap   :{l:"PCP mileage cap",            min:0,    max:4,   step:1,    v:1,     f:v=>TESLA_MILEAGE[v].mi.toLocaleString()+" mi/yr → £"+TESLA_MILEAGE[v].monthly+"/mo, OFP £"+TESLA_MILEAGE[v].ofp.toLocaleString(), h:"Tesla's five actual options, reconfirmed on the configurator 3 Aug 2026. Defaulted to 10,000 to match your mileage — see the cap analysis below. Raising the cap raises the monthly and lowers the OFP; total payable stays £41,990 either way."},
   pcpExcess:{l:"PCP excess mileage",         min:5,    max:35,  step:0.1,  v:16.8,  f:v=>v.toFixed(1)+"p/mile", h:"14p plus VAT = 16.8p."},
   pcpApr   :{l:"60-month PCP APR",           min:0,    max:15,  step:0.05, v:8.10,  f:v=>v.toFixed(2)+"%", h:"Confirmed 8.10% on Model Y too. At 60 months you pay £10,274 of interest against £0 at 48."},
   pcp60Ofp :{l:"60-month OFP",               min:8000, max:26000,step:100, v:15889, f:v=>"£"+v.toLocaleString(), h:"VERIFIED from the configurator: 60 months / 10,000 mi gives £484/mo, OFP £15,889, £10,274 of interest, total payable £52,264."},
@@ -1016,7 +1017,7 @@ function renderCap(){
       is the option <i>not</i> to.</div>
     <div class="hint" style="margin-top:9px">
       Why the "settle &amp; keep" column barely moves: at 0% APR the cap shifts money between the monthly and the OFP
-      but the total payable is £37,990 regardless, so the only difference is the timing of your own cash.
+      but the total payable is £41,990 regardless, so the only difference is the timing of your own cash.
       The hand-back column moves a lot because the excess charge is genuinely new money.
       Note too that a higher cap raises your effective hand-back threshold — you would walk away from a car worth less
       than ${money(bestH.strike)} on the ${bestH.t.mi.toLocaleString()}-mile deal, against only ${money(lo.strike)}

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What I learned building an agent that verifies itself</title>
+<meta name="description" content="An engineering field report on building an agentic workflow that drives a live browser, validates its own financial model against a falsifiable identity, and re-checks itself weekly. Including the failure where none of it worked.">
+<link rel="canonical" href="https://arindamr.github.io/tesla/how-it-was-built.html">
+<meta property="og:title" content="What I learned building an agent that verifies itself">
+<meta property="og:description" content="Four scheduled agents, running weekly, stamping fresh dates on stale data. None of them had ever reached the browser. It never errored once.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://arindamr.github.io/tesla/how-it-was-built.html">
+<style>
+  :root{
+    --bg:#0e1116; --panel:#161b23; --panel2:#1d2430; --line:#2b3441;
+    --tx:#e6ebf2; --tx2:#96a2b4; --tx3:#6b7787; --acc:#4da3ff;
+    --win:#3ecf8e; --warn:#e8c78f; --bad:#f2707f;
+    --tx-soft:#cdd6e2; --tx-mute:#b8c3d1; --strong:#ffffff; --link:#7aa5cf;
+    --on-acc:#08131f;
+    --ok-bg:#12251d; --ok-bd:#2c5c45; --ok-fg:#9fdcbd;
+    --warn-bg:#241c12; --warn-bd:#4a3620;
+    --info-bg:#141d29; --info-bd:#26384d; --info-fg:#a8c4de;
+    --bad-bg:#2a1620; --bad-bd:#5c2c39;
+    --code-bg:#11161d; --code-bd:#242c38; --code-tx:#c7d3e2;
+    --code-key:#7aa5cf; --code-com:#5f6b7c; --code-num:#9fdcbd;
+    --rule:#2b3441;
+    color-scheme:dark;
+  }
+  html[data-theme="light"]{
+    --bg:#ffffff; --panel:#f7f8fa; --panel2:#eef1f6; --line:#dfe4ea;
+    --tx:#1a1f27; --tx2:#5c6673; --tx3:#8b949e; --acc:#1a63c7;
+    --win:#0f7a52; --warn:#7a5312; --bad:#b3372b;
+    --tx-soft:#39424f; --tx-mute:#4a5462; --strong:#0d1117; --link:#1a63c7;
+    --on-acc:#ffffff;
+    --ok-bg:#eef8f2; --ok-bd:#b9dfcc; --ok-fg:#0f7a52;
+    --warn-bg:#fdf6ec; --warn-bd:#eed9b4;
+    --info-bg:#eef4fb; --info-bd:#c9dcf0; --info-fg:#2c5a8a;
+    --bad-bg:#fbe9ef; --bad-bd:#f0cdd8;
+    --code-bg:#f4f6f9; --code-bd:#e2e7ee; --code-tx:#26303c;
+    --code-key:#1a63c7; --code-com:#7c8794; --code-num:#0f7a52;
+    --rule:#e6eaef;
+    color-scheme:light;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font:16px/1.68 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:0 22px 90px}
+  a{color:var(--link)}
+  a:hover{color:var(--acc)}
+
+  .crumb{padding:26px 0 0;font-size:13px;color:var(--tx3)}
+  .crumb a{color:var(--tx2);text-decoration:none}
+  .crumb a:hover{color:var(--acc)}
+
+  header{padding:30px 0 6px;border-bottom:1px solid var(--rule);margin-bottom:30px}
+  h1{font-size:33px;line-height:1.17;letter-spacing:-.032em;margin:0 0 14px;color:var(--strong)}
+  .standfirst{font-size:18px;line-height:1.55;color:var(--tx-soft);margin:0 0 20px}
+  .meta{font-size:12.5px;color:var(--tx3);margin:0 0 26px;letter-spacing:.01em}
+  .meta b{color:var(--tx2);font-weight:600}
+
+  h2{font-size:22px;letter-spacing:-.022em;margin:44px 0 6px;color:var(--strong);line-height:1.25}
+  h2 .n{color:var(--tx3);font-weight:400;font-size:15px;display:block;letter-spacing:.09em;
+    text-transform:uppercase;margin-bottom:7px}
+  h3{font-size:16.5px;letter-spacing:-.012em;margin:30px 0 4px;color:var(--tx)}
+  p{margin:0 0 17px}
+  ul,ol{margin:0 0 17px;padding-left:22px}
+  li{margin-bottom:8px}
+  strong{color:var(--strong);font-weight:650}
+  em{color:var(--tx-soft)}
+  hr{border:none;border-top:1px solid var(--rule);margin:44px 0}
+
+  pre{background:var(--code-bg);border:1px solid var(--code-bd);border-radius:9px;
+    padding:15px 17px;overflow-x:auto;margin:0 0 18px;
+    font:13px/1.62 ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;color:var(--code-tx)}
+  code{font:13.2px/1.5 ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    background:var(--code-bg);border:1px solid var(--code-bd);border-radius:5px;padding:1.5px 5px;color:var(--code-tx)}
+  pre code{background:none;border:none;padding:0;font-size:inherit;line-height:inherit}
+  pre .c{color:var(--code-com)}
+  pre .k{color:var(--code-key)}
+  pre .v{color:var(--code-num)}
+  .caption{font-size:12.5px;color:var(--tx3);margin:-10px 0 20px;line-height:1.55}
+
+  .callout{border-radius:10px;padding:15px 18px;margin:0 0 20px;font-size:15px;line-height:1.6}
+  .callout p:last-child{margin-bottom:0}
+  .callout.bad{background:var(--bad-bg);border:1px solid var(--bad-bd)}
+  .callout.good{background:var(--ok-bg);border:1px solid var(--ok-bd)}
+  .callout.info{background:var(--info-bg);border:1px solid var(--info-bd)}
+  .callout.warn{background:var(--warn-bg);border:1px solid var(--warn-bd)}
+  .callout b{color:var(--strong)}
+
+  .pull{border-left:3px solid var(--acc);padding:2px 0 2px 18px;margin:26px 0;
+    font-size:18px;line-height:1.5;color:var(--tx-soft);letter-spacing:-.01em}
+
+  table{width:100%;border-collapse:collapse;font-size:13.8px;margin:0 0 8px}
+  th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);
+    font-variant-numeric:tabular-nums}
+  th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+  th{color:var(--tx2);font-weight:700;font-size:10.8px;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:none}
+  td.g{color:var(--win);font-weight:650}
+  td.r{color:var(--bad);font-weight:650}
+
+  .toc{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:17px 20px;margin:0 0 34px}
+  .toc h4{margin:0 0 10px;font-size:10.8px;text-transform:uppercase;letter-spacing:.09em;color:var(--tx2);font-weight:700}
+  .toc ol{margin:0;padding-left:19px;font-size:14.2px}
+  .toc li{margin-bottom:5px}
+  .toc a{text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+
+  .cta{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:19px 21px;margin:30px 0}
+  .cta h4{margin:0 0 7px;font-size:16px;color:var(--strong);letter-spacing:-.015em}
+  .cta p{font-size:14.2px;color:var(--tx2);margin:0 0 13px}
+  .cta a.btn{display:inline-block;background:var(--acc);color:var(--on-acc);text-decoration:none;
+    font-weight:650;font-size:13.5px;padding:9px 16px;border-radius:8px}
+  .cta a.btn:hover{opacity:.9}
+
+  footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--rule);
+    font-size:12.8px;color:var(--tx3);line-height:1.72}
+  footer p{margin:0 0 11px}
+  footer a{color:var(--link)}
+
+  /* theme toggle */
+  #themeBtn{position:fixed;top:14px;right:16px;z-index:9999;display:flex;align-items:center;gap:7px;
+    padding:8px 13px;border-radius:20px;cursor:pointer;
+    font:600 12.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+    border:1px solid var(--tt-bd);background:var(--tt-bg);color:var(--tt-fg);
+    box-shadow:0 2px 10px rgba(0,0,0,.18);transition:transform .12s,border-color .12s;
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  #themeBtn:hover{transform:translateY(-1px);border-color:var(--tt-hv)}
+  #themeBtn svg{width:15px;height:15px;flex:none}
+  @media print{#themeBtn{display:none}}
+  @media(max-width:600px){#themeBtn span{display:none}#themeBtn{padding:9px;border-radius:50%}}
+  :root{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6ebf2;--tt-hv:#4da3ff}
+  html[data-theme="light"]{--tt-bg:rgba(255,255,255,.94);--tt-bd:#dfe4ea;--tt-fg:#1a1f27;--tt-hv:#1a63c7}
+  html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6ebf2;--tt-hv:#7ab4ff}
+
+  @media(max-width:600px){
+    body{font-size:15.5px}
+    h1{font-size:27px}
+    h2{font-size:20px}
+    .standfirst{font-size:16.5px}
+    pre{font-size:12px;padding:13px 14px}
+  }
+</style>
+<script>
+(function(){
+  var DEF="dark";
+  function saved(){try{return localStorage.getItem("tesla-tco-theme");}catch(e){return null;}}
+  var p=new URLSearchParams(location.search).get("theme");
+  var t=p||saved();
+  if(!t){try{t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}catch(e){t=DEF;}}
+  document.documentElement.setAttribute("data-theme",t);
+  if(p){try{localStorage.setItem("tesla-tco-theme",p);}catch(e){}}
+})();
+</script>
+</head>
+<body>
+<div class="wrap">
+
+<div class="crumb"><a href="index.html">&larr; Back to the decision hub</a></div>
+
+<header>
+  <h1>What I learned building an agent that verifies itself</h1>
+  <p class="standfirst">I spent a weekend building an agentic workflow against a decision with real money
+    attached. It drives a live browser to read data, validates its own financial model against a check that
+    can fail, and re-verifies itself weekly without me. The most useful thing I found was that for its first
+    few weeks, none of that worked, and it never once told me.</p>
+  <p class="meta"><b>Arindam Roy</b> &middot; 4 August 2026 &middot; roughly 12 minutes</p>
+</header>
+
+<div class="toc">
+  <h4>Contents</h4>
+  <ol>
+    <li><a href="#problem">The problem, and why it is not a scraping problem</a></li>
+    <li><a href="#browser">Driving the browser, and the one thing nobody warns you about</a></li>
+    <li><a href="#identity">Making the model prove itself</a></li>
+    <li><a href="#reproduce">Reproducing the source's own numbers</a></li>
+    <li><a href="#silent">The failure I did not see coming</a></li>
+    <li><a href="#weak">My verification was the next thing to break</a></li>
+    <li><a href="#lessons">What actually separated this from a demo</a></li>
+  </ol>
+</div>
+
+<p>Agents do not fail loudly. They fail silently, and hand you a confident, plausible, wrong answer.</p>
+
+<p>That sentence is the whole post, and the rest of it is evidence. What follows is an engineering field
+report rather than a tutorial: the design decisions, the four categories of bug I hit, the code for the
+check that caught them, and a longer section on the failure mode that I think matters most and that gets
+written about least.</p>
+
+<p>The output of the work is <a href="index.html">a cost-of-ownership tool</a> covering four UK Tesla
+variants across four ownership horizons and five ways of paying. The car is incidental. It was chosen
+because I actually needed to make the decision, which meant I could not accept an answer that merely
+looked reasonable, and because the source data has exactly the property that makes this class of problem
+interesting.</p>
+
+<hr>
+
+<h2 id="problem"><span class="n">One</span>The problem, and why it is not a scraping problem</h2>
+
+<p>I wanted to compare five acquisition routes across four holding periods: cash, hire purchase, a
+promotional 48-month PCP at 0% APR, a 60-month PCP at the standard rate, and a rolling personal lease.
+Twenty combinations per car, four cars.</p>
+
+<p>The blocking constraint was the input data. Manufacturer finance terms are not published as a table.
+They live inside a configurator: you pick a trim, then a finance type, then a term, then an annual
+mileage cap, and each of those choices re-derives the monthly payment, the optional final payment, the
+total interest and the deposit contribution. The numbers do not exist as data anywhere. They are computed
+in the browser, in response to what you clicked.</p>
+
+<p>So a plain HTTP fetch returns an empty shell. Not a partial page: a document skeleton with no figures
+in it at all, because the figures are produced by JavaScript that a fetch never runs. This is not a
+scraping problem with a harder selector. There is nothing to select.</p>
+
+<div class="callout info">
+  <p><b>The distinction that mattered:</b> <em>verified</em> and <em>estimated</em> are different products.
+  An estimated model is a plausible essay about a decision. A verified one can be checked against the thing
+  it claims to describe. Everything downstream in this project follows from refusing to accept estimates
+  where a measurement was obtainable.</p>
+</div>
+
+<p>The obtainable measurement was the one a human gets by clicking. So the agent clicked.</p>
+
+<hr>
+
+<h2 id="browser"><span class="n">Two</span>Driving the browser, and the one thing nobody warns you about</h2>
+
+<p>The agent opened the real configurator in a real browser, dismissed the cookie banner by declining
+non-essential cookies, opened the finance panel, switched the finance type from the business default to
+personal, then stepped through every annual mileage option at each term and read the full representative
+example each time.</p>
+
+<p>That last detail is where the value is. The headline figure the page shows you is a monthly payment.
+The representative example underneath it carries the optional final payment, the total interest, the APR,
+the total amount payable and the deposit contribution. Reading only the headline gets you a number that
+looks like an answer and is missing the four quantities that determine whether it is a good one.</p>
+
+<p>Twenty quotes captured this way, exact rather than inferred.</p>
+
+<h3>Stale element references</h3>
+
+<p>Here is the practical thing I had not internalised before doing this. In a client-rendered interface,
+an element reference goes stale after every re-render. Change the mileage dropdown and the payment block
+is destroyed and rebuilt. Any handle you were holding now points at a node that is no longer in the
+document.</p>
+
+<p>Reuse it and you do not get an exception. You get a silent no-op. The click reports success, nothing
+moves, and the agent cheerfully reads the previous value and records it against the new setting. You end
+up with five rows in your table that are all the 8,000-mile quote, wearing five different labels.</p>
+
+<div class="pull">A stale click does not throw. It succeeds, changes nothing, and lets you record the
+old number under the new label.</div>
+
+<p>The discipline that fixes it is the same one that fixes flaky end-to-end tests, and it transfers
+directly:</p>
+
+<ul>
+  <li>Re-query the element immediately before every interaction. Never carry a reference across a state
+    change.</li>
+  <li>After acting, assert that the state actually changed, rather than assuming it did. Reading back the
+    control's own displayed value is usually enough.</li>
+  <li>Treat an unchanged value after an intended change as a failure, not as a coincidence. Two mileage
+    bands genuinely producing the same monthly payment is possible but rare, and it is cheaper to
+    investigate a false positive than to ship a table that is quietly all one row.</li>
+</ul>
+
+<hr>
+
+<h2 id="identity"><span class="n">Three</span>Making the model prove itself</h2>
+
+<p>With good inputs, the next risk moves to the model. And a financial model is a uniquely bad thing to
+eyeball, because wrong answers look exactly like right ones. Every figure is a plausible number of pounds.
+There is no syntax error, no failing assertion, no red. The output of a broken cost model and a correct
+one are both a tidy table of four-digit numbers.</p>
+
+<p>So I refused to look at any output until the model could pass a check that was capable of failing.</p>
+
+<h3>What the model actually computes</h3>
+
+<p>Two decisions shape everything. First, the comparison is on <strong>economic cost</strong> rather than
+cash out of pocket. Every outflow is compounded forward to the end of the horizon at an opportunity rate,
+and the value of what you are left holding is subtracted. A cash purchase and a lease are then genuinely
+comparable, because the cash buyer's forgone investment return is charged and the lessee's retained
+capital is credited.</p>
+
+<p>Second, unequal holding periods are compared on <strong>equivalent annual cost</strong>: discount to a
+present value, then annuitise over the term. Comparing a two-year total against a five-year total directly
+is the single most common way this analysis goes wrong, and it always favours the shorter term for no
+reason other than that it is shorter.</p>
+
+<h3>The check</h3>
+
+<p>The falsifiable property I settled on is a telescoping identity. Define equity at the end of year
+<code>y</code> as the car's market value minus any outstanding debt. Then the cost attributable to a single
+year is:</p>
+
+<pre><code><span class="c">// cost of year y, in end-of-horizon money</span>
+cost(y) = FV(cash flows during year y)
+        + E(y-1) * (1 + opportunityRate)
+        - E(y)
+
+<span class="c">// where E(y) = marketValue(y) - outstandingDebt(y)</span></code></pre>
+
+<p>The identity is that compounding the individual annual costs forward to the horizon must reproduce
+the horizon total exactly. Not approximately. The intermediate equity terms cancel in pairs, so if the
+per-year decomposition and the horizon calculation are both right, they are algebraically the same
+number. Any gap is a bug, and the size and sign of the gap tells you roughly where.</p>
+
+<pre><code><span class="c">// the assertion that gates everything else</span>
+<span class="k">for</span> (<span class="k">const</span> H <span class="k">of</span> [<span class="v">24</span>, <span class="v">36</span>, <span class="v">48</span>, <span class="v">60</span>]) {
+  <span class="k">for</span> (<span class="k">const</span> route <span class="k">of</span> ROUTES) {
+    <span class="k">const</span> direct  = engine(H, route).total;
+    <span class="k">const</span> stacked = annual(route, H/<span class="v">12</span>)
+      .reduce((a, yr) => a + fv(yr.cost, H - yr.endMonth), <span class="v">0</span>);
+
+    <span class="k">if</span> (Math.abs(direct - stacked) &gt; <span class="v">0.5</span>)
+      throw <span class="k">new</span> Error(`${route.id} @${H}mo: ${direct} vs ${stacked}`);
+  }
+}</code></pre>
+<p class="caption">Half a pound of tolerance, purely for floating point. Anything larger is a real
+disagreement between two calculations that must agree.</p>
+
+<h3>What it caught</h3>
+
+<p>It failed on the first run, and kept failing through four distinct bugs. None of these would have been
+visible by reading the output table.</p>
+
+<table>
+  <thead><tr><th>Bug</th><th>Symptom in the identity</th><th>Effect</th></tr></thead>
+  <tbody>
+    <tr><td>Compounding convention off by one</td><td>Small constant gap, every route</td><td class="r">Finance payments treated as end-of-month</td></tr>
+    <tr><td>Optional final payment in the wrong year</td><td>Large gap at the term boundary only</td><td class="r">Whole balloon misplaced by 12 months</td></tr>
+    <tr><td>Debt read one instalment ahead</td><td>Gap growing with horizon</td><td class="r">Equity overstated throughout</td></tr>
+    <tr><td>Excess mileage counted twice</td><td>Gap only on capped routes</td><td class="r">PCP and lease penalised twice over</td></tr>
+  </tbody>
+</table>
+
+<p>The first one is worth dwelling on. Finance instalments are paid at the start of each month, running
+costs accrue across it. Using one convention for both is invisible in any single number and wrong in every
+number. The fix was to carry two compounding conventions explicitly and apply each to the right category
+of cash flow, which is the kind of thing you only bother to do once something has forced you to.</p>
+
+<div class="callout good">
+  <p><b>The general form:</b> find a property of your system that must hold if it is correct, that is
+  cheap to compute a second way, and that is not simply a restatement of the first calculation. Then let
+  it fail before you look at any output. If you cannot construct such a property, that is itself a finding
+  about how well you understand the problem.</p>
+</div>
+
+<hr>
+
+<h2 id="reproduce"><span class="n">Four</span>Reproducing the source's own numbers</h2>
+
+<p>The identity check proves internal consistency. It says nothing about whether the model matches
+reality. For that there was a second, stricter test available, and I nearly failed to use it.</p>
+
+<p>The configurator publishes its own monthly payments. So the engine should be able to reproduce them.
+Given the price, the deposit, the deposit contribution, the term, the APR and the optional final payment,
+a PCP monthly payment is fully determined:</p>
+
+<pre><code><span class="c">// P = amount of credit, B = balloon (optional final payment)</span>
+<span class="c">// i = monthly rate, n = number of instalments</span>
+pay = (P - B / (<span class="v">1</span>+i)**n) * i / (<span class="v">1</span> - (<span class="v">1</span>+i)**-n)</code></pre>
+
+<p>My first version subtracted the balloon directly instead of discounting it. At 0% APR this is
+indistinguishable, because discounting by zero is the identity, and three of the four cars were on a 0%
+promotion. So every test I had passed.</p>
+
+<p>The fourth car was not on 0%. At 8.10% over 60 months the bug understated the monthly payment by
+<strong>£102</strong>, quoting £331 against a correct £433. That is not a rounding discrepancy. It is a
+different financial product.</p>
+
+<div class="callout bad">
+  <p><b>The pattern worth naming.</b> A bug that is invisible in the majority case and severe in the
+  minority case is the most dangerous shape a bug can have, because your confidence grows with every
+  passing test while the defect sits untouched. Three of four cars being on a promotional 0% rate was not
+  good luck. It was a blind spot with a 75% hit rate.</p>
+</div>
+
+<p>A second finding came out of the same exercise. I had assumed the deposit contribution applied only to
+the promotional 48-month term. Driving the configurator to the 60-month setting showed it applied there
+too. Correcting it moved my computed monthly from £529 to £478, against a published £484. Six pounds of
+residual difference on a five-year term, which is consistent with rounding in the lender's own schedule
+and small enough to stop chasing.</p>
+
+<p>Every mileage band on every car now reproduces the published monthly to within £2, and every 0% row's
+total amount payable equals the on-the-road price to the penny. That is the claim the tool rests on.</p>
+
+<hr>
+
+<h2 id="silent"><span class="n">Five</span>The failure I did not see coming</h2>
+
+<p>Prices and offers move, so the model needed to re-verify itself. I set up four scheduled jobs, one per
+car, running weekly. Each re-reads the configurator, rewrites the model's inputs, republishes the page and
+reports what moved.</p>
+
+<p>They ran. They produced sensible weekly reports. They stamped a fresh date on the output each time.</p>
+
+<p>Weeks later I audited them properly, and found that <strong>not one of them had ever reached the
+browser</strong>.</p>
+
+<h3>The mechanism</h3>
+
+<p>In the runtime I was using, tool definitions are loaded lazily. An interactive session accumulates them
+as the conversation goes, so by the time I had built and tested everything by hand, the browser tools were
+loaded and everything worked. A scheduled run starts cold. It begins with none of them loaded.</p>
+
+<p>So the browser calls in my job prompts were not failing. They were <em>not callable</em>. The agent
+looked at what it had available, correctly concluded the browser was unavailable, fell back to secondary
+sources like news articles and forum posts, wrote a report from those, and dated it today.</p>
+
+<div class="pull">It never errored. It produced a confident, plausible, current-looking answer built on
+the wrong inputs, once a week, for weeks.</div>
+
+<p>Every individual step in that chain is defensible. Checking what tools are available is correct.
+Falling back when a source is unreachable is a reasonable pattern in most systems. Reporting what you
+found is right. The composition of three reasonable behaviours produced a system that laundered stale
+data into fresh-looking data on a schedule.</p>
+
+<p>Note also which failure this was <em>not</em>. It was not a hallucination, and no amount of prompting
+the model to be more careful would have helped, because the model was being careful. It was a
+capability-availability problem that presented as a content problem.</p>
+
+<h3>The three-part fix</h3>
+
+<p>First, load the tools explicitly and first, before anything else in the prompt. Second, retry, because
+the connection failure is genuinely transient and in testing failed four times in a row before connecting
+normally. Third, and most importantly, <strong>refuse to write</strong>.</p>
+
+<pre><code>STEP 0 — LOAD THE BROWSER TOOLS. DO THIS FIRST, BEFORE ANYTHING ELSE.
+
+The browser tools are DEFERRED. A scheduled run starts cold with none of
+them loaded, so if you skip this step they cannot be called at all, the
+browser will appear "unavailable", and you will wrongly fall back to
+guesswork. This is the single most common way this task fails.
+
+1. Load the tool definitions explicitly, in one call, by name.
+2. Open a browser context.
+3. If it reports "not connected", RETRY AT LEAST THREE TIMES. This failure
+   is routinely transient and usually succeeds on a later attempt.
+
+IF THE BROWSER STILL WILL NOT CONNECT AFTER RETRIES
+Do NOT substitute blogs, forums or news summaries for the finance terms,
+and do NOT leave the existing numbers in place in a way that implies they
+were re-checked. Instead: make NO changes, do not republish, and report
+plainly:
+
+  "Could not verify: browser unreachable. Figures remain as of &lt;date&gt;
+   and were NOT re-checked this week."
+
+An unverified update is worse than no update, because it makes stale
+figures look freshly confirmed.</code></pre>
+<p class="caption">The operative instruction is the last one. Everything above it is mechanism.</p>
+
+<p>The refuse-to-write rule is the part I would keep if I could keep only one thing. A stale figure that
+is labelled stale is a known quantity you can reason about. The same figure wearing today's date is
+actively misleading, and the freshness of the timestamp is precisely what stops you from checking.</p>
+
+<p>There is a related design constraint worth stating on its own, because it caught me elsewhere too. A
+scheduled run has no memory of the conversation that created it. Every assumption, every default, every
+piece of context that felt too obvious to write down has to be stated explicitly in the standing prompt.
+Anything implicit is simply gone. One of my four jobs still referenced an earlier set of ownership
+horizons and a superseded interest rate, months after I had changed both, because I had changed them in
+conversation rather than in the job.</p>
+
+<hr>
+
+<h2 id="weak"><span class="n">Six</span>My verification was the next thing to break</h2>
+
+<p>Having built a check that caught four real bugs, I then trusted it more than it deserved.</p>
+
+<p>Late in the project I refactored the theming across nine files, converting hard-coded colours into
+semantic custom properties. I did it with a pattern-based rewrite, and the pattern was too greedy: it
+rewrote the variable <em>definitions</em> as well as their uses. The result was 153 declarations of the
+form:</p>
+
+<pre><code>--tx-soft: var(--tx-soft);   <span class="c">/* resolves to nothing, forever */</span></code></pre>
+
+<p>Circular references. Five of the nine pages lost their dark theme entirely.</p>
+
+<p>My verification pass said everything was fine. It had checked that a declaration for each token
+existed. It had not checked that the token <em>resolved to a colour</em>. The check was measuring the
+presence of a thing rather than the property I actually cared about, which is a distinction that is easy
+to see afterwards and easy to miss while writing.</p>
+
+<div class="callout warn">
+  <p><b>Weak tests are worse than no tests.</b> With no test I would have opened the page and seen it was
+  broken in about four seconds. With a passing weak test I had positive evidence that it was fine, and I
+  moved on. The test did not merely fail to help. It actively spent my attention budget elsewhere.</p>
+</div>
+
+<p>The fix was a transitive resolver: follow each token through its chain of references until it reaches
+a literal, and fail if it does not terminate or if it revisits a token it has already seen. That is what
+"defined" was supposed to mean all along.</p>
+
+<hr>
+
+<h2 id="lessons"><span class="n">Seven</span>What actually separated this from a demo</h2>
+
+<p>Three things, none of which are about the model's capability.</p>
+
+<h3>Verified beats estimated, and the gap is not small</h3>
+
+<p>Driving the source rather than inferring from it changed the conclusions, not just the precision. The
+promotional 0% APR turned out to cover three of the four trims and not the fourth, which nothing on the
+page announces and which no reasonable estimate would have caught. The deposit contribution turned out to
+be conditional on financing, so paying cash silently forfeits it. The 60-month term turned out to sit on
+the far side of a rate cliff rather than on a smooth curve. Each of those is a decision-changing fact that
+only exists inside the configurator's own logic.</p>
+
+<h3>Falsifiable checks beat plausible output</h3>
+
+<p>Output that looks right is not evidence. Design a property that must hold, compute it a second way, and
+let it fail before you look at anything. Then check that your check is measuring the property you care
+about and not a proxy for it.</p>
+
+<h3>Fail loudly, and refuse to write</h3>
+
+<p>The dangerous failure in an unattended agent is not the crash. Crashes you notice. It is the graceful
+degradation that produces a confident, current-looking answer from the wrong inputs and tells you nothing.
+For anything running unattended, "make no changes and say so" should be the default behaviour on
+verification failure, not a fallback of last resort.</p>
+
+<div class="pull">The model wrote most of the code. The engineering was deciding how it should fail.</div>
+
+<h3>What I would do differently</h3>
+
+<ul>
+  <li><strong>Assert on the tools, not just the data.</strong> The first thing a scheduled job should
+    report is which capabilities it actually had. I now treat "did it reach the source" as the headline
+    of the run report, above anything it found, because everything else is conditional on it.</li>
+  <li><strong>Write the check before the model.</strong> I built the engine and then went looking for a
+    way to test it. Deriving the identity first would have shaped the engine's structure and saved at
+    least two of the four bugs.</li>
+  <li><strong>Deliberately test the minority case.</strong> Three of four cars on 0% APR meant my whole
+    test suite was exercising the degenerate branch of the interest calculation. A single synthetic case
+    at a non-zero rate would have caught the discounting bug immediately.</li>
+</ul>
+
+<div class="cta">
+  <h4>The tool this came out of</h4>
+  <p>Four UK Tesla variants, four ownership horizons, five ways of paying, and a guided chooser. Every
+  finance figure was read off the live configurator rather than estimated, and every assumption is
+  adjustable. Indicative only, and not financial advice.</p>
+  <a class="btn" href="index.html">Open the decision hub</a>
+</div>
+
+<p>If you are running agents unattended, I would be interested in how you are handling verification.
+Refuse-to-write is my current answer and it is blunt: it treats every unverified run identically,
+whether the source was unreachable for thirty seconds or has moved permanently. I do not yet have a good
+way to distinguish a transient failure from a structural one without a human looking.</p>
+
+<footer>
+  <p><strong>Notes.</strong> Finance figures were read from the manufacturer's UK configurator on 30 July
+  2026 and are re-checked weekly. Promotional terms have an expiry date and will not be current
+  indefinitely. Nothing here is financial advice, and the tool is indicative only: re-quote before
+  committing to anything, and get the rate, the contribution, the optional final payment and the mileage
+  cap written into the order agreement rather than relying on a configurator screen.</p>
+  <p>Running-cost inputs including insurance, real-world efficiency, consumables and the depreciation
+  curve remain estimates. They are labelled as such in the tool and every one of them is adjustable.</p>
+  <p><a href="index.html">Decision hub</a> &middot;
+     <a href="https://arindamr.github.io/tesla/how-it-was-built.html">Permalink</a></p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>';
+  var MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8Z"/></svg>';
+  var b=document.createElement("button");
+  b.id="themeBtn"; b.type="button";
+  function cur(){return document.documentElement.getAttribute("data-theme")||"dark";}
+  function paint(){
+    var d=cur()==="dark";
+    b.innerHTML=(d?SUN:MOON)+"<span>"+(d?"Light":"Dark")+"</span>";
+    b.setAttribute("aria-label","Switch to "+(d?"light":"dark")+" theme");
+    b.title="Switch to "+(d?"light":"dark")+" theme";
+  }
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      var h=a.getAttribute("href");
+      if(!h||/^(https?:|mailto:|#)/.test(h)||!/\.html/.test(h))return;
+      try{var u=new URL(h,location.href);u.searchParams.set("theme",t);
+          a.setAttribute("href",u.pathname.split("/").pop()+u.search+u.hash);}catch(e){}
+    });
+  }
+  b.onclick=function(){
+    var t=cur()==="dark"?"light":"dark";
+    document.documentElement.setAttribute("data-theme",t);
+    try{localStorage.setItem("tesla-tco-theme",t);}catch(e){}
+    paint(); propagate(t);
+  };
+  paint(); propagate(cur());
+  document.body.appendChild(b);
+})();
+</script>
+</body>
+</html>

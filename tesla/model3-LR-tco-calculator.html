@@ -288,8 +288,8 @@ html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6eb
       <div class="card">
         <h2>Mileage cap — is it cheaper to take 8,000 and pay the excess?</h2>
         <p class="hint" style="margin:-6px 0 12px">
-          Tesla's five real options, read off the configurator on 30 July 2026. At 0% APR every one totals
-          <b>£37,990 payable</b> — raising the cap simply moves money out of the Optional Final Payment and into the
+          Tesla's five real options, re-verified on the configurator on 3 August 2026. At 0% APR every one totals
+          <b>£44,990 payable</b> — raising the cap simply moves money out of the Optional Final Payment and into the
           monthly. So the cap is not really a price decision. It is a bet on whether you will
           <b>settle the OFP and keep the car</b>, or <b>hand it back</b>.</p>
         <table id="capTable"></table>
@@ -351,25 +351,25 @@ const SPEC = {
   eff      :{l:"Real-world efficiency",      min:2.5,  max:5.5, step:0.1,  v:4.4,   f:v=>v.toFixed(1)+" mi/kWh", h:"Model Y RWD is a taller, heavier SUV — real-world ~3.8–4.0 mi/kWh against the Model 3\u2019s 4.4. Estimated; adjust if you have your own figure."},
 
   fyd      :{l:"Year-1 value drop",          min:8,    max:35,  step:1,    v:22,    f:v=>v+"%"},
-  ad       :{l:"Annual drop thereafter",     min:4,    max:20,  step:0.5,  v:11,    f:v=>v+"%/yr", h:"Model 3 leads UK EV residual tables at ~12%/yr, but used EV prices fell ~10% YoY in early 2026."},
+  ad       :{l:"Annual drop thereafter",     min:4,    max:20,  step:0.5,  v:12,    f:v=>v+"%/yr", h:"Model 3 leads UK EV residual tables at ~12%/yr (Motorway), but used EV prices fell ~10% YoY in early 2026."},
 
   pHome    :{l:"Home off-peak rate",         min:3,    max:30,  step:0.5,  v:7,     f:v=>v+"p/kWh", h:"Intelligent Octopus Go: 4–7p since the April 2026 cut."},
   pPub     :{l:"Public rapid rate",          min:30,   max:90,  step:1,    v:65,    f:v=>v+"p/kWh"},
   homeShare:{l:"Charged at home",            min:0,    max:100, step:5,    v:90,    f:v=>v+"%"},
 
-  ins      :{l:"Insurance",                  min:400,  max:2500,step:25,   v:950,   f:v=>"£"+v.toLocaleString()+"/yr", h:"Model Y sits a little above the Model 3 — heavier, dearer to repair. Identical across all five routes, so it never changes the ranking."},
+  ins      :{l:"Insurance",                  min:400,  max:2500,step:25,   v:850,   f:v=>"£"+v.toLocaleString()+"/yr", h:"NimbleFins' Aug 2026 trim breakdown: RWD ~£815, Long Range AWD ~£860 — this LR RWD trim sits between. Identical across all five routes, so it never changes the ranking."},
   maint    :{l:"Tyres + consumables, yr 1",  min:0,    max:1200,step:25,   v:375,   f:v=>"£"+v.toLocaleString()+"/yr"},
   maintEsc :{l:"Maintenance escalation",     min:0,    max:20,  step:1,    v:8,     f:v=>"+"+v+"%/yr", h:"Compounds with age. Barely matters over 2 years, starts to bite by 5."},
   postWar  :{l:"Post-warranty repair budget",min:0,    max:2000,step:50,   v:450,   f:v=>"£"+v.toLocaleString()+"/yr", h:"Applies from year 5. Tesla's vehicle warranty is 4 yrs / 50,000 mi; battery and drive unit 8 yrs."},
 
   hpDep    :{l:"HP deposit",                 min:0,    max:25000,step:50,  v:6250,  f:v=>"£"+v.toLocaleString(), h:"Matched to the PCP cash deposit so the routes are comparable. HP gets no deposit contribution."},
-  hpApr    :{l:"HP APR",                     min:0,    max:12,  step:0.1,  v:5.9,   f:v=>v.toFixed(1)+"%", h:"Tesla HP quoted at 3.9–8.9% depending on profile. You own it from day one, no balloon."},
+  hpApr    :{l:"HP APR",                     min:0,    max:12,  step:0.1,  v:0,     f:v=>v.toFixed(1)+"%", h:"VERIFIED 0% on Tesla's own configurator (60mo, £549/mo, Representative Example includes a £2,500 deposit contribution not modelled here — see hpDep). Was estimated at 5.9% from a third-party range; that figure is superseded. You own it from day one, no balloon."},
   hpTerm   :{l:"HP term",                    min:24,   max:60,  step:12,   v:60,    f:v=>v+" months"},
 
   pcpCash  :{l:"Your cash deposit",          min:0,    max:25000,step:50,  v:6250,  f:v=>"£"+v.toLocaleString(), h:"Tesla's example: £8,750 total down payment, of which £2,500 is their contribution — so £6,250 is your money."},
   contrib  :{l:"Tesla deposit contribution", min:0,    max:5000,step:50,   v:2500,  f:v=>"£"+v.toLocaleString(), h:"Free money, but ONLY if you finance. Cash buyers forgo it. Applies to 24–48 month terms, not stackable."},
   pcpTerm  :{l:"PCP term",                   min:24,   max:60,  step:12,   v:48,    f:v=>v+" months", h:"47 monthly payments then the Optional Final Payment. Beyond the term you settle it and own the car."},
-  pcpCap   :{l:"PCP mileage cap",            min:0,    max:4,   step:1,    v:1,     f:v=>TESLA_MILEAGE[v].mi.toLocaleString()+" mi/yr → £"+TESLA_MILEAGE[v].monthly+"/mo, OFP £"+TESLA_MILEAGE[v].ofp.toLocaleString(), h:"Tesla's five actual options, read off the configurator. Defaulted to 10,000 to match your mileage — see the cap analysis below. Raising the cap raises the monthly and lowers the OFP; total payable stays £37,990 either way."},
+  pcpCap   :{l:"PCP mileage cap",            min:0,    max:4,   step:1,    v:1,     f:v=>TESLA_MILEAGE[v].mi.toLocaleString()+" mi/yr → £"+TESLA_MILEAGE[v].monthly+"/mo, OFP £"+TESLA_MILEAGE[v].ofp.toLocaleString(), h:"Tesla's five actual options, read off the configurator. Defaulted to 10,000 to match your mileage — see the cap analysis below. Raising the cap raises the monthly and lowers the OFP; total payable stays £44,990 either way."},
   pcpExcess:{l:"PCP excess mileage",         min:5,    max:35,  step:0.1,  v:16.8,  f:v=>v.toFixed(1)+"p/mile", h:"14p plus VAT = 16.8p."},
   pcpApr48 :{l:"48-month PCP APR",           min:0,    max:15,  step:0.05, v:0,     f:v=>v.toFixed(2)+"%", h:"CONFIRMED 0%. This trim KEEPS the promotion — unlike the Model Y Premium Long Range, which is quoted at 2.90%. Total payable equals the £44,990 cash price."},
   options  :{l:"Options added (paint, wheels…)",min:0,  max:9000,step:250,  v:0,     f:v=>"£"+v.toLocaleString()+(v>=5010?"  ⚠ over £50k":""), h:"List price plus options decides the Expensive Car Supplement. At £44,990 you have £5,010 of headroom — enough for most option combinations, but check the total."},
@@ -843,7 +843,7 @@ function render(){
   else if(best.k==="pcp0")
     body=`Tesla's live offer wins because it is not really a finance product — it is a
       <b>${money(S.contrib)} discount plus an interest-free loan</b>. Total amount payable is
-      ${money(S.pcpCash+S.contrib+R.pcp0.monthly*(S.pcpTerm-1)+R.pcp0.balloon)}, the same as the cash price, so the
+      ${money(S.pcpCash+S.contrib+R.pcp0.monthly*(S.pcpTerm-1)+R.pcp0.balloon)} — the same as the ${money(S.otr)} cash price, so the
       borrowing costs nothing; meanwhile ${money(S.otr-S.pcpCash)} of your capital stays invested at ${S.opp}%.
       Paying cash forfeits the contribution and the carry, which is why it comes out
       <b>${money(R.cash.total-R.pcp0.total)} worse</b> over ${yrLabel(H)}. The Optional Final Payment is also a free
@@ -1040,7 +1040,7 @@ function renderCap(){
       is the option <i>not</i> to.</div>
     <div class="hint" style="margin-top:9px">
       Why the "settle &amp; keep" column barely moves: at 0% APR the cap shifts money between the monthly and the OFP
-      but the total payable is £37,990 regardless, so the only difference is the timing of your own cash.
+      but the total payable is £44,990 regardless, so the only difference is the timing of your own cash.
       The hand-back column moves a lot because the excess charge is genuinely new money.
       Note too that a higher cap raises your effective hand-back threshold — you would walk away from a car worth less
       than ${money(bestH.strike)} on the ${bestH.t.mi.toLocaleString()}-mile deal, against only ${money(lo.strike)}
@@ -1054,7 +1054,8 @@ function renderCap(){
    Tesla's table really controls is the OFP. Those OFPs are estimates and are
    flagged as such — replace them with real figures off the configurator.      */
 /* Every row below was read directly off Tesla's UK configurator on 30 July 2026,
-   including the 60-month row. Nothing here is estimated.                       */
+   including the 60-month row, and re-verified unchanged on 3 August 2026. Nothing
+   here is estimated.                                                            */
 const QSEED=()=>[
   {label:"48 mo / 8k   ✓ configurator",  term:48, cash:6250, contrib:2500, monthly:349, ofp:19831, cap:8000,  excess:16.8, apr:0,    verified:true},
   {label:"48 mo / 10k  ✓ configurator",  term:48, cash:6250, contrib:2500, monthly:365, ofp:19081, cap:10000, excess:16.8, apr:0,    verified:true},
@@ -1206,9 +1207,11 @@ Tesla's vehicle warranty is 4 years / 50,000 miles, so a post-warranty repair bu
 ownership routes but never on a rolling lease. Verified against an independent Python implementation.<br>
 <b>Deliberately excluded.</b> Salary sacrifice. At a 4% BIK rate it beats all five of these by a wide margin — if
 your employer offers it, that is the answer and this calculator is the wrong tool.<br>
-<b>Tesla Finance figures are measured, not estimated.</b> The PCP mileage table, the 60-month 8.10% terms and the
-Personal Contract Hire quote were all read directly off Tesla's UK configurator on 30 July 2026 by driving it in a
-browser. The Hire Purchase APR is the one figure still taken from reported ranges (3.9–8.9%) — re-quote it.<br>
+<b>Tesla Finance figures are measured, not estimated.</b> The PCP mileage table, the 60-month 8.10% terms, the
+Personal Contract Hire quote and the Hire Purchase terms were all read directly off Tesla's UK configurator by
+driving it in a browser (30 July 2026, re-verified unchanged 3 August 2026). Hire Purchase in particular corrected
+from an estimated 5.9% (a third-party range) to a verified 0%, including a £2,500 deposit contribution not yet
+reflected in the hpDep slider above — treat modelled HP costs as slightly pessimistic until that's added.<br>
 <b>Sources.</b>
 <a href="https://evinfo.info/tesla-price-tracker-uk/">UK price tracker</a> ·
 <a href="https://www.kandoo.co.uk/guides/how-to-finance-a-tesla-model-3">Tesla finance rates</a> ·
