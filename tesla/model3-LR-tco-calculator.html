@@ -288,7 +288,7 @@ html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6eb
       <div class="card">
         <h2>Mileage cap — is it cheaper to take 8,000 and pay the excess?</h2>
         <p class="hint" style="margin:-6px 0 12px">
-          Tesla's five real options, re-verified on the configurator on 3 August 2026. At 0% APR every one totals
+          Tesla's five real options, re-verified on the configurator on 9 August 2026. At 0% APR every one totals
           <b>£44,990 payable</b> — raising the cap simply moves money out of the Optional Final Payment and into the
           monthly. So the cap is not really a price decision. It is a bet on whether you will
           <b>settle the OFP and keep the car</b>, or <b>hand it back</b>.</p>
@@ -329,7 +329,7 @@ html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6eb
 
 <script>
 /* ================= Tesla's actual OFP table =================
-   Read directly off the UK configurator on 30 July 2026 (Personal: PCP,
+   Read directly off the UK configurator, re-verified 9 August 2026 (Personal: PCP,
    48 months, total down payment £8,750, total credit £36,240, 0% APR).
    Unlike the Model Y Long Range, this trim DOES keep the 0% promotion, so
    every row totals exactly £44,990 payable with £0 of interest.          */
@@ -1054,8 +1054,8 @@ function renderCap(){
    Tesla's table really controls is the OFP. Those OFPs are estimates and are
    flagged as such — replace them with real figures off the configurator.      */
 /* Every row below was read directly off Tesla's UK configurator on 30 July 2026,
-   including the 60-month row, and re-verified unchanged on 3 August 2026. Nothing
-   here is estimated.                                                            */
+   including the 60-month row, and re-verified unchanged on 3 Aug and again on
+   9 August 2026. Nothing here is estimated.                                    */
 const QSEED=()=>[
   {label:"48 mo / 8k   ✓ configurator",  term:48, cash:6250, contrib:2500, monthly:349, ofp:19831, cap:8000,  excess:16.8, apr:0,    verified:true},
   {label:"48 mo / 10k  ✓ configurator",  term:48, cash:6250, contrib:2500, monthly:365, ofp:19081, cap:10000, excess:16.8, apr:0,    verified:true},
@@ -1209,7 +1209,7 @@ ownership routes but never on a rolling lease. Verified against an independent P
 your employer offers it, that is the answer and this calculator is the wrong tool.<br>
 <b>Tesla Finance figures are measured, not estimated.</b> The PCP mileage table, the 60-month 8.10% terms, the
 Personal Contract Hire quote and the Hire Purchase terms were all read directly off Tesla's UK configurator by
-driving it in a browser (30 July 2026, re-verified unchanged 3 August 2026). Hire Purchase in particular corrected
+driving it in a browser (30 July 2026, re-verified unchanged 3 Aug and again 9 August 2026). Hire Purchase in particular corrected
 from an estimated 5.9% (a third-party range) to a verified 0%, including a £2,500 deposit contribution not yet
 reflected in the hpDep slider above — treat modelled HP costs as slightly pessimistic until that's added.<br>
 <b>Sources.</b>

@@ -327,8 +327,9 @@ html[data-theme="dark"]{--tt-bg:rgba(29,36,48,.92);--tt-bd:#2b3441;--tt-fg:#e6eb
 
 <script>
 /* ================= Tesla's actual OFP table =================
-   Read directly off the UK configurator on 30 July 2026 (Personal: PCP,
-   48 months, total down payment £8,650, total credit £29,340, 0% APR).
+   Read directly off the UK configurator, most recently re-verified
+   9 Aug 2026 (Personal: PCP, 48 months, total down payment £8,650,
+   total credit £29,340, 0% APR) — every figure unchanged since 30 Jul 2026.
    Every row totals £37,990 payable — the mileage cap only moves money
    between the monthly payment and the Optional Final Payment.          */
 const TESLA_MILEAGE=[
@@ -360,8 +361,8 @@ const SPEC = {
   maintEsc :{l:"Maintenance escalation",     min:0,    max:20,  step:1,    v:8,     f:v=>"+"+v+"%/yr", h:"Compounds with age. Barely matters over 2 years, starts to bite by 5."},
   postWar  :{l:"Post-warranty repair budget",min:0,    max:2000,step:50,   v:450,   f:v=>"£"+v.toLocaleString()+"/yr", h:"Applies from year 5. Tesla's vehicle warranty is 4 yrs / 50,000 mi; battery and drive unit 8 yrs."},
 
-  hpDep    :{l:"HP deposit",                 min:0,    max:20000,step:50,  v:6150,  f:v=>"£"+v.toLocaleString(), h:"Matched to the PCP cash deposit so the routes are comparable. Modelled with no deposit contribution — NOTE 3 Aug 2026: Tesla's real HP offer now also includes the £2,500 contribution (total down £11,050), which this slider doesn't add, so the HP figures below understate its true competitiveness by roughly £2,500."},
-  hpApr    :{l:"HP APR",                     min:0,    max:12,  step:0.1,  v:0,     f:v=>v.toFixed(1)+"%", h:"CONFIRMED 0% as of 3 Aug 2026, read off the configurator (was estimated 3.9–8.9% from third-party sources). Same 30 Sep 2026 order deadline as the PCP promo. You own it from day one, no balloon."},
+  hpDep    :{l:"HP deposit",                 min:0,    max:20000,step:50,  v:6150,  f:v=>"£"+v.toLocaleString(), h:"Matched to the PCP cash deposit so the routes are comparable. Modelled with no deposit contribution — NOTE (unchanged 9 Aug 2026): Tesla's real HP offer also includes the £2,500 contribution (total down £11,050), which this slider doesn't add, so the HP figures below understate its true competitiveness by roughly £2,500."},
+  hpApr    :{l:"HP APR",                     min:0,    max:12,  step:0.1,  v:0,     f:v=>v.toFixed(1)+"%", h:"CONFIRMED 0%, reconfirmed unchanged 9 Aug 2026, read off the configurator. Same 30 Sep 2026 order deadline as the PCP promo. You own it from day one, no balloon."},
   hpTerm   :{l:"HP term",                    min:24,   max:60,  step:12,   v:60,    f:v=>v+" months"},
 
   pcpCash  :{l:"Your cash deposit",          min:0,    max:20000,step:50,  v:6150,  f:v=>"£"+v.toLocaleString(), h:"Tesla's example: £8,650 total down payment, of which £2,500 is their contribution — so £6,150 is your money."},
@@ -369,7 +370,7 @@ const SPEC = {
   pcpTerm  :{l:"PCP term",                   min:24,   max:60,  step:12,   v:48,    f:v=>v+" months", h:"47 monthly payments then the Optional Final Payment. Beyond the term you settle it and own the car."},
   pcpCap   :{l:"PCP mileage cap",            min:0,    max:4,   step:1,    v:1,     f:v=>TESLA_MILEAGE[v].mi.toLocaleString()+" mi/yr → £"+TESLA_MILEAGE[v].monthly+"/mo, OFP £"+TESLA_MILEAGE[v].ofp.toLocaleString(), h:"Tesla's five actual options, read off the configurator. Defaulted to 10,000 to match your mileage — see the cap analysis below. Raising the cap raises the monthly and lowers the OFP; total payable stays £37,990 either way."},
   pcpExcess:{l:"PCP excess mileage",         min:5,    max:35,  step:0.1,  v:16.8,  f:v=>v.toFixed(1)+"p/mile", h:"14p plus VAT = 16.8p."},
-  pcpApr   :{l:"60-month PCP APR",           min:0,    max:15,  step:0.05, v:8.10,  f:v=>v.toFixed(2)+"%", h:"Confirmed 8.10%. Tesla's PCP small print says the 0% promo and £2,500 contribution apply to 24–48 month terms ONLY — but NOTE 3 Aug 2026: the live 60-month representative example itself now shows the contribution included (total down £8,650, OFP £13,941, interest £8,873, total payable £46,863), contradicting that small print. This model still assumes no contribution at 60 months (below) — get an actual quote before relying on either."},
+  pcpApr   :{l:"60-month PCP APR",           min:0,    max:15,  step:0.05, v:8.10,  f:v=>v.toFixed(2)+"%", h:"Confirmed 8.10%, reconfirmed unchanged 9 Aug 2026. Tesla's PCP small print says the 0% promo and £2,500 contribution apply to 24–48 month terms ONLY — but the live 60-month representative example itself still shows the contribution included in its total down payment, contradicting that small print. This model still assumes no contribution at 60 months (below) — get an actual quote before relying on either."},
   pcp60Ofp :{l:"60-month OFP",               min:8000, max:24000,step:100, v:15690, f:v=>"£"+v.toLocaleString(), h:"Estimated — Tesla's 48-month OFP is 84.4% of this model's market value, and the same ratio is applied at 60 months. Replace with a real quote."},
 
   leaseM   :{l:"Lease monthly (inc VAT)",    min:250,  max:900, step:5,    v:440,   f:v=>"£"+v, h:"48-mo broker headline ~£341; a 24-mo/10k term prices ~25–30% higher. Re-quote — most volatile input here."},
